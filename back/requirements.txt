@@ -1,3 +1,6 @@
 uvicorn[standard]
 fastapi
 jwt
+sqlalchemy
+psycopg2
+python-dotenv

@@ -1,8 +1,28 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
 from typing import List, Dict
 import json, jwt
+from sqlalchemy.orm import Session
+from . import models, schemas
+from .database import SessionLocal, engine, Base
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# @app.post("/users/", response_model=schemas.User)
+# def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+#     db_user = models.User(username=user.username, email=user.email)
+#     db.add(db_user)
+#     db.commit()
+#     db.refresh(db_user)
+#     return db_user
 
 class ConnectionManager:
     def __init__(self):
@@ -37,10 +57,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
         manager.disconnect(client_id)
 
 
-
-SECRET_KEY = "your-secret-key"  # JWT 토큰 생성을 위한 시크릿 키
-app = FastAPI()
-
+# 기타 API 엔드포인트
 # @app.websocket("/ws/janus")
 # async def websocket_janus(websocket: WebSocket, token: str = Depends(get_current_user)):
 #     await websocket.accept()
