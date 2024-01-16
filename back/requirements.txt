@@ -4,3 +4,4 @@ jwt
 sqlalchemy
 psycopg2
 python-dotenv
+authlib
