@@ -9,6 +9,6 @@ SECRET_KEY = "Qb7VoxZ6UFQ8caVHLUVAccWcipUBLmuH"
 
 def create_access_token(email: str, auth: str):
     expire = datetime.utcnow() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"sub": email, "exp": expire, "typ": str}
+    to_encode = {"sub": email, "exp": expire, "typ": auth}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
