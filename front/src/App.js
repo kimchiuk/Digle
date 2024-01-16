@@ -1,11 +1,23 @@
-import logo from "./logo.svg";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import Signup from "./pages/signup/Signup";
+import SignupDetail from "./pages/signup/SignupDetail";
 import "./App.css";
-import JanusPage from "./pages/JanusPage";
+import Main from "./pages/Main";
+import Navbar from "./pages/NavBar";
 
 function App() {
   return (
     <div className="App">
-      <JanusPage />
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/signup" element={<Signup />}>
+            <Route path="detail" element={<SignupDetail />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
