@@ -9,8 +9,12 @@
     "axios": "^1.6.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+<<<<<<< HEAD
     "react-router-dom": "^6.21.2",
     "react-scripts": "5.0.1",
+=======
+    "react-scripts": "^5.0.1",
+>>>>>>> geunbo
     "web-vitals": "^2.1.4",
     "webrtc-adapter": "^8.2.3"
   },
