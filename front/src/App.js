@@ -16,6 +16,14 @@
 import React, { useState } from 'react';
 import LoginButton from './components/LoginButton';
 
+// 혹시 삭제해야한다면 여기 src/index.js 또는 src/App.js 등에 추가
+
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:8000';  // 백엔드 서버의 주소로 설정
+
+//##### 나머지 코드에서 axios로 API 요청을 보낼 수 있음
+
 const App = () => {
     const [user, setUser] = useState(null);
 
