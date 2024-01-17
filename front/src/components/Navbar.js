@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { Link } from "react-router-dom";
 
-const Navbar = ( {onLoginClick} ) => {
+const Navbar = () => {
 
   // Navbar 컴포넌트 정의
   const [isLogin, setIsLogin] = useState(false);
@@ -53,7 +53,7 @@ const Navbar = ( {onLoginClick} ) => {
         ) : (
           // 로그아웃 시 보여줄 메뉴
           <>
-            <button onClick={onLoginClick} className='px-4 py-0.25 rounded'>Login</button>
+            <Link to="/login" className='px-4 py-0.25 rounded'>Login</Link>
             <Link to="/signup" className='px-4 py-2 rounded'>Signup</Link>
           </>
         )}
