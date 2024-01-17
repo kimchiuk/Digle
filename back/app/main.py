@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect, Depends
 from typing import List, Dict
 import json, jwt
 from sqlalchemy.orm import Session
@@ -9,12 +9,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
 
 # @app.post("/users/", response_model=schemas.User)
 # def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -23,6 +25,7 @@ def get_db():
 #     db.commit()
 #     db.refresh(db_user)
 #     return db_user
+
 
 class ConnectionManager:
     def __init__(self):
@@ -44,7 +47,9 @@ class ConnectionManager:
             if client_id != sender:
                 await connection.send_text(message)
 
+
 manager = ConnectionManager()
+
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
@@ -61,7 +66,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
 # @app.websocket("/ws/janus")
 # async def websocket_janus(websocket: WebSocket, token: str = Depends(get_current_user)):
 #     await websocket.accept()
-    
+
 #     # Janus 서버와의 웹소켓 연결 및 통신 로직
 #     try:
 #         while True:
@@ -84,6 +89,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
 #     raise WebSocketDisconnect()
 
 # 추가적인 인증 및 사용자 관리 로직
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

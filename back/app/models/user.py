@@ -9,37 +9,42 @@ class UserType(str, Enum):
     individual = "individual"
     business = "business"
 
+
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
+    username = Column(String, unique=True, index=True)
+
     password_hash = Column(String)
     user_type = Column(Enum(UserType))
-    is_verified = Column(Boolean, default=False)
-    is_active = Column(Boolean, default=False)
+    additional_info_submitted = Column(Boolean, default=False)
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     oauth_accounts = relationship("UserOAuth", back_populates="user")
     business_info = relationship("BusinessUser", back_populates="user", uselist=False)
 
+
 class UserOAuth(Base):
     __tablename__ = "user_oauth"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     provider_name = Column(String)
     provider_user_id = Column(String)
-    access_token = Column(String)
-    refresh_token = Column(String)
+    # access_token = Column(String)
+    # refresh_token = Column(String) <-- Oauth provider의 token임 authlib으로 얻어와야하는거
 
     user = relationship("User", back_populates="oauth_accounts")
 
+
 class BusinessUser(Base):
     __tablename__ = "business_users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     company_name = Column(String)
