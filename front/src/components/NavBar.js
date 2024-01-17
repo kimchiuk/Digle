@@ -42,7 +42,7 @@ const Navbar = () => {
 
       {/* 메뉴 */}
       <div className="mr-4 whitespace-nowrap">
-        {!isLogin ? (
+        {isLogin ? (
           // 로그인 시 보여줄 메뉴
           <>
             <button
