@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect, Depends
 from typing import List, Dict
 import json, jwt
 from sqlalchemy.orm import Session
@@ -22,6 +22,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 ####
 def get_db():
     db = SessionLocal()
@@ -30,6 +32,7 @@ def get_db():
     finally:
         db.close()
 
+
 # @app.post("/users/", response_model=schemas.User)
 # def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 #     db_user = models.User(username=user.username, email=user.email)
@@ -37,6 +40,7 @@ def get_db():
 #     db.commit()
 #     db.refresh(db_user)
 #     return db_user
+
 
 class ConnectionManager:
     def __init__(self):
@@ -58,7 +62,9 @@ class ConnectionManager:
             if client_id != sender:
                 await connection.send_text(message)
 
+
 manager = ConnectionManager()
+
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
@@ -75,7 +81,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
 # @app.websocket("/ws/janus")
 # async def websocket_janus(websocket: WebSocket, token: str = Depends(get_current_user)):
 #     await websocket.accept()
-    
+
 #     # Janus 서버와의 웹소켓 연결 및 통신 로직
 #     try:
 #         while True:
@@ -101,31 +107,36 @@ from authlib.integrations.starlette_client import OAuth
 oauth = OAuth()
 
 naver = oauth.register(
-    name='naver',
+    name="naver",
     client_id=NAVER_CLIENT_ID,
     client_secret=NAVER_CLIENT_SECRET,
-    authorize_url='https://nid.naver.com/oauth2.0/authorize',
+    authorize_url="https://nid.naver.com/oauth2.0/authorize",
     authorize_params=None,
     authorize_kwargs=None,
     authorize_url_params=None,
-    token_url='https://nid.naver.com/oauth2.0/token',
+    token_url="https://nid.naver.com/oauth2.0/token",
     token_params=None,
     token_kwargs=None,
-    redirect_uri='http://localhost:8000/login/naver/callback',
-    client_kwargs={'scope': 'profile'},
+    redirect_uri="http://localhost:8000/login/naver/callback",
+    client_kwargs={"scope": "profile"},
 )
+
 
 @app.get("/login/naver")
 async def login(request: Request):
-    redirect_uri = url_for('login_naver_callback', _external=True)
+    redirect_uri = url_for("login_naver_callback", _external=True)
     return await naver.authorize_redirect(request, redirect_uri)
+
 
 @app.route("/login/naver/callback")
 async def login_naver_callback(request: Request):
     token = await naver.authorize_access_token(request)
     user = await naver.parse_id_token(request, token)
     return {"token": token, "user": user}
+
+
 # 추가적인 인증 및 사용자 관리 로직
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
