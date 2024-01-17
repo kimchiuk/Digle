@@ -23,3 +23,11 @@ Base = declarative_base()
 
 # 세션 팩토리를 생성합니다
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

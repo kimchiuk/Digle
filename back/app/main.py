@@ -3,8 +3,10 @@ from typing import List, Dict
 import json, jwt
 from sqlalchemy.orm import Session
 from . import models, schemas
-from .database import SessionLocal, engine, Base
+from .database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
+
+from .routers import google_login
 
 Base.metadata.create_all(bind=engine)
 
@@ -23,14 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-####
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app.include_router(google_login.router)
 
 
 # 추가적인 인증 및 사용자 관리 로직

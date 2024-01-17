@@ -5,7 +5,7 @@ from datetime import datetime
 from app.database import Base  # database.py에서 Base 클래스를 임포
 
 
-class UserType(str, Enum):
+class UserType(Enum):
     individual = "individual"
     business = "business"
 
@@ -14,12 +14,11 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
+    name = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
-    username = Column(String, unique=True, index=True)
 
     password_hash = Column(String)
-    user_type = Column(Enum(UserType))
+    user_type = Column(String)
     additional_info_submitted = Column(Boolean, default=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
