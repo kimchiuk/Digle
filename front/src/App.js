@@ -13,9 +13,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/signup" element={<Signup />}>
-            <Route path="detail" element={<SignupDetail />} />
-          </Route>
+          <Route path="/signup" element={<Signup />}></Route>
+          <Route path="/signup/detail" element={<SignupDetail />} />
         </Routes>
       </BrowserRouter>
     </div>
