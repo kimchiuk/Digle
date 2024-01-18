@@ -38,7 +38,7 @@ const GoogleLoginComp = () => {
   };
 
   return (
-    <div className="flex h-full items-center justify-center my-auto px-5 xl:mt-32 md:mt-48 mt-32 ">
+    <div className="flex h-full items-center justify-center my-auto px-5 xl:mt-32">
       <div className="flex flex-col pt-40">
         <div className="text-3xl text-gray-800 font-bold my-auto">
           login하십쉬오
