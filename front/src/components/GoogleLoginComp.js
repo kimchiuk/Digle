@@ -38,11 +38,11 @@ const GoogleLoginComp = () => {
   };
 
   return (
-    <div className="flex h-full items-center justify-center my-auto px-5 xl:mt-32">
-      <div className="flex flex-col pt-40">
-        <div className="text-3xl text-gray-800 font-bold my-auto">
-          login하십쉬오
-        </div>
+    // <div className="flex h-full items-center justify-center my-auto px-5 xl:mt-32">
+    //   <div className="flex flex-col pt-40">
+    //     <div className="text-3xl text-gray-800 font-bold my-auto">
+    //       login하십쉬오
+    //     </div>
         <div className="flex justify-center items-center h-20">
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
             <GoogleLogin
@@ -52,9 +52,9 @@ const GoogleLoginComp = () => {
               cookiePolicy={"single_host_origin"}
             />
           </GoogleOAuthProvider>
-        </div>
+          {/* </div>
+        </div> */}
       </div>
-    </div>
   );
 };
 

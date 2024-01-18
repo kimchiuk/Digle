@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import NaverLoginButton, { handleNaverLogin } from '../components/NaverLoginButton';
+import KakaoLoginButton, { handleKakaoLogin } from '../components/KakaoLoginButton';
+import GoogleLoginComp, { handleLoginSuccess } from '../components/GoogleLoginComp';
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -62,11 +66,10 @@ const Login = () => {
               아이디가 없으신가요?
             </Link>
           </div>
-          <div className="flex justify-center space-x-1 text-white">
-            <Link to="/google_login" className="hover:underline">
-              GoogleImg
-            </Link>{" "}
-            | <span>네이버</span> | <span>카카오</span>
+          <div className="flex justify-center space-x-1 bg-white ">
+            <GoogleLoginComp/>
+            <KakaoLoginButton/>
+            <NaverLoginButton/>
           </div>
         </form>
       </div>
