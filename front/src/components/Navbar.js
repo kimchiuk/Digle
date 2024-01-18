@@ -9,7 +9,7 @@ const Navbar = () => {
 
   // 로그인상태를 토글하는 함수
   const toggleLogin = () => {
-    setIsLogin(!isLogin);
+    setIsLogin(prevIsLogin => !prevIsLogin);
   };
 
   // // 스크롤에 따라 내브바 스타일을 변경

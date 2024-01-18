@@ -6,7 +6,7 @@ from . import models, schemas
 from .database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import google_login
+from .routers import login
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(google_login.router)
+app.include_router(login.router)
 
 
 # 추가적인 인증 및 사용자 관리 로직
