@@ -13,9 +13,12 @@ from app.services.auth_service import (
 router = APIRouter(prefix="/login", tags=["login"])
 
 
-@router.post("/google_token")
+@router.post("/google_token")   
 async def login_for_access_token(
-    response: Response, request: Request, token: str = Form(None), db: Session = Depends(get_db)
+    response: Response, request: Request, token: str = Form(None), db: 
+    
+    Session = Depends(get_db)
+
 ):
     async with httpx.AsyncClient() as client:
         # 받은 google token이 유효한지 확인
@@ -32,7 +35,7 @@ async def login_for_access_token(
         access_token = create_access_token(user_info["email"], "google")
         # access token을 보안때문에 header에다 cookie를 담아서 줄것.
         response.set_cookie(
-            key="__Host-access_token",
+            key="__Host-accesgis_token",
             value=access_token,
             httponly=False,
             secure=True,
@@ -80,3 +83,5 @@ async def login_for_access_token(
                 headers=dict(response.headers),
             )
     return return_value
+
+
