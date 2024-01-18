@@ -24,3 +24,41 @@ export const handleGoogleLogin = async (googleData) => {
     throw error;
   }
 };
+
+export const handleNaverLogin = async (code) => {
+  const formData = new FormData();
+  formData.append("token", code);
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/login/naver_login`,
+      formData,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Naver Login Success:", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error during Naver Login:", error);
+    throw error;
+  }
+};
+
+export const handleKakaoLogin = async (code) => {
+  const formData = new FormData();
+  formData.append("code", code);
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/login/kakao_login`,
+      formData,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Naver Login Success:", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error during Naver Login:", error);
+    throw error;
+  }
+};

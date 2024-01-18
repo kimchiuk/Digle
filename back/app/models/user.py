@@ -14,8 +14,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
+    name = Column(String, index=True)
+    email = Column(String, index=True)
+    nickname = Column(String, unique=True, index=True)
 
     password_hash = Column(String)
     user_type = Column(String)
@@ -32,7 +33,7 @@ class UserOAuth(Base):
     __tablename__ = "user_oauth"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     provider_name = Column(String)
     provider_user_id = Column(String)
     # access_token = Column(String)
@@ -45,7 +46,7 @@ class BusinessUser(Base):
     __tablename__ = "business_users"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     company_name = Column(String)
     company_address = Column(String)
     contact_number = Column(String)
