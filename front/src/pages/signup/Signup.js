@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 const Signup = () => {
   return (
     <>
-      <div className="w-96 h-96  align-middle ">
-        <div className="pt-20 text-start ">
+      <div className="w-96 align-middle h-full">
+        <div className="pt-20 text-start">
           <div className="p-2">회원가입</div>
           <div className="p-2">이용 약관 정책</div>
           <div className="m-2 p-2 h-60 border-2">내용</div>
