@@ -5,6 +5,7 @@ import SignupDetail from "./pages/signup/SignupDetail";
 import "./App.css";
 import Main from "./pages/Main";
 import Navbar from "./components/NavBar";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/signup/detail" element={<SignupDetail />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 
 const SignupDetail = () => {
   // id, pwd, pwd2, username, email, address, phone
@@ -44,6 +44,9 @@ const SignupDetail = () => {
     }
   };
 
+  // API 만들어지면 axios 요청 보내서 로직 구현
+  // const clickId = (e) => {};
+
   const passwordHandler = (e) => {
     const currentPassword = e.target.value;
     setPassword(currentPassword);
@@ -62,10 +65,10 @@ const SignupDetail = () => {
     setConfirmPassword(currentConfirmPassword);
 
     if (password !== currentConfirmPassword) {
-      setPasswordMsg("비밀번호가 일치하지 않습니다.");
+      setConfirmPasswordMsg("비밀번호가 일치하지 않습니다.");
       setIsConfirmPwd(false);
     } else {
-      setPasswordMsg("비밀번호가 일치합니다.");
+      setConfirmPasswordMsg("비밀번호가 일치합니다.");
       setIsConfirmPwd(true);
     }
   };
@@ -95,59 +98,39 @@ const SignupDetail = () => {
 
     if (!phoneRegExp.test(currentPhoneNumber)) {
       setPhoneMessage("올바른 형식이 아닙니다.");
+      setIsPhone(false);
     } else {
       setPhoneMessage("사용 가능한 번호입니다.");
+      setIsPhone(true);
     }
   };
 
-  // id 유효성검사 (중복유무)
-  const checkId = async () => {
-    try {
-      const response = await axios.post("#", {
-        identification,
-      });
+  // // id 유효성검사 (중복유무)
+  // const checkId = async () => {
+  //   try {
+  //     const response = await axios.post("#", {
+  //       identification,
+  //     });
 
-      const result = response.data;
+  //     const result = response.data;
 
-      if (result.isDuplicate) {
-        setIdMsg("이미 사용중인 아이디입니다.");
-        setIsPhone(false);
-      } else {
-        setIdMsg("사용 가능한 아이디입니다.");
-        setIsPhone(true);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // password 유효성검사 ( #자 이상, 영문, 숫자, 특수문자 중 2가지 이상의 조합)
-  const checkPwd1 = () => {
-    const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-
-    if (passwordRegex.test(password)) {
-      setPasswordMsg("비밀번호가 유효합니다.");
-    } else {
-      setPasswordMsg(
-        "비밀번호는 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다."
-      );
-    }
-  };
-
-  const checkPwd = () => {
-    if (password === confirmPassword) {
-      setConfirmPasswordMsg("비밀번호가 일치합니다.");
-    } else {
-      setConfirmPasswordMsg("비밀번호가 일치하지 않습니다. ");
-    }
-  };
+  //     if (result.isDuplicate) {
+  //       setIdMsg("이미 사용중인 아이디입니다.");
+  //       setIsPhone(false);
+  //     } else {
+  //       setIdMsg("사용 가능한 아이디입니다.");
+  //       setIsPhone(true);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   // email 유효성검사 (중복 유무)
 
   return (
     <>
-      <div className="relative flex block h-screen">
+      <div className="relative flex h-screen">
         <div className="pt-20 w-[500px] text-left px-5 mx-auto ">
           <form onSubmit={submitHandler}>
             <div className="text-xl font-bold mb-2">회원가입</div>
@@ -166,7 +149,13 @@ const SignupDetail = () => {
               <button className="bg-blue-500 text-white py-1 px-2 rounded mt-2">
                 중복검사
               </button>
-              <div className="text-sm text-red-500">{idMsg}</div>
+              <div
+                className={
+                  !isId ? "text-sm text-red-500" : "text-sm text-green-500"
+                }
+              >
+                {idMsg}
+              </div>
             </div>
             <div className="flex flex-col">
               <label className="mb-1" htmlFor="password">
@@ -179,7 +168,13 @@ const SignupDetail = () => {
                 value={password}
                 onChange={passwordHandler}
               />
-              <div className="text-sm text-red-500">{passwordMsg}</div>
+              <div
+                className={
+                  !isPwd ? "text-sm text-red-500" : "text-sm text-green-500"
+                }
+              >
+                {passwordMsg}
+              </div>
             </div>
             <div className="flex flex-col">
               <label className="mb-1" htmlFor="confirmPwd">
@@ -192,7 +187,15 @@ const SignupDetail = () => {
                 value={confirmPassword}
                 onChange={confirmPasswordHandler}
               />
-              <div className="text-sm text-red-500">{confirmPasswordMsg}</div>
+              <div
+                className={
+                  !isConfirmPwd
+                    ? "text-sm text-red-500"
+                    : "text-sm text-green-500"
+                }
+              >
+                {confirmPasswordMsg}
+              </div>
             </div>
             <div className="flex flex-col">
               <label className="mb-1" htmlFor="name">
@@ -217,7 +220,13 @@ const SignupDetail = () => {
                 value={email}
                 onChange={emailHandler}
               />
-              <div className="text-sm text-red-500">{emailMessage}</div>
+              <div
+                className={
+                  !isEmail ? "text-sm text-red-500" : "text-sm text-green-500"
+                }
+              >
+                {emailMessage}
+              </div>
             </div>
             <div className="flex flex-col">
               <label className="mb-1" htmlFor="phoneNumber">
@@ -230,7 +239,13 @@ const SignupDetail = () => {
                 value={phoneNumber}
                 onChange={phoneNumberHandler}
               />
-              <div className="text-sm text-red-500">{phoneMessage}</div>
+              <div
+                className={
+                  !isPhone ? "text-sm text-red-500" : "text-sm text-green-500"
+                }
+              >
+                {phoneMessage}
+              </div>
             </div>
             <input
               className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "

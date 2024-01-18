@@ -1,15 +1,9 @@
-import MainImage from "../mainImage.jpg";
-
 const Main = () => {
   return (
     <div>
       <div className="h-[500px]">
         <div className="relative w-full h-full overflow-hidden">
-          <img
-            className="object-cover w-full h-full"
-            src={MainImage}
-            alt="sun-flower"
-          />
+          <img className="object-cover w-full h-full" src="#" alt="#" />
           <div className="absolute bottom-20 w-72 h-20  text-white lg:bottom-40 md:bottom-5 left-40 bg-sky-950 opacity-70 z-10">
             <p className="text-2x1 lg:text-4xl font-bold">
               온라인 시험 신분증 검사,
