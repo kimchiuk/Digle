@@ -1,12 +1,10 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Main from "./pages/MainPage";
 import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 import "./App.css";
-import Main from "./pages/Main";
 import Navbar from "./components/NavBar";
 import Profile from "./pages/profile/Profile";
 import Login from "./pages/Login";
