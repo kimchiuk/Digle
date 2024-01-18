@@ -32,7 +32,7 @@ async def login_for_access_token(
         access_token = create_access_token(user_info["email"], "google")
         # access token을 보안때문에 header에다 cookie를 담아서 줄것.
         response.set_cookie(
-            key="__Host-access_token",
+            key="access_token",
             value=access_token,
             httponly=False,
             secure=True,
@@ -105,7 +105,7 @@ async def login_for_access_token(
         access_token = create_access_token(user_info["email"], "naver")
         # access token을 보안때문에 header에다 cookie를 담아서 줄것.
         response.set_cookie(
-            key="__Host-access_token",
+            key="access_token",
             value=access_token,
             httponly=False,
             secure=True,
@@ -192,7 +192,7 @@ async def login_for_access_token(
         access_token = create_access_token(user_info["email"], "naver")
         # access token을 보안때문에 header에다 cookie를 담아서 줄것.
         response.set_cookie(
-            key="__Host-access_token",
+            key="access_token",
             value=access_token,
             httponly=False,
             secure=True,
