@@ -1,6 +1,6 @@
 // VideoChat.js
 import React, { useEffect, useRef, useState } from "react";
-import Janus from "../../janus"; // Janus 라이브러리의 경로
+import { Janus } from "../../janus"; // Janus 라이브러리의 경로
 
 function VideoChat() {
   const [roomId, setRoomId] = useState(null);
@@ -18,7 +18,7 @@ function VideoChat() {
           return;
         }
         janusInstance = new Janus({
-          server: "YOUR_JANUS_SERVER_URL",
+          server: "http://34.125.238.83",
           success: function () {
             janusInstance.attach({
               plugin: "janus.plugin.videoroom",

@@ -11,9 +11,11 @@ import NaverLoginButton from "./components/NaverLoginButton";
 import NaverLoginCallback from "./components/NaverLoginCallback";
 import KakaoLoginButton from "./components/KakaoLoginButton";
 import KakaoLoginCallback from "./components/KakaoLoginCallback";
+import CreateRoom from "./components/WebRTC/CreateRoom";
+import VideoChat from "./components/WebRTC/VideoChat";
 
 function App() {
-  return ( 
+  return (
     <BrowserRouter>
       <Navbar />
 
@@ -27,6 +29,8 @@ function App() {
         <Route path="/naver_login/callback" element={<NaverLoginCallback />} />
         <Route path="/kakao_login" element={<KakaoLoginButton />} />
         <Route path="/kakao_login/callback" element={<KakaoLoginCallback />} />
+        <Route path="/CreateRoom" element={<CreateRoom />} />
+        <Route path="/vchat" element={<VideoChat />} />
       </Routes>
       <Footer />
     </BrowserRouter>

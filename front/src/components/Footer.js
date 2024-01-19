@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -6,7 +6,14 @@ const Footer = () => {
       <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
         <p className="text-white text-sm text-center sm:text-left">
           © {new Date().getFullYear()} Digle —
-          <a href="https://twitter.com/digle" rel="noopener noreferrer" className="text-white ml-1" target="_blank">@digle</a>
+          <a
+            href="https://twitter.com/digle"
+            rel="noopener noreferrer"
+            className="text-white ml-1"
+            target="_blank"
+          >
+            @digle
+          </a>
         </p>
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
           <Link to="/about" className="text-white">
