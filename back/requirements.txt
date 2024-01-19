@@ -10,3 +10,5 @@ python-multipart
 python-jose
 # db table migration lib
 alembic
+# 몰?루
+requests
