@@ -4,9 +4,9 @@ const NaverLoginButton = () => {
   const handleNaverLogin = async () => {
     try {
       // 네이버 로그인 창을 열고 사용자 인증 요청
-      const naverAuthUrl = "https://nid.naver.com/oauth2.0/authorize";
       const clientId = "3yosPikKiVLmBobZ44Ml";
       const redirectUri = "http://localhost:3000/naver_login/callback";
+      const naverAuthUrl = "https://nid.naver.com/oauth2.0/authorize";
       const responseType = "token";
 
       window.location.href = `${naverAuthUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}`;
