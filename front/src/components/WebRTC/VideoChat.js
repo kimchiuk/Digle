@@ -3,7 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus"; // Janus 라이브러리의 경로
 
 function VideoChat() {
-  const [roomId, setRoomId] = useState(null);
+  const [sessionId, setSessionId] = useState(null); // 세션 ID 상태
+  const [roomId, setRoomId] = useState(1000);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   let janusInstance = null;
@@ -18,7 +19,7 @@ function VideoChat() {
           return;
         }
         janusInstance = new Janus({
-          server: "http://34.125.238.83",
+          server: "http://34.125.238.83/janus",
           success: function () {
             janusInstance.attach({
               plugin: "janus.plugin.videoroom",
@@ -59,6 +60,56 @@ function VideoChat() {
       },
     });
   };
+
+  // ================================================
+  // 새로운 세션 생성 및 방에 재참여
+  const reconnectToRoom = () => {
+    janusInstance = new Janus({
+      server: "http://34.125.238.83/janus",
+      success: function () {
+        janusInstance.attach({
+          plugin: "janus.plugin.videoroom",
+          success: function (pluginHandle) {
+            videoRoom = pluginHandle;
+            setSessionId(janusInstance.getSessionId()); // 새 세션 ID 설정
+            joinRoom(roomId); // 기존 방 ID로 재참여
+          },
+          error: function (error) {
+            console.error("Error attaching plugin...", error);
+          },
+          // ... (기타 핸들러)
+        });
+      },
+      error: function (error) {
+        console.error("Error initializing Janus...", error);
+      },
+      destroyed: function () {
+        console.log("Janus instance destroyed");
+      },
+    });
+  };
+
+  const keepAlive = () => {
+    if (janusInstance) {
+      janusInstance.send({ janus: "keepalive" });
+    }
+  };
+
+  useEffect(() => {
+    // Janus 초기화 및 플러그인 연결 코드 ...
+
+    // Keepalive 메시지 정기적으로 보내기
+    const keepAliveInterval = setInterval(keepAlive, 30000); // 30초 간격
+
+    return () => {
+      clearInterval(keepAliveInterval);
+      if (janusInstance) {
+        janusInstance.destroy();
+      }
+    };
+  }, []);
+  // ================================================
+
   const createNewRoom = () => {
     // 새 방 생성
     const create = { request: "create", room: 1234, ptype: "publisher" };
@@ -67,9 +118,11 @@ function VideoChat() {
 
   const joinRoom = (roomId) => {
     // 기존 방에 참여
-    const register = { request: "join", room: roomId, ptype: "publisher" };
-    videoRoom.send({ message: register });
+    const join = { request: "join", room: 1000, ptype: "publisher" };
+    videoRoom.send({ message: join });
   };
+
+  // 접속 시 Janusinstance 초기화
   useEffect(() => {
     initJanus();
 
@@ -78,7 +131,26 @@ function VideoChat() {
         janusInstance.destroy();
       }
     };
-  }, []);
+  }, [roomId]);
+
+  // 세션 갱신
+  useEffect(() => {
+    const keepAliveInterval = setInterval(() => {
+      if (janusInstance) {
+        janusInstance.send({
+          janus: "keepalive",
+          session_id: janusInstance.getSessionId(),
+        });
+      }
+    }, 30000); // 30초마다 keepalive 메시지를 보냅니다.
+
+    return () => {
+      clearInterval(keepAliveInterval);
+      if (janusInstance) {
+        janusInstance.destroy();
+      }
+    };
+  }, [janusInstance]);
 
   return (
     <div>

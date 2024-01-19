@@ -42,7 +42,7 @@ def create_janus_room():
         "admin_secret": admin_secret,
         "body": {
             "request": "create",
-            "room": 1234,
+            "room": 1000,
         },
     }
     response = requests.post(room_url, json=create_data, headers=headers)
