@@ -28,12 +28,13 @@ function CreateRoom() {
   return (
     <div className="mt-20 w-32 h-20">
       <input
-        type="text"
-        value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
-        className="w-full"
-      />
-      <button onClick={handleCreateRoom}>방 만들기</button>
+  type="text"
+  value={roomName}
+  onChange={(e) => setRoomName(e.target.value)}
+  className="form-control w-full"
+  placeholder="room_id"
+/>
+      <button onClick={handleCreateRoom}>방 만들기/방입장</button>
     </div>
   );
 }
