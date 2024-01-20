@@ -1,0 +1,20 @@
+Index: back/app/services/auth_service.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import datetime\r\n\r\nimport jwt\r\n\r\nACCESS_TOKEN_EXPIRE_MINUTES = 60\r\nALGORITHM = \"HS256\"\r\n# 임시로 설정. .env로 옮겨야됨\r\nSECRET_KEY = \"Qb7VoxZ6UFQ8caVHLUVAccWcipUBLmuH\"\r\n\r\ndef create_access_token(email: str, auth: str):\r\n    expire = datetime.utcnow() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)\r\n    to_encode = {\"sub\": email, \"exp\": expire, \"typ\": auth}\r\n    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)\r\n    return encoded_jwt
+===================================================================
+diff --git a/back/app/services/auth_service.py b/back/app/services/auth_service.py
+--- a/back/app/services/auth_service.py	
++++ b/back/app/services/auth_service.py	
+@@ -7,8 +7,9 @@
+ # 임시로 설정. .env로 옮겨야됨
+ SECRET_KEY = "Qb7VoxZ6UFQ8caVHLUVAccWcipUBLmuH"
+ 
++
+ def create_access_token(email: str, auth: str):
+     expire = datetime.utcnow() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+     to_encode = {"sub": email, "exp": expire, "typ": auth}
+     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+-    return encoded_jwt
+\ No newline at end of file
++    return encoded_jwt
