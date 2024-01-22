@@ -40,6 +40,8 @@ function VideoChat() {
     });
   };
 
+
+
   const attachVideoRoomPlugin = () => {
     janusInstance.attach({
       plugin: "janus.plugin.videoroom",
@@ -92,19 +94,38 @@ function VideoChat() {
     const create = { request: "create", room: 1234, ptype: "publisher" };
     videoRoom.send({ message: create });
   };
+////////////////////////////////////////////////
+const joinRoom = async (roomId) => {
+  try {
+    const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
 
-  const joinRoom = (roomId) => {
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = cameraStream; // 내 카메라 화면
+    }
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = screenStream; // 내 컴퓨터 화면
+    }
+
     const join = {
       request: "join",
       room: Number(roomId),
       ptype: "publisher",
     };
-    videoRoom.send({ message: join });
-  };
+    videoRoom.send({ message: join, stream: cameraStream });
+  } catch (error) {
+    console.error("화면 캡처 중 오류 발생:", error);
+  }
+};
+
+
 
   useEffect(() => {
     initJanus();
   }, [roomId]);
+
+
+
 
   return (
     <div>
