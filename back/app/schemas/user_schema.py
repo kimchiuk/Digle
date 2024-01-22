@@ -1,11 +1,6 @@
-from enum import Enum
 from pydantic import BaseModel, EmailStr, validator
-from typing import Optional
 
-
-class UserType(Enum):
-    Standard = "Standard"
-    Business = "Business"
+from app.models.user import UserType
 
 
 class UserBase(BaseModel):
