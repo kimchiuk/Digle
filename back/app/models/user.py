@@ -1,8 +1,14 @@
 # app/models/user.py
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Enum, Text
+from enum import Enum as pyEnum
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base  # database.py에서 Base 클래스를 임포
+
+
+class UserType(pyEnum):
+    Standard = "Standard"
+    Business = "Business"
 
 
 class User(Base):
@@ -15,11 +21,11 @@ class User(Base):
 
     hashed_password = Column(String)  # 실제 저장되는 비밀번호는 해시됨
 
-    user_type = Column(Enum("Standard", "Business"))
+    user_type = Column(SQLEnum(UserType, name="user_type_enum"))
 
     is_additional_info_provided = Column(Boolean, default=False)
 
-    auth_provider = Column(Enum("Google", "Naver", "Kakao", "None"))
+    auth_provider = Column(SQLEnum("Google", "Naver", "Kakao", "None", name="oauth_provier_enum"))
     auth_provider_id = Column(String, nullable=True)  # OAuth 공급자의 고유 식별자
 
     profile_picture_url = Column(String, nullable=True)  # 프로필 사진 URL
