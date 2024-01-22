@@ -33,7 +33,7 @@ const Navbar = () => {
   // <nav className={`flex items-center justify-between px-24 py-2 ${navbarStyle} fixed w-full transition-colors duration-300 ease-in-out z-10 shadow-md`} >
   return (
     <nav
-      className={`flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md top-0`}
+      className={`flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md`}
     >
       {/* 로고 */}
       <div className="ml-4">
