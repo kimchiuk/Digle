@@ -1,6 +1,8 @@
 import { useState } from "react";
 // import axios from "axios";
 
+import BusinessSignup from "../../components/signup/BusinessSignup";
+
 const SignupDetail = () => {
   // id, pwd, pwd2, username, email, address, phone
   const [identification, setIdentification] = useState("");
@@ -28,7 +30,7 @@ const SignupDetail = () => {
 
     // 제출 이후 아이디 생성 로직
   };
-  // handler 7가지
+  // handler
   const idHandler = (e) => {
     const currentId = e.target.value;
     setIdentification(currentId);
@@ -104,29 +106,7 @@ const SignupDetail = () => {
       setIsPhone(true);
     }
   };
-
-  // // id 유효성검사 (중복유무)
-  // const checkId = async () => {
-  //   try {
-  //     const response = await axios.post("#", {
-  //       identification,
-  //     });
-
-  //     const result = response.data;
-
-  //     if (result.isDuplicate) {
-  //       setIdMsg("이미 사용중인 아이디입니다.");
-  //       setIsPhone(false);
-  //     } else {
-  //       setIdMsg("사용 가능한 아이디입니다.");
-  //       setIsPhone(true);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // email 유효성검사 (중복 유무)
+  // email 중복유무
 
   return (
     <>
@@ -247,12 +227,14 @@ const SignupDetail = () => {
                 {phoneMessage}
               </div>
             </div>
+            <div></div>
             <input
               className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "
               type="submit"
               value="회원가입 완료하기"
             />
           </form>
+          <BusinessSignup />
         </div>
       </div>
     </>
