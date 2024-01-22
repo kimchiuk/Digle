@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.schemas.user_schema import UserCreate
 from ..database import get_db
 
-from app.models.user import User, UserOAuth
+from app.models.user import BusinessUser, User, UserOAuth
 from app.services.auth_service import (
     create_access_token,
     integer_to_8_digit_string_with_hash,
@@ -31,20 +31,35 @@ async def login_for_access_token(
     db: Session = Depends(get_db),
 ):
     file_location = None
-    base_data = UserCreate(email=email, password=password, name=name, user_type=user_type)
-    if user_type == "Standard":
-        if profile_img and profile_img.filename:
-            # 파일 저장 또는 처리
-            file_location = f"files/{profile_img.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(profile_img.file.read())
-        user = User(
-            email=base_data.email, password=base_data.password, name=base_data.name, profile_picture_url=file_location
-        )
-        db.add(user)
-        db.commit()
-        db.refresh()
+    base_data = UserCreate(
+        email=email,
+        password=password,
+        name=name,
+        user_type=user_type,
+    )
 
+    if profile_img and profile_img.filename:
+        # 파일 저장 또는 처리
+        file_location = f"files/{profile_img.filename}"
+        with open(file_location, "wb+") as file_object:
+            file_object.write(profile_img.file.read())
+    user = User(
+        email=base_data.email,
+        password=base_data.password,
+        name=base_data.name,
+        profile_picture_url=file_location,
+        user_type=user_type,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    if user_type == "Business":
+        business_data = BusinessUser(
+            company_info=company_info,
+            company_email=company_email,
+            company_address=company_address,
+        )
     return
 
 
@@ -67,6 +82,7 @@ async def login_for_access_token(
         path="/",  # 전체 경로에서 사용
         max_age=3600,  # 예: 1시간 유효기간
     )
+    # setset
     # 만약 해당 유저가 없음. -> 회원가입
     if user is None:
         # 객체로 생성
