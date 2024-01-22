@@ -1,0 +1,15 @@
+uvicorn[standard]
+fastapi
+jwt
+sqlalchemy
+psycopg2
+python-dotenv
+# authlib
+httpx
+python-multipart
+python-jose
+# db table migration lib
+alembic
+# 몰?루
+requests
+bcrypt
