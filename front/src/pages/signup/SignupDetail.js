@@ -1,7 +1,7 @@
 import { useState } from "react";
 // import axios from "axios";
 
-import BusinessSignup from "../../components/signup/BusinessSignup";
+import SelectSignup from "./SelectSignup";
 
 const SignupDetail = () => {
   // id, pwd, pwd2, username, email, address, phone
@@ -233,8 +233,8 @@ const SignupDetail = () => {
               type="submit"
               value="회원가입 완료하기"
             />
+            <SelectSignup />
           </form>
-          <BusinessSignup />
         </div>
       </div>
     </>

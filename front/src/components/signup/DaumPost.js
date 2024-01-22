@@ -25,13 +25,18 @@ const DaumPost = (props) => {
     });
   };
 
+  const postCodeStyle = {
+    display: "block",
+    position: "absolute",
+    top: "20%",
+    width: "400px",
+    height: "400px",
+    padding: "7px",
+    zIndex: 100,
+  };
   return (
     <div>
-      <DaumPostcode
-        className="fixed, left-0, top-0 h-[100%] w-[100%]"
-        autoClose
-        onComplete={complete}
-      />
+      <DaumPostcode className={postCodeStyle} autoClose onComplete={complete} />
     </div>
   );
 };
