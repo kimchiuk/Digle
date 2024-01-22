@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import NaverLoginButton from "../components/NaverLoginButton";
-import KakaoLoginButton from "../components/KakaoLoginButton";
-import GoogleLoginButton from "../components/GoogleLoginButton";
+import NaverLoginButton from "../../components/NaverLoginButton";
+import KakaoLoginButton from "../../components/KakaoLoginButton";
+import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -62,6 +62,9 @@ const Login = () => {
           <div className="text-white text-center">
             <Link to="/signup" className="text-sm hover:underline">
               아이디가 없으신가요?
+            </Link>
+            <Link to="/find_username" className="text-sm hover:underline">
+              아이디 찾기
             </Link>
           </div>
           <div className="flex items-center justify-center space-x-2">
