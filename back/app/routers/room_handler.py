@@ -1,8 +1,10 @@
-from fastapi import APIRouter, FastAPI, HTTPException
+import requests
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import uuid
+from fastapi import WebSocket, WebSocketDisconnect
 
-router = APIRouter()
+router = APIRouter(prefix="/webrtc", tags=["webrtc"])
 
 
 class Room(BaseModel):
@@ -10,15 +12,133 @@ class Room(BaseModel):
     host_id: str
 
 
-rooms = {}
+janus_url = "http://34.125.238.83/janus"
+admin_secret = "janusoverlord"
+headers = {"Content-Type": "application/json"}
 
 
-@router.post("/rooms/")
+# session id 발급
+def create_janus_session():
+    session_data = {"janus": "create", "transaction": str(uuid.uuid4()), "admin_secret": admin_secret}
+    response = requests.post(janus_url, json=session_data, headers=headers)
+    if response.status_code == 200 and response.json().get("janus") == "success":
+        return response.json()["data"]["id"]  # 세션 ID 반환
+    return None
+
+
+def create_janus_room():
+    session_id = create_janus_session()
+    if session_id is None:
+        return None
+
+    plugin_id = attach_plugin_to_session(session_id)
+    if plugin_id is None:
+        return None
+
+    room_url = f"{janus_url}/{session_id}/{plugin_id}"
+    # room number 추후에 db에 있는지 확인 후 랜덤 값으로 부여.
+    create_data = {
+        "janus": "message",
+        "transaction": str(uuid.uuid4()),
+        "admin_secret": admin_secret,
+        "body": {
+            "request": "create",
+            "room": 1234,
+        },
+    }
+    response = requests.post(room_url, json=create_data, headers=headers)
+    
+    # 열려 있는 방 목록 업데이트
+    janus_rooms_response = requests.get(f"{janus_url}/rooms")
+    if janus_rooms_response.status_code == 200:
+        global rooms
+        rooms = janus_rooms_response.json()
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
+
+def attach_plugin_to_session(session_id):
+    attach_data = {
+        "janus": "attach",
+        "transaction": str(uuid.uuid4()),
+        "admin_secret": admin_secret,
+        "plugin": "janus.plugin.videoroom",
+    }
+    response = requests.post(f"{janus_url}/{session_id}", json=attach_data, headers=headers)
+    if response.status_code == 200 and response.json().get("janus") == "success":
+        return response.json()["data"]["id"]  # 플러그인 ID 반환
+    return None
+
+
+
+
+@router.websocket("/rooms/{room_id}/connect")
+async def connect_to_room(websocket: WebSocket, room_id: str):
+    if room_id not in rooms:
+        raise HTTPException(status_code=404, detail="Room not found")
+
+    # WebSocket 연결 수락
+    await websocket.accept()
+
+    while True:
+        try:
+            # 클라이언트로부터 메시지 수신
+            data = await websocket.receive_text()
+            print(f"Received message: {data}")
+
+            # 여기에 Janus 서버와 통신하는 로직 추가
+            # 예를 들어, Janus 서버에 메시지를 보내거나 메시지를 받아서 클라이언트에게 전송하는 등의 작업 수행
+            janus_response = await communicate_with_janus(data)
+            
+            # Janus 서버로부터 받은 응답을 클라이언트에게 전송
+            await websocket.send_text(json.dumps(janus_response))
+        except WebSocketDisconnect:
+            break
+    
+async def communicate_with_janus(data: str):
+    janus_url = "http://34.125.238.83/janus"  # Janus 서버 주소
+
+    # 가상의 Janus 메시지 생성
+    janus_message = {
+        "janus": "message",
+        "transaction": "some_transaction_id",
+        "body": {
+            # 여기에 Janus 서버에 보낼 메시지 내용을 추가
+            "request": "message", "room_id": "some_room_id", "text": data
+        }
+    }
+
+    # Janus 서버로 메시지 전송
+    response = requests.post(f"{janus_url}/some_plugin_id", json=janus_message)
+
+    if response.status_code == 200:
+        # Janus 서버로부터 받은 응답을 가공하여 반환
+        janus_response = {"janus": "success", "message": f"Received message: {data}", "janus_server_response": response.json()}
+    else:
+        # 실패한 경우에 대한 처리
+        janus_response = {"janus": "error", "message": f"Failed to communicate with Janus server: {response.status_code}"}
+
+    return janus_response
+    
+
+@router.post("/rooms")
 async def create_room(room: Room):
-    room_id = str(uuid.uuid4())
-    rooms[room_id] = room
-    # Janus 서버에 방을 생성하는 로직
-    return {"room_id": room_id, "janus_room_info": "Janus 관련 정보"}
+    janus_response = create_janus_room()
+    print(janus_response)
+    if janus_response and janus_response.get("janus") == "success":
+        room_id = str(uuid.uuid4())
+        return {"room_id": room_id, "janus_room_info": janus_response}
+    else:
+        raise HTTPException(status_code=500, detail="Janus room creation failed")
+
+
+# 기타 FastAPI 라우트 및 로직
+# 임시로 방 리스트 저장 여기에?
+rooms = {}
 
 
 @router.get("/rooms/{room_id}")
@@ -26,3 +146,9 @@ async def get_room(room_id: str):
     if room_id in rooms:
         return rooms[room_id]
     raise HTTPException(status_code=404, detail="Room not found")
+
+
+@router.get("/rooms")
+async def get_all_rooms():
+    # 서버에 저장된 모든 방 정보를 반환
+    return rooms

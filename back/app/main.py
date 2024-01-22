@@ -7,6 +7,7 @@ from .database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import login
+from .routers import room_handler
 
 Base.metadata.create_all(bind=engine)
 
@@ -26,6 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(login.router)
+app.include_router(room_handler.router)
 
 
 # 추가적인 인증 및 사용자 관리 로직
