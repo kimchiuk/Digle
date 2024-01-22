@@ -31,7 +31,10 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/google_login" element={<GoogleLoginButton />} />
-        <Route path="/google_login/callback" element={<GoogleLoginCallback />} />
+        <Route
+          path="/google_login/callback"
+          element={<GoogleLoginCallback />}
+        />
         <Route path="/naver_login" element={<NaverLoginButton />} />
         <Route path="/naver_login/callback" element={<NaverLoginCallback />} />
         <Route path="/kakao_login" element={<KakaoLoginButton />} />

@@ -11,7 +11,7 @@ export const handleGoogleLogin = async (googleData) => {
 
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/login/google_token`,
+      `${API_BASE_URL}/login/google_login`,
       formData,
       {
         withCredentials: true,

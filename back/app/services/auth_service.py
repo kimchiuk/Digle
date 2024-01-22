@@ -32,3 +32,21 @@ def integer_to_8_digit_string_with_hash(num):
     ten_digit_str = num_str + hash_prefix
 
     return ten_digit_str
+
+
+import bcrypt
+
+
+def hash_password(password):
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
+
+def verify_password(password, hashed):
+    return bcrypt.checkpw(password.encode(), hashed)
+
+
+import uuid
+
+
+def generate_internal_id():
+    return str(uuid.uuid4())

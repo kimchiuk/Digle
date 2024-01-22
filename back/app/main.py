@@ -6,8 +6,7 @@ from . import models, schemas
 from .database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import login
-from .routers import room_handler
+from .routers import oauth_login, room_handler
 
 Base.metadata.create_all(bind=engine)
 
@@ -26,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(login.router)
+app.include_router(oauth_login.router)
 app.include_router(room_handler.router)
 
 

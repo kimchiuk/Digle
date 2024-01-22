@@ -4,13 +4,14 @@ import httpx
 from sqlalchemy.orm import Session
 from ..database import get_db
 
-from app.models.user import User, UserOAuth
+from app.models.user import User
 from app.services.auth_service import (
     create_access_token,
     integer_to_8_digit_string_with_hash,
 )
 
-router = APIRouter(prefix="/login", tags=["login"])
+
+router = APIRouter(prefix="/oauth_login", tags=["oauth_login"])
 
 
 @router.post("/google_login")
@@ -26,6 +27,7 @@ async def login_for_access_token(
 
         # 유저정보 추출
         user_info = google_response.json()
+        print(user_info)
         # db에 해당 유저가 있는지 확인
         user = db.query(User).filter(User.email == user_info["email"]).first()
         # 그걸로 access token을 생성
