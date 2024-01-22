@@ -84,7 +84,7 @@ class WebSocketHandler:
 
     async def connect(self):
         if self.room_id not in rooms:
-            raise HTTPException(status_code=404, detail="Room not found")
+            rooms[self.room_id] = {"participants": []}  # 각 방에 참가자 목록 추가
 
         await self.websocket.accept()
 
@@ -97,15 +97,27 @@ class WebSocketHandler:
         # Janus 서버로부터 받은 응답을 클라이언트에게 전송
         await self.websocket.send_text(json.dumps(janus_response))
 
+        # 현재 참가자를 방에 추가
+        participant = {"user_id": user_id, "role": role, "websocket": self.websocket}
+        rooms[self.room_id]["participants"].append(participant)
+
+        # 현재 참가자 목록을 클라이언트에게 전송
+        await self.broadcast_participants()
+
         try:
             while True:
                 data = await self.websocket.receive_text()
                 # Handle WebSocket data here if needed
         except WebSocketDisconnect:
-            # Handle disconnection if needed
-            pass
+            # 사용자가 연결 해제되었을 때, 참가자 목록에서 제거하고 브로드캐스트
+            rooms[self.room_id]["participants"] = [p for p in rooms[self.room_id]["participants"] if p["user_id"] != user_id]
+            await self.broadcast_participants()
 
-# FastAPI 라우트 및 로직 생략
+    async def broadcast_participants(self):
+        # 참가자 목록을 클라이언트에게 브로드캐스트
+        participant_list = [participant["user_id"] for participant in rooms[self.room_id]["participants"]]
+        await self.websocket.send_text(json.dumps({"participants": participant_list}))
+
 
 # 웹 소켓 연결 요청 핸들러
 @router.websocket("/rooms/{room_id}/connect")
@@ -113,6 +125,14 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
     handler = WebSocketHandler(websocket, room_id)
     await handler.connect()
 
+@router.get("/rooms/{room_id}/participants", response_model=dict)
+async def get_room_participants(room_id: str):
+    if room_id in rooms:
+        participants = rooms[room_id]["participants"]
+        return {"participants": participants}
+    else:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
 
 
 
@@ -138,6 +158,10 @@ rooms = {}
 @router.get("/rooms")
 async def get_all_rooms():
     return rooms
+
+@router.get("/rooms/list")
+async def get_all_rooms():
+    return {"rooms": list(rooms.values())}
 
 @router.get("/janus/info")
 async def get_janus_info():
