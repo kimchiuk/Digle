@@ -1,6 +1,6 @@
 const Test = () => {
   return(
-    <div className="flex items-center justify-center">
+    <div className="px-20 pt-16 pb-4">
       <p>test페이지 입니다!</p>
     </div>
   );

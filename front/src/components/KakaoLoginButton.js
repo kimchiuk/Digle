@@ -13,24 +13,13 @@ const KakaoLoginButton = () => {
     }
   };
 
-  return (
-    <div className="flex h-full items-center justify-center my-auto px-5 xl:mt-32 md:mt-48 mt-32">
-      <div className="flex flex-col pt-40">
-        <div className="text-3xl text-gray-800 font-bold my-auto">
-          Kakao 로그인
-        </div>
-        <div className="flex justify-center items-center h-20">
-          <button onClick={handleKakaoLogin}>
-            <img
-              src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
-              width="222"
-              alt="카카오 로그인 버튼"
-            />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return <button onClick={handleKakaoLogin}>
+          <img
+            src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcThWWH5fUeVik-2tyKkIxp0LPhJEdO4HTLYLYMsYhits4sQOUc0"
+            width="35"
+            alt="카카오 로그인 버튼"
+          />
+        </button>
 };
 
 export default KakaoLoginButton;
