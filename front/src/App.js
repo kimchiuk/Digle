@@ -16,6 +16,7 @@ import KakaoLoginButton from "./components/KakaoLoginButton";
 import KakaoLoginCallback from "./components/KakaoLoginCallback";
 import Test from "./pages/TestPage";
 import FindUsername from "./pages/auth/FindUsername";
+import FindPassword from "./pages/auth/FindPassword";
 
 function App() {
   return (

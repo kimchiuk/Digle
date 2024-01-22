@@ -63,8 +63,9 @@ const Login = () => {
             <Link to="/signup" className="text-sm hover:underline">
               아이디가 없으신가요?
             </Link>
+            <br/>
             <Link to="/find_username" className="text-sm hover:underline">
-              아이디 찾기
+              아이디 및 비밀번호 찾기
             </Link>
           </div>
           <div className="flex items-center justify-center space-x-2">
