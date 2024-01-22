@@ -12,3 +12,4 @@ python-jose
 alembic
 # 몰?루
 requests
+bcrypt
