@@ -26,7 +26,7 @@ function CreateRoom() {
   };
 
   return (
-    <div className="mt-20 w-32 h-20">
+    <div className="pt-[100px] w-32 h-20">
       <input
   type="text"
   value={roomName}
