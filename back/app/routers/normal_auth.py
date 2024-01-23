@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.schemas.user_schema import UserCreate
 from ..database import get_db
 
-from app.models.user import BusinessUser, User, UserOAuth
+from app.models.user import BusinessUser, User
 from app.services.auth_service import (
     create_access_token,
     integer_to_8_digit_string_with_hash,
