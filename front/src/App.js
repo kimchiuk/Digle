@@ -7,7 +7,7 @@ import SignupDetail from "./pages/signup/SignupDetail";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import Profile from "./pages/profile/Profile";
-import Login from "./pages/auth/Login";
+import Login from "./pages/accounts/Login";
 import GoogleLoginButton from "./components/GoogleLoginButton";
 import GoogleLoginCallback from "./components/GoogleLoginCallback";
 import NaverLoginButton from "./components/NaverLoginButton";
@@ -15,11 +15,12 @@ import NaverLoginCallback from "./components/NaverLoginCallback";
 import KakaoLoginButton from "./components/KakaoLoginButton";
 import KakaoLoginCallback from "./components/KakaoLoginCallback";
 import Test from "./pages/TestPage";
-import FindUsername from "./pages/auth/FindUsername";
-import FindPassword from "./pages/auth/FindPassword";
+import FindPassword from "./pages/accounts/FindPassword";
+import ChangePassword from "./pages/accounts/ChangePassword";
 
 function App() {
   return (
+    <div className="select-none">
     <BrowserRouter>
       <NavBar />
 
@@ -36,10 +37,12 @@ function App() {
         <Route path="/naver_login/callback" element={<NaverLoginCallback />} />
         <Route path="/kakao_login" element={<KakaoLoginButton />} />
         <Route path="/kakao_login/callback" element={<KakaoLoginCallback />} />
-        <Route path="/find_username" element={<FindUsername />} />
+        <Route path="/find_password" element={<FindPassword />} />
+        <Route path="/change_password" element={<ChangePassword />} />
       </Routes>
       <Footer />
     </BrowserRouter>
+    </div>
   );
 }
 
