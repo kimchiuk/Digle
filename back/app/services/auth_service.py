@@ -1,6 +1,6 @@
 import datetime
 import hashlib
-import jwt
+from jose import jwt
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 ALGORITHM = "HS256"
@@ -9,9 +9,9 @@ SECRET_KEY = "Qb7VoxZ6UFQ8caVHLUVAccWcipUBLmuH"
 
 
 # 엑세스 토큰 생성
-def create_access_token(email: str, auth: str):
+def create_access_token(internal_id: str):
     expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"sub": email, "exp": expire,    "typ": auth}
+    to_encode = {"sub": internal_id, "exp": expire}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
