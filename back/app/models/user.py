@@ -2,7 +2,7 @@
 from enum import Enum as pyEnum
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Enum as SQLEnum
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.database import Base  # database.py에서 Base 클래스를 임포
 
 
@@ -45,3 +45,16 @@ class BusinessUser(Base):
     company_address = Column(String)
 
     user = relationship("User", back_populates="business_user")
+
+
+class EmailVerification(Base):
+    __tablename__ = "email_verifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    verification_code = Column(String, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    is_verified = Column(Boolean, default=False)  # 인증 여부
+
+    def is_expired(self):
+        return datetime.utcnow() > self.created_at + timedelta(minutes=3)
