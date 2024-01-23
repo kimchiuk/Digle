@@ -158,7 +158,6 @@ function VideoChat() {
   useEffect(() => {
     initJanus();
   }, [roomId]);
-  
   return (
     <div>
       <video ref={localVideoRef} autoPlay muted></video>
