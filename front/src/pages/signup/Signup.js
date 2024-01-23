@@ -43,10 +43,8 @@ const Signup = () => {
             checked={agreement}
           />
         </div>
-
         <div className="p-2">개인 정보 수집</div>
         <div className="m-2 p-2 h-60 border-2">내용</div>
-
         <div className="p-2 flex items-center justify-end">
           <label htmlFor="checkbox2" className="mr-2">
             동의합니다.
@@ -58,14 +56,15 @@ const Signup = () => {
             checked={personalInfoAgree}
           />
         </div>
-
-        <button
-          to="detail"
-          className="block p-2 text-right mt-4"
-          onClick={nextBtnClick}
-        >
-          다음으로
-        </button>
+        <div className="flex justify-end">
+          <button
+            to="detail"
+            className="block p-2 text-right mt-4 bg-sky-500 rounded-lg hover:bg-sky-700 text-white"
+            onClick={nextBtnClick}
+          >
+            다음으로
+          </button>
+        </div>
       </div>
     </div>
   );
