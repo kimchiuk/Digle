@@ -34,6 +34,7 @@ function VideoChat() {
         attachVideoRoomPlugin();
         startKeepAlive();
         setupPopStateListener();
+        fetchParticipants(); // 초기화 시 참가자 정보 가져오기
       },
       error: function (error) {
         console.error("Error initializing Janus...", error);
@@ -151,7 +152,15 @@ function VideoChat() {
 
 
 
-  
+  const fetchParticipants = async () => {
+    try {
+      const response = await fetch(`/api/rooms/${roomId}/participants`); // 적절한 API 엔드포인트 사용
+      const data = await response.json();
+      setParticipants(data.participants);
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
 
   useEffect(() => {
     initJanus();
