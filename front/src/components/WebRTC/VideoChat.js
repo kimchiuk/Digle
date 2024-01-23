@@ -11,6 +11,7 @@ function VideoChat() {
   let janusInstance = null;
   let videoRoom = null;
   const navigate = useNavigate();
+  const [remoteStreams, setRemoteStreams] = useState([]);
 
   const initJanus = () => {
     Janus.init({
@@ -33,7 +34,6 @@ function VideoChat() {
         attachVideoRoomPlugin();
         startKeepAlive();
         setupPopStateListener();
-        fetchParticipants(); // 초기화 시 참가자 정보 가져오기
       },
       error: function (error) {
         console.error("Error initializing Janus...", error);
@@ -97,6 +97,8 @@ function VideoChat() {
     videoRoom.send({ message: create });
   };
 
+
+
   const joinRoom = async (roomId) => {
     try {
       const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -141,23 +143,22 @@ function VideoChat() {
     navigate("/CreateRoom"); // 이동할 경로를 변경하거나 필요에 따라 다른 처리 수행
   };
 
+
   const handleGoBack = () => {
     leaveRoom();
   };
 
-  const fetchParticipants = async () => {
-    try {
-      const response = await fetch(`/api/rooms/${roomId}/participants`); // 적절한 API 엔드포인트 사용
-      const data = await response.json();
-      setParticipants(data.participants);
-    } catch (error) {
-      console.error("Error fetching participants:", error);
-    }
-  };
+
+
+
+  
 
   useEffect(() => {
     initJanus();
   }, [roomId]);
+  
+
+  // 여기 다른 peer접속로직 구하고 
   return (
     <div>
       <video ref={localVideoRef} autoPlay muted></video>

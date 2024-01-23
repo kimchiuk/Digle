@@ -42,6 +42,7 @@ function CreateRoom() {
     navigate(`/vchat?roomId=${roomId}`);
   };
 
+
   useEffect(() => {
     // 컴포넌트가 처음 렌더링될 때 방 목록을 가져오기
     fetchRoomList();
@@ -49,28 +50,27 @@ function CreateRoom() {
 
   return (
     <div className="pt-[100px] w-32 h-20">
-      <input
-        type="text"
-        value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
-        className="form-control w-full"
-        placeholder="room_id"
-      />
-      <button onClick={handleCreateRoom}>방 만들기/방입장</button>
+  <input
+    type="text"
+    value={roomName}
+    onChange={(e) => setRoomName(e.target.value)}
+    className="form-control w-full"
+    placeholder="room_id"
+  />
+  <button onClick={handleCreateRoom}>방 만들기/방입장</button>
 
-      {/* 방 목록 표시 */}
-      <div>
-        <h2>방 목록</h2>
-        <ul>
-          {roomList.map((room) => (
-            <li key={room.room_id}>
-              {room.name}
-              <button onClick={() => handleEnterRoom(room.room_id, room.name)}>입장</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+  {/* 방 목록 표시 */}
+  <div>
+  <h1>방 목록</h1>
+  <ul>
+    {roomList.map((room) => (
+      <li key={room.room_id}>
+        {room.room_id} <button onClick={() => handleEnterRoom(room.room_id)}>입장</button>
+      </li>
+    ))}
+  </ul>
+</div>
+</div>
   );
 }
 

@@ -42,7 +42,6 @@ function App() {
         <Route path="/CreateRoom" element={<CreateRoom />} />
         <Route path="/vchat" element={<VideoChat />} />
       </Routes>
-      <Footer />
     </BrowserRouter>
   );
 }

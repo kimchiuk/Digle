@@ -3,6 +3,7 @@ import requests
 from fastapi import APIRouter, HTTPException, WebSocket,Depends
 from pydantic import BaseModel
 import uuid
+import json
 
 router = APIRouter()
 
@@ -52,12 +53,39 @@ def communicate_with_janus_join(session_id: str, room_id: int, user_id: str, rol
             "display": user_id,
         }
     }
+    
     response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_message)
 
     if response.status_code == 200:
         return {"janus": "success", "message": f"Joined room {room_id} as {user_id}", "janus_server_response": response.json()}
     else:
         return {"janus": "error", "message": f"Failed to communicate with Janus server: {response.status_code}"}
+
+def get_janus_participants(session_id: str, room_id: int):
+    plugin_id = attach_plugin_to_session(session_id)
+    if plugin_id is None:
+        return {"janus": "error", "message": "Failed to attach plugin to session"}
+
+    janus_message = {
+        "janus": "message",
+        "transaction": str(uuid.uuid4()),
+        "admin_secret": admin_secret,
+        "body": {
+            "request": "listparticipants",
+            "room": room_id,
+        }
+    }
+
+    response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_message)
+
+    if response.status_code == 200:
+        participants = response.json().get("plugindata", {}).get("data", {}).get("participants", [])
+        return {"janus": "success", "participants": participants}
+    else:
+        return {"janus": "error", "message": f"Failed to get participants from Janus server: {response.status_code}"}
+
+
+
 
 # 방 생성 및 Janus 서버에 참여
 def create_janus_room():
@@ -75,6 +103,9 @@ def create_janus_room():
         return rooms[room_id]
     else:
         return None
+
+
+
 
 # WebSocket 핸들러
 class WebSocketHandler:
@@ -97,11 +128,15 @@ class WebSocketHandler:
         # Janus 서버로부터 받은 응답을 클라이언트에게 전송
         await self.websocket.send_text(json.dumps(janus_response))
 
+        # Janus 서버에서 참가자 정보를 가져와서 클라이언트에 전송
+        janus_participants = get_janus_participants(self.room_id, self.room_id)
+        await self.websocket.send_text(json.dumps(janus_participants))
+
         # 현재 참가자를 방에 추가
         participant = {"user_id": user_id, "role": role, "websocket": self.websocket}
         rooms[self.room_id]["participants"].append(participant)
 
-        # 현재 참가자 목록을 클라이언트에게 전송
+        # 현재 참가자 목록을 클라이언트에게 브로드캐스트
         await self.broadcast_participants()
 
         try:
@@ -119,19 +154,23 @@ class WebSocketHandler:
         await self.websocket.send_text(json.dumps({"participants": participant_list}))
 
 
+
 # 웹 소켓 연결 요청 핸들러
 @router.websocket("/rooms/{room_id}/connect")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
     handler = WebSocketHandler(websocket, room_id)
     await handler.connect()
 
-@router.get("/rooms/{room_id}/participants", response_model=dict)
-async def get_room_participants(room_id: str):
-    if room_id in rooms:
-        participants = rooms[room_id]["participants"]
-        return {"participants": participants}
-    else:
-        raise HTTPException(status_code=404, detail="Room not found")
+
+
+
+# @router.get("/rooms/{room_id}/participants", response_model=dict)
+# async def get_room_participants(room_id: str):
+#     if room_id in rooms:
+#         participants = rooms[room_id]["participants"]
+#         return {"participants": participants}
+#     else:
+#         raise HTTPException(status_code=404, detail="Room not found")
     
 
 
@@ -163,12 +202,16 @@ async def get_all_rooms():
 async def get_all_rooms():
     return {"rooms": list(rooms.values())}
 
-@router.get("/janus/info")
-async def get_janus_info():
-    info_data = {"janus": "info", "admin_secret": admin_secret}
-    response = requests.get(janus_url, params=info_data, headers=headers)
 
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return {"error": f"Failed to get Janus info: {response.status_code}"}
+# @router.get("/janus/info")
+# async def get_janus_info():
+#     info_data = {"janus": "info", "admin_secret": admin_secret}
+#     response = requests.get(janus_url, params=info_data, headers=headers)
+#     print(response.content)
+
+#     if response.status_code == 200:
+#         return response.json()
+#     else:
+#         return {"error": f"Failed to get Janus infosex: {response.status_code}"}
+    
+    
