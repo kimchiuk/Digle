@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer";
-import Main from "./pages/MainPage";
+import Main from "./pages/main/MainPage";
 import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 import "./App.css";
-import Navbar from "./components/Navbar";
+import NavBar from "./components/NavBar";
 import Profile from "./pages/profile/Profile";
-import Login from "./pages/Login";
+import Login from "./pages/accounts/Login";
 import GoogleLoginButton from "./components/GoogleLoginButton";
 import GoogleLoginCallback from "./components/GoogleLoginCallback";
 import NaverLoginButton from "./components/NaverLoginButton";
@@ -17,11 +17,14 @@ import KakaoLoginCallback from "./components/KakaoLoginCallback";
 import CreateRoom from "./components/WebRTC/CreateRoom";
 import VideoChat from "./components/WebRTC/VideoChat";
 import Test from "./pages/TestPage";
+import FindPassword from "./pages/accounts/FindPassword";
+import ChangePassword from "./pages/accounts/ChangePassword";
 
 function App() {
   return (
+    <div className="select-none">
     <BrowserRouter>
-      <Navbar />
+      <NavBar />
 
       <Routes>
         <Route path="/" element={<Main />} />
@@ -39,11 +42,14 @@ function App() {
         <Route path="/naver_login/callback" element={<NaverLoginCallback />} />
         <Route path="/kakao_login" element={<KakaoLoginButton />} />
         <Route path="/kakao_login/callback" element={<KakaoLoginCallback />} />
+        <Route path="/find_password" element={<FindPassword />} />
+        <Route path="/change_password" element={<ChangePassword />} />
         <Route path="/CreateRoom" element={<CreateRoom />} />
         <Route path="/vchat" element={<VideoChat />} />
       </Routes>
       <Footer />
     </BrowserRouter>
+    </div>
   );
 }
 

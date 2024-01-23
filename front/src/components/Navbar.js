@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const NavBar = () => {
   // Navbar 컴포넌트 정의
   const [isLogin, setIsLogin] = useState(false);
   // const [navbarStyle, setNavbarStyle] = useState('bg-transparent text-black');
@@ -70,4 +70,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavBar;
