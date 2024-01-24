@@ -10,6 +10,7 @@ python-multipart
 python-jose
 # db table migration lib
 alembic
-# ëª°?ë£¨
+# ¸ô?·ç
 requests
 bcrypt
+pydantic[email]

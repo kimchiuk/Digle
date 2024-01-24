@@ -16,6 +16,17 @@ class UserCreate(UserBase):
     def validate_password(cls, value):
         if len(value) < 8:
             raise ValueError("Password must be at least 8 characters")
+
+        # 대문자, 소문자, 특수문자 중 적어도 하나 이상 포함
+        has_upper = any(char.isupper() for char in value)
+        has_lower = any(char.islower() for char in value)
+        has_special = any(char in "!@#$%^&*()-_=+[]{}|;:'\",.<>?/~`" for char in value)
+
+        if not (has_upper and has_lower and has_special):
+            raise ValueError(
+                "Password must include at least one uppercase letter, one lowercase letter, and one special character"
+            )
+
         return value
 
 
