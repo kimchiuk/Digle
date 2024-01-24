@@ -9,7 +9,7 @@ import SignupDetail from "./pages/signup/SignupDetail";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/profile/Profile";
-import Login from "./pages/Login";
+import Login from "./pages/accounts/Login";
 import Solution1 from "./pages/solution/Solution1";
 import Solution2 from "./pages/solution/Solution2";
 import GoogleLoginButton from "./components/GoogleLoginButton";
