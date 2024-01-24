@@ -10,6 +10,9 @@ python-multipart
 python-jose
 # db table migration lib
 alembic
-# 몰?루
 requests
 bcrypt
+# google auth
+google-auth
+google-api-python-client
+google-auth-oauthlib
