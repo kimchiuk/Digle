@@ -7,7 +7,7 @@ import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 
 import "./App.css";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/Navbar";
 import Profile from "./pages/profile/Profile";
 import Login from "./pages/accounts/Login";
 import GoogleLoginButton from "./components/GoogleLoginButton";
