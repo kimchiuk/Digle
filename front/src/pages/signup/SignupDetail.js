@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-import SelectSignup from "./SelectSignup";
+import SelectSignup from "../../components/signup/SelectSignup";
 
 const SignupDetail = () => {
   // id, pwd, pwd2, username, email, address, phone
@@ -32,13 +32,18 @@ const SignupDetail = () => {
   const [emailCodeMsg, setEmailCodeMsg] = useState("");
 
   const handleCheckEmail = async () => {
-    try {
-      const response = await axios.post(`${API_URL}/request_verify_email`, {
-        email,
-      });
-      console.log(response.data);
+    // 폼 데이터에 담아서 전송
+    const formData = new FormData();
+    formData.append("email", email);
 
-      if (response.data.isDuplicate) {
+    try {
+      const response = await axios.post(
+        `${API_URL}/request_verify_email`,
+        formData
+      );
+      console.log(response);
+
+      if (response.data) {
         setEmailMessage("이미 가입된 이메일입니다.");
         setIsCheckEmail(true);
         setEmailCodeOk(false);
@@ -48,7 +53,7 @@ const SignupDetail = () => {
         setEmailCodeOk(true);
       }
     } catch (error) {
-      console.log("이메일 중복 확인 오류:", error);
+      console.error("이메일 중복 확인 오류:", error);
     }
   };
 
@@ -59,15 +64,18 @@ const SignupDetail = () => {
 
   // 코드 인증 과정
   const handleCheckCode = async () => {
+    // 폼 데이터에 담아서 전송
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("code", emailCode);
     try {
-      const response = await axios.post(`${API_URL}/verify_email`, {
-        email,
-        emailCode,
-      });
-      if (response.data) {
-        console.log(response.data);
+      const response = await axios.post(`${API_URL}/verify_email`, formData);
+      if (response.status === 200) {
+        setEmailCodeOk(true);
+        setEmailCodeMsg("인증 되었습니다.");
       } else {
-        console.log("메롱");
+        setEmailCodeOk(false);
+        setEmailCodeMsg("인증 코드가 틀렸습니다.");
       }
     } catch (error) {
       console.log("에러 내용", error);
@@ -120,6 +128,36 @@ const SignupDetail = () => {
     setUserName(e.target.value);
   };
 
+  // selectSignup 에서 쓰일 함수, 상태
+  const [isCompany, setIsCompany] = useState(false);
+  const handleButtonClick = (isCompanyButton) => {
+    setIsCompany(isCompanyButton);
+  };
+
+  // signupNormal 에서 쓰일 함수, 상태
+  const [image, setImage] = useState(
+    "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0"
+  );
+
+  const onChangeImageUpload = (e) => {
+    const { files } = e.target;
+    const uploadFile = files[0];
+    if (uploadFile && uploadFile instanceof Blob) {
+      const reader = new FileReader();
+      reader.readAsDataURL(uploadFile);
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+    } else {
+      console.error("잘못된 파일 타입. Blob을 기대했습니다.");
+    }
+  };
+
+  // businessSignup 쓰이는 상태, 함수
+  const [enrollCompany, setEnrollCompany] = useState({
+    address: "",
+  });
+
   return (
     <>
       <div className="relative flex">
@@ -153,13 +191,18 @@ const SignupDetail = () => {
               >
                 {emailMessage}
                 <div>
-                  <input
-                    className="border-b-2 py-1 px-2"
-                    type="text"
-                    value={emailCode}
-                    onChange={emailCodeHandler}
-                  />
-                  <button onClick={handleCheckCode}>인증</button>
+                  {isCheckEmail && (
+                    <div>
+                      <input
+                        className="border-b-2 py-1 px-2"
+                        type="text"
+                        value={emailCode}
+                        onChange={emailCodeHandler}
+                      />
+                      <button onClick={handleCheckCode}>인증</button>
+                      <div>{emailCodeMsg}</div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -215,7 +258,14 @@ const SignupDetail = () => {
                 onChange={nameHandler}
               />
             </div>
-            <SelectSignup />
+            <SelectSignup
+              isCompany={isCompany}
+              onButtonClick={handleButtonClick}
+              image={image}
+              onChangeImageUpload={onChangeImageUpload}
+              enrollCompany={enrollCompany}
+              setEnrollCompany={setEnrollCompany}
+            />
             <input
               className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "
               type="submit"

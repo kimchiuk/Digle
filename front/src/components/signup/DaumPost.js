@@ -1,49 +1,5 @@
-// import { useState } from "react";
-// import DaumPostcode from "react-daum-postcode";
-
-// const DaumPost = (props) => {
-//   const complete = (data) => {
-//     let fullAddress = data.address;
-//     let extraAddress = "";
-
-//     if (data.addressType === "R") {
-//       if (data.bname !== "") {
-//         extraAddress += data.bname;
-//       }
-//       if (data.buildingName !== "") {
-//         extraAddress +=
-//           extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-//       }
-//       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
-//     }
-//     console.log(data);
-
-//     props.setcompany({
-//       ...props.company,
-//       address: fullAddress,
-//     });
-//   };
-
-//   const postCodeStyle = {
-//     display: "block",
-//     position: "absolute",
-//     top: "20%",
-//     width: "400px",
-//     height: "400px",
-//     padding: "7px",
-//     zIndex: 100,
-//   };
-//   return (
-//     <div>
-//       <DaumPostcode className={postCodeStyle} autoClose onComplete={complete} />
-//     </div>
-//   );
-// };
-
-// export default DaumPost;
-
 import DaumPostcode from "react-daum-postcode";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 
 const DaumPost = () => {
@@ -56,6 +12,10 @@ const DaumPost = () => {
     setZipcode(data.zonecode);
     setRoadAddress(data.roadAddress);
     setIsOpen(false); //추가
+  };
+  // 상세 주소검색 event
+  const changeHandler = (e) => {
+    setDetailAddress(e.target.value);
   };
 
   const customStyles = {
@@ -70,11 +30,6 @@ const DaumPost = () => {
       padding: "0",
       overflow: "hidden",
     },
-  };
-
-  // 상세 주소검색 event
-  const changeHandler = (e) => {
-    setDetailAddress(e.target.value);
   };
 
   return (

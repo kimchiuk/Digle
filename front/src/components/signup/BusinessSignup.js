@@ -1,11 +1,6 @@
-import { useState } from "react";
 import DaumPost from "./DaumPost";
 
-const BusinessSignup = () => {
-  const [enrollCompany, setEnrollCompany] = useState({
-    address: "",
-  });
-
+const BusinessSignup = ({ enrollCompany, setEnrollCompany }) => {
   return (
     <>
       <div className="">

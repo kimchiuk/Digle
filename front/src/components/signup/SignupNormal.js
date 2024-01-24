@@ -1,23 +1,4 @@
-import { useState } from "react";
-
-const SignupNormal = () => {
-  const [image, setImage] = useState(
-    "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0"
-  );
-
-  const onChangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    if (uploadFile && uploadFile instanceof Blob) {
-      const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-    } else {
-      console.error("잘못된 파일 타입. Blob을 기대했습니다.");
-    }
-  };
+const SignupNormal = ({ image, onChangeImageUpload }) => {
   return (
     <>
       <div className="flex justify-between">
