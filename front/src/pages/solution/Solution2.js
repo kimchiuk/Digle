@@ -1,5 +1,3 @@
-// components/FAQForm.js
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +16,7 @@ const Solution2 = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-20 pt-16 pb-4 max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="px-20 pt-16 pb-8 max-w-2xl mx-auto h-[640px] flex flex-col items-start">
       <h2 className="text-2xl font-bold mt-12 mb-6">FAQ</h2>
 
       <label htmlFor="questionTitle" className="block text-sm font-medium text-gray-700">
@@ -62,7 +60,7 @@ const Solution2 = () => {
 
       <button
         type="submit"
-        className="mt-4 p-2 bg-blue-500 text-white rounded-md mb-6"
+        className="mt-12 p-2 bg-blue-500 text-white rounded-md self-end"
       >
         질문 제출
       </button>

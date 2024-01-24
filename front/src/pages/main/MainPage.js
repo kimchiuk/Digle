@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Main2 from "./MainPage2";
+import Main3 from "./MainPage3";
 
 const Main = () => {
   const MainImg =
@@ -25,6 +26,8 @@ const Main = () => {
       </div>
       <hr className="mx-16 my-4 bg-gray-300 h-0.5 border-none" />
       <Main2 />
+      <hr className="mx-16 bg-gray-300 h-0.5 border-none" />
+      <Main3 />
     </div>
   );
 };

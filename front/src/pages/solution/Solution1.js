@@ -24,6 +24,11 @@ const Solution1 = () => {
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentItems = FAQ_DATA.slice(indexOfFirstItem, indexOfLastItem);
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setExpandedItem(null); // 현재 열린 항목 닫기
+  };
+
   return (
     <div className="px-20 pt-16 pb-4 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold pt-2 pb-2 mt-4 mb-6">자주 묻는 질문</h2>
@@ -57,7 +62,7 @@ const Solution1 = () => {
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-black"
               }`}
-            onClick={() => setCurrentPage(index + 1)}
+            onClick={() => handlePageChange(index + 1)}
           >
             {index + 1}
           </button>
