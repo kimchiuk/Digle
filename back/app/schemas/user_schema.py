@@ -19,6 +19,11 @@ class UserCreate(UserBase):
         return value
 
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class User(UserBase):
     id: int
     is_additional_info_provided: bool

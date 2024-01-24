@@ -20,7 +20,7 @@ const ImageUpload = () => {
     <>
       <div className="flex-col w-[250px] h-full p-4 mr-4 border-4">
         <div className="grid place-items-center">
-          <img className="w-32 h-40 rounded-full" src={uploadImgUrl} alt="" />
+          <img className="w-32 h-40" src={uploadImgUrl} alt="" />
         </div>
         <div className="grid place-content-end mt-2">
           <label
