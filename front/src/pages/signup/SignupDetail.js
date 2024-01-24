@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 
 import SelectSignup from "./SelectSignup";
 
@@ -11,7 +11,6 @@ const SignupDetail = () => {
   const [userName, setUserName] = useState("");
 
   // input 태그 아래 메시지
-
   const [emailMessage, setEmailMessage] = useState("");
   const [passwordMsg, setPasswordMsg] = useState("");
   const [confirmPasswordMsg, setConfirmPasswordMsg] = useState("");
@@ -26,6 +25,26 @@ const SignupDetail = () => {
   // handler
 
   // API 만들어지면 axios 요청 보내서 로직 구현
+  const [isCheckEmail, setIsCheckEmail] = useState(false);
+  const handleCheckEmail = async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/request_verify_email",
+        { email }
+      );
+
+      if (response.data.isDuplicate) {
+        setEmailMessage("이미 가입된 이메일입니다.");
+        setIsCheckEmail(true);
+      } else {
+        setEmailMessage("사용 가능한 이메일입니다.");
+        setIsCheckEmail(false);
+      }
+    } catch (error) {
+      console.log("이메일 중복 확인 오류:", error);
+    }
+  };
+
   // const clickId = (e) => {};
   const emailHandler = (e) => {
     const currentEmail = e.target.value;
@@ -72,8 +91,6 @@ const SignupDetail = () => {
     setUserName(e.target.value);
   };
 
-  // email 중복유무
-
   return (
     <>
       <div className="relative flex">
@@ -86,7 +103,10 @@ const SignupDetail = () => {
                 <label className="mt-1" htmlFor="email">
                   이메일
                 </label>
-                <button className="py-1 px-3 bg-blue-500 rounded-lg text-white">
+                <button
+                  className="py-1 px-3 bg-blue-500 rounded-lg text-white"
+                  onClick={handleCheckEmail}
+                >
                   중복 확인
                 </button>
               </div>
