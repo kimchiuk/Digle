@@ -1,6 +1,6 @@
 const Main2 = () => {
   return (
-    <div className="flex justify-center mx-16 my-4">
+    <div className="flex justify-center mx-16 my-4  ">
         <div className="flex flex-wrap justify-center max-w-screen-md mx-auto">
           <div className="flex-1 mr-10">
             <h1 className="text-2xl text-center font-extrabold">화상 얼굴 인식 기능</h1>
@@ -17,7 +17,7 @@ const Main2 = () => {
               </button>
             </div>
           </div>
-          <div className="flex-1 ml-10">
+          <div className="flex-1 ml-10 hidden md:block">
           <img src="https://media.istockphoto.com/id/492571136/ko/%EC%82%AC%EC%A7%84/%EC%9B%B9-%ED%99%94%EC%83%81-%EC%B1%84%ED%8C%85%EC%97%90%EC%84%9C-%EC%9D%B8%EC%82%AC%ED%95%98%EB%8A%94-%EC%97%AC%EC%84%B1.jpg?s=612x612&w=is&k=20&c=Rh5N3eZctnDyETbRf-3yV0u2IAfihFcyX3iYtVoUE4c="/>
           </div>
         </div>
