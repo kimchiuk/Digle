@@ -7,9 +7,11 @@ import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 
 import "./App.css";
-import NavBar from "./components/NavBar";
+import Navbar from "./components/Navbar";
 import Profile from "./pages/profile/Profile";
 import Login from "./pages/accounts/Login";
+import Solution1 from "./pages/solution/Solution1";
+import Solution2 from "./pages/solution/Solution2";
 import GoogleLoginButton from "./components/GoogleLoginButton";
 import GoogleLoginCallback from "./components/GoogleLoginCallback";
 import NaverLoginButton from "./components/NaverLoginButton";
@@ -26,7 +28,7 @@ function App() {
   return (
     <div className="select-none">
       <BrowserRouter>
-        <NavBar />
+        <Navbar />
 
         <Routes>
           <Route path="/" element={<Main />} />
@@ -35,6 +37,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/detail" element={<SignupDetail />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/solution/1/" element={<Solution1 />} />
+          <Route path="/solution/2/" element={<Solution2 />} />
           <Route path="/login" element={<Login />} />
           <Route path="/google_login" element={<GoogleLoginButton />} />
           <Route
