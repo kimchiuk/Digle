@@ -42,7 +42,7 @@ async def login_with_kakao(response: Response, request: Request, code: str, db: 
             headers={"Authorization": f"Bearer {access_token}"}
         )
 
-
+    
         if kakao_response.status_code != 200:
             raise HTTPException(status_code=400, detail="Invalid token")
 

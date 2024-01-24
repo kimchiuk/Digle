@@ -1,3 +1,4 @@
+// CreateRoom.js
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +38,29 @@ function CreateRoom() {
       console.error("Error Response:", error.response);
     }
   };
+
+  const fetchRoomList = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/rooms/list");
+      console.log("Room list:", response.data);
+
+      // 방 목록을 state에 업데이트
+      setRoomList(response.data.rooms);
+    } catch (error) {
+      console.error("Error fetching room list:", error);
+    }
+  };
+
+  const handleEnterRoom = (roomId) => {
+    // 클릭한 방으로 입장하는 로직
+    navigate(`/vchat?roomId=${roomId}`);
+  };
+
+
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링될 때 방 목록을 가져오기
+    fetchRoomList();
+  }, []); // 빈 배열을 전달하여 한 번만 호출되도록 함
 
   return (
     <div className="pt-[100px] w-32 h-20">
