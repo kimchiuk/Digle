@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 from email.message import EmailMessage
 from email.mime.text import MIMEText
 import json
@@ -180,6 +181,7 @@ async def request_verify_email(
 
     if email_verification:
         email_verification.verification_code = verification_code
+        email_verification.created_at = datetime.utcnow()
     else:
         email_verification = EmailVerification(email=email, verification_code=verification_code)
     db.add(email_verification)
@@ -217,7 +219,13 @@ def send_email(receiver_email, subject, body):
 
 
 @router.post("/verify_email")
-async def verify_email(email: str, code: str, db: Session = Depends(get_db)):
+async def verify_email(
+    response: Response,
+    request: Request,
+    email: str = Form(None),
+    code: str = Form(None),
+    db: Session = Depends(get_db),
+):
     verification = db.query(EmailVerification).filter_by(email=email, verification_code=code).first()
     if verification and not verification.is_expired():
         verification.is_verified = True
@@ -225,8 +233,3 @@ async def verify_email(email: str, code: str, db: Session = Depends(get_db)):
         return {"message": "Email verified successfully"}
     else:
         return {"error": "Invalid or expired verification code"}
-
-
-@router.post("/callback")
-async def callback(response: Response, request: Request, db: Session = Depends(get_db)):
-    return
