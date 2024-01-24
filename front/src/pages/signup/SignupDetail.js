@@ -18,6 +18,7 @@ const SignupDetail = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isPwd, setIsPwd] = useState(false);
   const [isConfirmPwd, setIsConfirmPwd] = useState(false);
+  const API_URL = "http://127.0.0.1:8000";
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -26,22 +27,50 @@ const SignupDetail = () => {
 
   // API 만들어지면 axios 요청 보내서 로직 구현
   const [isCheckEmail, setIsCheckEmail] = useState(false);
+  const [emailCodeOk, setEmailCodeOk] = useState(false);
+  const [emailCode, setEmailCode] = useState("");
+  const [emailCodeMsg, setEmailCodeMsg] = useState("");
+
   const handleCheckEmail = async () => {
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/request_verify_email",
-        { email }
-      );
+      const response = await axios.post(`${API_URL}/request_verify_email`, {
+        email,
+      });
+      console.log(response.data);
 
       if (response.data.isDuplicate) {
         setEmailMessage("이미 가입된 이메일입니다.");
         setIsCheckEmail(true);
+        setEmailCodeOk(false);
       } else {
         setEmailMessage("사용 가능한 이메일입니다.");
         setIsCheckEmail(false);
+        setEmailCodeOk(true);
       }
     } catch (error) {
       console.log("이메일 중복 확인 오류:", error);
+    }
+  };
+
+  const emailCodeHandler = (e) => {
+    const currentCode = e.target.value;
+    setEmailCode(currentCode);
+  };
+
+  // 코드 인증 과정
+  const handleCheckCode = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/verify_email`, {
+        email,
+        emailCode,
+      });
+      if (response.data) {
+        console.log(response.data);
+      } else {
+        console.log("메롱");
+      }
+    } catch (error) {
+      console.log("에러 내용", error);
     }
   };
 
@@ -107,7 +136,7 @@ const SignupDetail = () => {
                   className="py-1 px-3 bg-blue-500 rounded-lg text-white"
                   onClick={handleCheckEmail}
                 >
-                  중복 확인
+                  이메일 확인
                 </button>
               </div>
               <input
@@ -123,6 +152,15 @@ const SignupDetail = () => {
                 }
               >
                 {emailMessage}
+                <div>
+                  <input
+                    className="border-b-2 py-1 px-2"
+                    type="text"
+                    value={emailCode}
+                    onChange={emailCodeHandler}
+                  />
+                  <button onClick={handleCheckCode}>인증</button>
+                </div>
               </div>
             </div>
             <div className="flex flex-col my-2">
