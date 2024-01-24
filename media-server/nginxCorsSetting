@@ -1,0 +1,82 @@
+server {
+    listen 80;
+
+    # CORS 설정
+    set $cors_origin "*";
+    set $cors_methods "GET, POST, OPTIONS";
+    set $cors_headers "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization";
+
+    location /janus {
+        proxy_pass http://localhost:8088;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        # CORS 헤더 추가
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' $cors_origin always;
+            add_header 'Access-Control-Allow-Methods' $cors_methods always;
+            add_header 'Access-Control-Allow-Headers' $cors_headers always;
+            add_header 'Access-Control-Max-Age' 3600 always;
+            add_header 'Content-Type' 'text/plain charset=UTF-8' always;
+            add_header 'Content-Length' 0 always;
+            return 204;
+        }
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' $cors_methods always;
+        add_header 'Access-Control-Allow-Headers' $cors_headers always;
+    }
+
+    location /ws {
+        proxy_pass http://localhost:8188;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        # CORS 헤더 추가
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' $cors_methods always;
+        add_header 'Access-Control-Allow-Headers' $cors_headers always;
+    }
+
+    location /janus-https {
+        proxy_pass http://localhost:8089;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        # CORS 헤더 추가
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' $cors_methods always;
+        add_header 'Access-Control-Allow-Headers' $cors_headers always;
+    }
+
+    location /admin {
+        proxy_pass http://localhost:7088;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        # CORS 헤더 추가
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' $cors_methods always;
+        add_header 'Access-Control-Allow-Headers' $cors_headers always;
+    }
+
+    location /admin-https {
+        proxy_pass http://localhost:7089;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        # CORS 헤더 추가
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' $cors_methods always;
+        add_header 'Access-Control-Allow-Headers' $cors_headers always;
+    }
+}
