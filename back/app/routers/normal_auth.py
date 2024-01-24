@@ -198,8 +198,6 @@ async def request_verify_email(
 
 # .env 파일에서 환경 변수 로드
 load_dotenv()
-
-
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT"))  # 포트는 정수여야 합니다.
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
