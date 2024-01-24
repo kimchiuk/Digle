@@ -11,7 +11,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const MainImg =
     "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVjBRv%2FbtqHMwKxFgG%2FNPAxkGgvDkXeszqVT7MFm0%2Fimg.jpg";
-
+  const API_URL = 'http://127.0.0.1:8000'
   useEffect(() => {
     const handleStorageChange = () => {
       const rememberedUsername = localStorage.getItem("username");
@@ -43,9 +43,8 @@ const Login = () => {
     } else {
       localStorage.removeItem("username");
     }
-
     try {
-      const response = await axios.post("/", {
+      const response = await axios.post(`${API_URL}/login`, {
         username,
         password,
       });
