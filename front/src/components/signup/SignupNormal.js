@@ -1,23 +1,4 @@
-import { useState } from "react";
-
-const SignupNormal = () => {
-  const [image, setImage] = useState(
-    "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0"
-  );
-
-  const onChangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    if (uploadFile && uploadFile instanceof Blob) {
-      const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-    } else {
-      console.error("잘못된 파일 타입. Blob을 기대했습니다.");
-    }
-  };
+const SignupNormal = ({ image, onChangeImageUpload }) => {
   return (
     <>
       <div className="flex justify-between">
@@ -39,7 +20,7 @@ const SignupNormal = () => {
           <div className="py-5">
             <label
               className="cursor-pointertext-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-              for="imageUpload"
+              htmlFor="imageUpload"
             >
               이미지 첨부
             </label>
