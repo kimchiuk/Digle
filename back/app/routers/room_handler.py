@@ -253,3 +253,41 @@ def get_room_participants(session_id: int, room_id: int):
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
+
+
+# 방없애보리기 
+def destroy_janus_room(session_id: str, room_id: int):
+    plugin_id = attach_plugin_to_session(session_id)
+    if plugin_id is None:
+        return {"janus": "error", "message": "Failed to attach plugin to session"}
+
+    janus_message = {
+        "janus": "message",
+        "transaction": str(uuid.uuid4()),
+        "admin_secret": admin_secret,
+        "body": {
+            "request": "destroy",
+            "room": room_id,
+        },
+    }
+
+    response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_message)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"janus": "error", "message": f"Failed to destroy Janus room: {response.status_code}"}
+
+#방없애보리기 라우터버젼 
+@router.post("/rooms/{room_id}/destroy")
+async def destroy_room(room_id: int):
+    session_id = create_janus_session()
+    if session_id is None:
+        raise HTTPException(status_code=500, detail="Failed to create Janus session for room destroy")
+
+    janus_response = destroy_janus_room(session_id, room_id)
+
+    if janus_response["janus"] == "success":
+        return {"janus": "success", "message": f"Room {room_id} has been destroyed"}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to destroy Janus room")
