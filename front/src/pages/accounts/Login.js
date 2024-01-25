@@ -14,13 +14,13 @@ const Login = () => {
   const API_URL = 'http://127.0.0.1:8000'
   useEffect(() => {
     const handleStorageChange = () => {
-      const rememberedemail = localStorage.getItem("email");
+      const rememberedEmail = localStorage.getItem("email");
       const rememberedRememberMe = localStorage.getItem("rememberMe");
 
       if (rememberedRememberMe) {
         setRememberMe(JSON.parse(rememberedRememberMe));
         if (JSON.parse(rememberedRememberMe)) {
-          setEmail(rememberedemail);
+          setEmail(rememberedEmail);
         } else {
           setEmail("");
         }
