@@ -1,19 +1,38 @@
-import { useState } from "react";
 import DaumPost from "./DaumPost";
 
-const BusinessSignup = () => {
-  const [enrollCompany, setEnrollCompany] = useState({
-    address: "",
-  });
-
+const BusinessSignup = ({
+  enrollCompany,
+  setEnrollCompany,
+  zipCode,
+  roadAddress,
+  detailAddress,
+  isOpen,
+  setIsOpen,
+  completeHandler,
+  changeHandler,
+  companyName,
+  companyNameHandler,
+  companyEmail,
+  companyEmailHandler,
+}) => {
   return (
     <>
       <div className="">
         <div className="flex flex-col">
-          <label className="pt-2">회사 이름</label>
           <input
+            value={companyName}
+            onChange={companyNameHandler}
             className="pt-2 border-b-2"
             placeholder="회사 이름"
+            type="text"
+          />
+        </div>
+        <div className="flex flex-col">
+          <input
+            value={companyEmail}
+            onChange={companyEmailHandler}
+            className="pt-2 border-b-2"
+            placeholder="회사 이메일"
             type="text"
           />
         </div>
@@ -21,6 +40,13 @@ const BusinessSignup = () => {
           <DaumPost
             company={enrollCompany}
             setcompany={setEnrollCompany}
+            zipCode={zipCode}
+            roadAddress={roadAddress}
+            detailAddress={detailAddress}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            completeHandler={completeHandler}
+            changeHandler={changeHandler}
           ></DaumPost>
         </div>
       </div>
