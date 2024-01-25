@@ -4,11 +4,11 @@ import axios from "axios";
 import SelectSignup from "../../components/signup/SelectSignup";
 
 const SignupDetail = () => {
-  // id, pwd, pwd2, username, email, address, phone
+  // id, pwd, pwd2, name, email, address, phone
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [userName, setUserName] = useState("");
+  const [name, setName] = useState("");
 
   // input 태그 아래 메시지
   const [emailMessage, setEmailMessage] = useState("");
@@ -44,11 +44,12 @@ const SignupDetail = () => {
       console.log(response);
 
       if (response.data) {
-        setEmailMessage("이미 가입된 이메일입니다.");
+        // setEmailMessage("이미 가입된 이메일입니다.");
+        // setEmailMessage("사용 가능한 이메일입니다.");
         setIsCheckEmail(true);
         setEmailCodeOk(false);
       } else {
-        setEmailMessage("사용 가능한 이메일입니다.");
+        setEmailMessage("이미 가입된 이메일입니다.");
         setIsCheckEmail(false);
         setEmailCodeOk(true);
       }
@@ -72,10 +73,9 @@ const SignupDetail = () => {
       const response = await axios.post(`${API_URL}/verify_email`, formData);
       if (response.status === 200) {
         setEmailCodeOk(true);
-        setEmailCodeMsg("인증 되었습니다.");
+        alert("인증되었습니다.");
       } else {
         setEmailCodeOk(false);
-        setEmailCodeMsg("인증 코드가 틀렸습니다.");
       }
     } catch (error) {
       console.log("에러 내용", error);
@@ -125,7 +125,7 @@ const SignupDetail = () => {
   };
 
   const nameHandler = (e) => {
-    setUserName(e.target.value);
+    setName(e.target.value);
   };
 
   // selectSignup 에서 쓰일 함수, 상태
@@ -148,6 +148,7 @@ const SignupDetail = () => {
       reader.onloadend = () => {
         setImage(reader.result);
       };
+      console.log(typeof image);
     } else {
       console.error("잘못된 파일 타입. Blob을 기대했습니다.");
     }
@@ -157,12 +158,74 @@ const SignupDetail = () => {
   const [enrollCompany, setEnrollCompany] = useState({
     address: "",
   });
+  const [companyName, setCompanyName] = useState("");
+  const [companyEmail, setCompanyEmail] = useState("");
+  const companyNameHandler = (e) => {
+    setCompanyName(e.target.value);
+  };
+  const companyEmailHandler = (e) => {
+    setCompanyEmail(e.target.value);
+  };
+
+  // daumpost 에서 쓰이는 상태, 함수
+  const [zipCode, setZipcode] = useState("");
+  const [roadAddress, setRoadAddress] = useState("");
+  const [detailAddress, setDetailAddress] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const completeHandler = (data) => {
+    setZipcode(data.zonecode);
+    setRoadAddress(data.roadAddress);
+    setIsOpen(false); //추가
+  };
+  // 상세 주소검색 event
+  const changeHandler = (e) => {
+    setDetailAddress(e.target.value);
+    // console.log(zipCode);
+    // console.log(roadAddress);
+    // console.log(detailAddress);
+    // console.log(companyAddress);
+  };
+
+  // 폼 제출 시
+  const onSubmitButton = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("name", name);
+    formData.append("password", password);
+    if (isCompany) {
+      const companyAddress = `${roadAddress} (${zipCode}) ${detailAddress}`;
+      // 기업 회원을 선택했을 때
+      formData.append("user_type", "Business");
+      formData.append("company_info", companyName);
+      formData.append("company_address", companyAddress);
+    } else {
+      // 개인 회원을 선택했을 때
+      if (image) {
+        formData.append("profile_img", image);
+      }
+      formData.append("user_type", "Standard");
+    }
+
+    try {
+      const response = await axios.post(`${API_URL}/regist`, formData);
+      console.log(response);
+      if (response.status === 200) {
+        alert("회원가입이 완료되었습니다.");
+      } else {
+        alert("뭔가 이상이 있습니다. ");
+      }
+    } catch (error) {
+      console.log("에러 내용", error);
+    }
+  };
 
   return (
     <>
       <div className="relative flex">
         <div className="pt-20 w-[500px] text-left px-5 mx-auto ">
-          <form onSubmit={submitHandler}>
+          <form onSubmit={onSubmitButton}>
             <div className="text-xl font-bold mb-2">회원가입</div>
             <hr className="mb-2" />
             <div className="flex flex-col">
@@ -254,7 +317,7 @@ const SignupDetail = () => {
                 className="border-b-2 py-1 px-2"
                 type="text"
                 id="name"
-                value={userName}
+                value={name}
                 onChange={nameHandler}
               />
             </div>
@@ -265,6 +328,17 @@ const SignupDetail = () => {
               onChangeImageUpload={onChangeImageUpload}
               enrollCompany={enrollCompany}
               setEnrollCompany={setEnrollCompany}
+              companyName={companyName}
+              companyNameHandler={companyNameHandler}
+              zipCode={zipCode}
+              roadAddress={roadAddress}
+              detailAddress={detailAddress}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              completeHandler={completeHandler}
+              changeHandler={changeHandler}
+              companyEmail={companyEmail}
+              companyEmailHandler={companyEmailHandler}
             />
             <input
               className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "

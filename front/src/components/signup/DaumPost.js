@@ -1,23 +1,15 @@
 import DaumPostcode from "react-daum-postcode";
-import { useState } from "react";
 import Modal from "react-modal";
 
-const DaumPost = () => {
-  const [zipCode, setZipcode] = useState("");
-  const [roadAddress, setRoadAddress] = useState("");
-  const [detailAddress, setDetailAddress] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const completeHandler = (data) => {
-    setZipcode(data.zonecode);
-    setRoadAddress(data.roadAddress);
-    setIsOpen(false); //추가
-  };
-  // 상세 주소검색 event
-  const changeHandler = (e) => {
-    setDetailAddress(e.target.value);
-  };
-
+const DaumPost = ({
+  zipCode,
+  roadAddress,
+  detailAddress,
+  isOpen,
+  setIsOpen,
+  completeHandler,
+  changeHandler,
+}) => {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0,0,0,0.5)",

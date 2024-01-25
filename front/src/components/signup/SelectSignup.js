@@ -8,6 +8,15 @@ const SelectSignup = ({
   onChangeImageUpload,
   setEnrollCompany,
   enrollCompany,
+  zipCode,
+  roadAddress,
+  detailAddress,
+  isOpen,
+  setIsOpen,
+  completeHandler,
+  changeHandler,
+  companyEmailHandler,
+  companyEmail,
 }) => {
   return (
     <>
@@ -46,6 +55,15 @@ const SelectSignup = ({
           <BusinessSignup
             setEnrollCompany={setEnrollCompany}
             enrollCompany={enrollCompany}
+            zipCode={zipCode}
+            roadAddress={roadAddress}
+            detailAddress={detailAddress}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            completeHandler={completeHandler}
+            changeHandler={changeHandler}
+            companyEmailHandler={companyEmailHandler}
+            companyEmail={companyEmail}
           />
         )}
       </div>
