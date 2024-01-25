@@ -6,7 +6,7 @@ import KakaoLoginButton from "../../components/KakaoLoginButton";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const MainImg =
@@ -14,15 +14,15 @@ const Login = () => {
   const API_URL = 'http://127.0.0.1:8000'
   useEffect(() => {
     const handleStorageChange = () => {
-      const rememberedUsername = localStorage.getItem("username");
+      const rememberedemail = localStorage.getItem("email");
       const rememberedRememberMe = localStorage.getItem("rememberMe");
 
       if (rememberedRememberMe) {
         setRememberMe(JSON.parse(rememberedRememberMe));
         if (JSON.parse(rememberedRememberMe)) {
-          setUsername(rememberedUsername);
+          setEmail(rememberedemail);
         } else {
-          setUsername("");
+          setEmail("");
         }
       }
     };
@@ -37,20 +37,21 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Login button clicked!");
+    
+    const formData = new FormData();
+    formData.append("email", email)
+    formData.append("password", password)
 
     if (rememberMe) {
-      localStorage.setItem("username", username);
+      localStorage.setItem("email", email);
     } else {
-      localStorage.removeItem("username");
+      localStorage.removeItem("email");
     }
     try {
-      const response = await axios.post(`${API_URL}/login`, {
-        username,
-        password,
-      });
-      console.log("로그인 성공:");
+      const response = await axios.post(`${API_URL}/login`, formData);
+      console.log("로그인 성공: ", response);
     } catch (error) {
-      console.log("에러 발생");
+      console.error("에라이 씨발 좀 되라고 개 씨발 좆같은거 에러 발생: ", error);
     }
   };
 
@@ -66,9 +67,9 @@ const Login = () => {
             <input
               type="text"
               placeholder="아이디"
-              id="username"
-              onChange={(event) => setUsername(event.target.value)}
-              value={username}
+              id="email"
+              onChange={(event) => setEmail(event.target.value)}
+              value={email}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
               required
             />
