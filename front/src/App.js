@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer";
 import Main from "./pages/main/MainPage";
-import SelectSignup from "./pages/signup/SelectSignup";
 import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 
@@ -33,7 +32,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/test" element={<Test />} />
-          <Route path="/selectsignup" element={<SelectSignup />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/detail" element={<SignupDetail />} />
           <Route path="/profile" element={<Profile />} />
