@@ -50,6 +50,7 @@ function VideoChat() {
       plugin: "janus.plugin.videoroom",
       success: function (pluginHandle) {
         videoRoom = pluginHandle;
+        console.log(roomId);
         if (roomId) {
           joinRoom(roomId);
         } else {
