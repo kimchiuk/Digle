@@ -90,7 +90,6 @@ def get_janus_participants(session_id: str, room_id: int):
 
     if response.status_code == 200:
         participants = response.json().get("plugindata", {}).get("data", {}).get("participants", [])
-        print(response.json())
         return {"janus": "success", "participants": participants}
     else:
         return {"janus": "error", "message": f"Failed to get participants from Janus server: {response.status_code}"}
@@ -105,6 +104,8 @@ def create_janus_room():
     plugin_id = attach_plugin_to_session(session_id)
     if plugin_id is None:
         return None
+    
+    
     room_id = uuid.uuid4().int & (1 << 31) - 1
     room_url = f"{janus_url}/{session_id}/{plugin_id}"
     # room number 추후에 db에 있는지 확인 후 랜덤 값으로 부여.
@@ -132,7 +133,6 @@ async def join_room(room_id: int, user_id: str):
         raise HTTPException(status_code=500, detail="Failed to create Janus session for room join")
 
     janus_response = communicate_with_janus_join(session_id, room_id, user_id, "publisher")
-    print(janus_response)
 
     if janus_response["janus"] == "success":
         participant = {"user_id": user_id, "role": "publisher", "janus_response": janus_response}
@@ -155,9 +155,52 @@ async def create_room(room: Room):
 rooms = {}
 
 
-@router.get("/rooms")
-async def get_all_rooms():
-    return rooms
+
+
+
+
+@router.get("/rooms/list")
+async def get_available_rooms():
+    # 세션 생성
+    session_data = {"janus": "create", "transaction": str(uuid.uuid4()), "admin_secret": admin_secret}
+    response = requests.post(janus_url, json=session_data, headers=headers)
+
+    if response.status_code == 200 and response.json().get("janus") == "success":
+        session_id = response.json()["data"]["id"]
+
+        # Videoroom 플러그인을 세션에 attach
+        attach_data = {
+            "janus": "attach",
+            "transaction": str(uuid.uuid4()),
+            "admin_secret": admin_secret,
+            "plugin": "janus.plugin.videoroom",
+        }
+        response = requests.post(f"{janus_url}/{session_id}", json=attach_data, headers=headers)
+
+        if response.status_code == 200 and response.json().get("janus") == "success":
+            plugin_id = response.json()["data"]["id"]
+
+            # Videoroom 플러그인을 사용하여 방 목록 요청
+            janus_request = {
+                "janus": "message",
+                "transaction": str(uuid.uuid4()),
+                "body": {
+                    "request": "list"
+                }
+            }
+
+            response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_request, headers=headers)
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=500, detail="Failed to get room list from media server")
+        else:
+            raise HTTPException(status_code=500, detail="Failed to attach plugin to session")
+    else:
+        raise HTTPException(status_code=500, detail="Failed to create Janus session")
+
+
 
 
 @router.get("/rooms/list")
@@ -167,32 +210,40 @@ async def get_all_rooms():
 
 # 참가자목록
 @router.get("/rooms/{room_id}/participants")
-async def get_room_participants(room_id: int):
-    session_id = create_janus_session()
-    if session_id is None:
-        raise HTTPException(status_code=500, detail="Failed to create Janus session")
-
-    participants_response = get_janus_participants(session_id, room_id)
-
-    if participants_response.get("janus") == "success":
-        return participants_response
-    else:
-        raise HTTPException(status_code=500, detail=f"Failed to get participants: {participants_response['message']}")
-
-
-@router.get("/sessions/{session_id}/handles")
-async def list_handles(session_id: int):
-    handles_request = {
-        "janus": "list_handles",
-        "session_id": session_id,
+def get_room_participants(session_id: int, room_id: int):
+    # 방 참가자 목록을 가져오는 Janus 요청
+    janus_request = {
+        "janus": "message",
         "transaction": str(uuid.uuid4()),
-        "admin_secret": admin_secret,
+        "body": {
+            "request": "listparticipants",
+            "room": room_id,
+        }
     }
-
-    response = requests.post(f"{janus_url}/{session_id}", json=handles_request, headers=headers)
-
-    if response.status_code == 200 and response.json().get("janus") == "success":
-        handles = response.json()["handles"]
-        return {"session_id": session_id, "handles": handles}
+    response = requests.post(f"{janus_url}/{session_id}/{room_id}", json=janus_request, headers=headers)
+    
+    if response.status_code == 200:
+        participants = response.json().get("plugindata", {}).get("data", {}).get("participants", [])
+        return participants
     else:
-        raise HTTPException(status_code=500, detail="Failed to list handles")
+        return []
+
+
+# @router.get("/sessions/{session_id}/handles")
+# async def list_handles(session_id: int):
+#     handles_request = {
+#         "janus": "list_handles",
+#         "session_id": session_id,
+#         "transaction": str(uuid.uuid4()),
+#         "admin_secret": admin_secret,
+#     }
+
+#     response = requests.post(f"{janus_url}/{session_id}", json=handles_request, headers=headers)
+
+#     if response.status_code == 200 and response.json().get("janus") == "success":
+#         handles = response.json()["handles"]
+#         return {"session_id": session_id, "handles": handles}
+#     else:
+#         raise HTTPException(status_code=500, detail="Failed to list handles")
+
+
