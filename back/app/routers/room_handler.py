@@ -69,8 +69,7 @@ def communicate_with_janus_join(session_id: str, room_id: int, user_id: str, rol
     else:
         return {"janus": "error", "message": f"Failed to communicate with Janus server: {response.status_code}"}
 
-
-def get_janus_participants(session_id: str, room_id: int):
+def get_janus_participants(session_id: str,room_id: int):
     # attach 플러그인은 한 번만 수행하면 됨
     plugin_id = attach_plugin_to_session(session_id)
     if plugin_id is None:
@@ -90,10 +89,11 @@ def get_janus_participants(session_id: str, room_id: int):
 
     if response.status_code == 200:
         participants = response.json().get("plugindata", {}).get("data", {}).get("participants", [])
+        print(response.json())
         return {"janus": "success", "participants": participants}
     else:
         return {"janus": "error", "message": f"Failed to get participants from Janus server: {response.status_code}"}
-
+    
 
 # 방 생성 및 Janus 서버에 참여
 def create_janus_room():
@@ -139,7 +139,6 @@ async def join_room(room_id: int, user_id: str):
         return participant
     else:
         raise HTTPException(status_code=500, detail="Janus room join failed")
-
 
 # 방 생성 요청 핸들러
 @router.post("/rooms")
@@ -207,6 +206,12 @@ async def get_available_rooms():
 async def get_all_rooms():
     return {"rooms": list(rooms.values())}
 
+#참가자목록 
+@router.get("/rooms/{room_id}/participants")
+async def get_room_participants(room_id: int):
+    session_id = create_janus_session()
+    if session_id is None:
+        raise HTTPException(status_code=500, detail="Failed to create Janus session")
 
 @router.get("/rooms/{room_id}/participants")
 def get_room_participants(session_id: int, room_id: int):

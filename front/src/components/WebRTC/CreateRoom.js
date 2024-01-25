@@ -1,5 +1,5 @@
 // CreateRoom.js
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import VideoChat from "./VideoChat"; // VideoChat 컴포넌트를 import
@@ -7,6 +7,7 @@ import VideoChat from "./VideoChat"; // VideoChat 컴포넌트를 import
 function CreateRoom() {
   const [room_id, setRoomId] = useState("");
   const navigate = useNavigate();
+  const [roomList, setRoomList] = useState([]);
 
   const handleJoinRoom = async () => {
     try {
