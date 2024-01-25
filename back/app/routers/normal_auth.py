@@ -40,6 +40,7 @@ async def login_for_access_token(
     name: str = Form(None),
     password: str = Form(None),
     profile_img: UploadFile = Form(None),
+    # profile_img: str = Form(None),
     user_type: str = Form(None),
     company_info: str = Form(None),
     company_email: str = Form(None),
@@ -58,6 +59,10 @@ async def login_for_access_token(
         user_type=user_type,
     )
     email_duplicate = db.query(User).filter(User.auth_provider == "None").filter(User.email == email).first()
+
+    # Base64로 인코딩된 문자열을 디코딩하여 바이트 데이터로 변환
+    # file_data = base64.b64decode(encoded_file)
+
     if email_duplicate:
         raise HTTPException(status_code=409, detail="Invalid or expired token")
     if profile_img and profile_img.filename:
