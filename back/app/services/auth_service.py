@@ -38,11 +38,12 @@ import bcrypt
 
 
 def hash_password(password):
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(password, hashed):
-    return bcrypt.checkpw(password.encode(), hashed)
+    hashed_bytes = hashed.encode("utf-8")
+    return bcrypt.checkpw(password.encode("utf-8"), hashed_bytes)
 
 
 import uuid

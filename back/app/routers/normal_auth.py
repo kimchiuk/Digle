@@ -1,4 +1,9 @@
+import base64
+from datetime import datetime
 from email.message import EmailMessage
+from email.mime.text import MIMEText
+import json
+import os
 import smtplib
 import uuid
 from fastapi import APIRouter, Form, HTTPException, Request, Depends, Response, UploadFile
@@ -18,6 +23,11 @@ from app.services.auth_service import (
     verify_password,
 )
 
+# email verify
+from dotenv import load_dotenv
+from googleapiclient.discovery import build  # Google API
+from google.oauth2 import service_account
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 router = APIRouter(tags=["normal_auth"])
 
@@ -29,7 +39,8 @@ async def login_for_access_token(
     email: str = Form(None),
     name: str = Form(None),
     password: str = Form(None),
-    profile_img: UploadFile = Form(None),
+    # profile_img: UploadFile = Form(None),
+    profile_img: str = Form(None),
     user_type: str = Form(None),
     company_info: str = Form(None),
     company_email: str = Form(None),
@@ -48,6 +59,10 @@ async def login_for_access_token(
         user_type=user_type,
     )
     email_duplicate = db.query(User).filter(User.auth_provider == "None").filter(User.email == email).first()
+
+    # Base64로 인코딩된 문자열을 디코딩하여 바이트 데이터로 변환
+    profile_img = base64.b64decode(profile_img)
+
     if email_duplicate:
         raise HTTPException(status_code=409, detail="Invalid or expired token")
     if profile_img and profile_img.filename:
@@ -152,42 +167,68 @@ async def login_for_access_token(
 
 
 @router.post("/request_verify_email")
-async def login_for_access_token(
+async def request_verify_email(
     response: Response,
     request: Request,
     email: str = Form(None),
     db: Session = Depends(get_db),
 ):
+    # 이메일 중복 확인
     email_duplicate = db.query(User).filter(User.auth_provider == "None").filter(User.email == email).first()
     if email_duplicate:
-        raise HTTPException(status_code=409, detail="Invalid or expired token")
+        raise HTTPException(status_code=409, detail="Email already registered")
 
+    # 인증 코드 생성
     verification_code = str(uuid.uuid4())
-    send_verification_email(email, verification_code)
-
+    # 이메일 인증 정보 저장
     email_verification = EmailVerification(email=email, verification_code=verification_code)
+    email_verification = db.query(EmailVerification).filter_by(email=email).first()
+
+    if email_verification:
+        email_verification.verification_code = verification_code
+        email_verification.created_at = datetime.utcnow()
+    else:
+        email_verification = EmailVerification(email=email, verification_code=verification_code)
     db.add(email_verification)
     db.commit()
-    db.refresh(email_verification)
-    return {"message": "Verification email sent"}
+
+    try:
+        subject = "Your Verification Code"
+        body = f"Your verification code {verification_code}"  # 실제 시나리오에서는 동적으로 생성해야 합니다.
+        send_email(email, subject, body)
+        return {"message": "Verification email sent"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-def send_verification_email(user_email, verification_code):
-    msg = EmailMessage()
-    msg["Subject"] = "Verify your email"
-    msg["From"] = "gumid107@gmail.com"
-    msg["To"] = user_email
-    msg.set_content(f"Please verify your email using this code: {verification_code}")
+# .env 파일에서 환경 변수 로드
+load_dotenv()
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT"))  # 포트는 정수여야 합니다.
+SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
-    # SMTP 서버 설정 및 이메일 전송
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+
+def send_email(receiver_email, subject, body):
+    message = MIMEText(body)
+    message["Subject"] = subject
+    message["From"] = SMTP_USERNAME
+    message["To"] = receiver_email
+
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
         server.starttls()
-        server.login("gumid107@gmail.com", "Gumi1!water")
-        server.send_message(msg)
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(SMTP_USERNAME, receiver_email, message.as_string())
 
 
 @router.post("/verify_email")
-async def verify_email(email: str, code: str, db: Session = Depends(get_db)):
+async def verify_email(
+    response: Response,
+    request: Request,
+    email: str = Form(None),
+    code: str = Form(None),
+    db: Session = Depends(get_db),
+):
     verification = db.query(EmailVerification).filter_by(email=email, verification_code=code).first()
     if verification and not verification.is_expired():
         verification.is_verified = True
