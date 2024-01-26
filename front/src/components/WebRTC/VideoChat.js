@@ -3,7 +3,6 @@ import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function VideoChat() {
-  const [sessionId, setSessionId] = useState(null);
   const [roomId, setRoomId] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -43,11 +42,9 @@ function VideoChat() {
   const createJanusInstance =  () => {
     janusInstance = new Janus({
       server: "http://34.125.238.83/janus",
-      success:  async function () {
-        await setSessionId(janusInstance.getSessionId());
-        console.log(janusInstance.getSessionId());
+      success:  function () {
         attachVideoRoomPlugin();
-        startKeepAlive();
+        startKeepAlive(janusInstance.getSessionId());
         setupPopStateListener();
       },
       error: function (error) {
@@ -98,7 +95,7 @@ function VideoChat() {
     });
   };
 
-  const startKeepAlive = () => {
+  const startKeepAlive = (sessionId) => {
     const keepAliveInterval = setInterval(() => {
       if (janusInstance && janusInstance.send) {
         janusInstance.send({ janus: "keepalive", session_id: sessionId });

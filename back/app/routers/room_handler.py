@@ -59,7 +59,9 @@ def communicate_with_janus_join(session_id: str, room_id: int, user_id: str, rol
     }
 
     response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_message)
-
+    
+    print(response.json())
+    
     if response.status_code == 200:
         return {
             "janus": "success",
@@ -207,6 +209,8 @@ async def get_room_participants(room_id: int):
     if session_id is None:
         raise HTTPException(status_code=500, detail="Failed to create Janus session")
 
+
+ 
 @router.get("/rooms/{room_id}/participants")
 def get_room_participants(session_id: int, room_id: int):
     try:
@@ -219,8 +223,11 @@ def get_room_participants(session_id: int, room_id: int):
         }
         response = requests.post(f"{janus_url}/{session_id}", json=attach_data, headers=headers)
 
+        print(response)
+        
         if response.status_code == 200 and response.json().get("janus") == "success":
             plugin_id = response.json()["data"]["id"]
+            
             print(plugin_id)
 
             # 방 참가자 목록을 가져오는 Janus 요청
