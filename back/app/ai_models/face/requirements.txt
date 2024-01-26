@@ -5,3 +5,4 @@ prettytable
 menpo
 mxnet
 opencv-python
+facenet_pytorch
