@@ -40,5 +40,5 @@ DATABASE_URL=postgresql://postgres:ssafy@localhost/postgres
 -   'back' 디렉토리에서 다음 코드 실행
 
 ```
-uvicorn app.main:main --reload
+uvicorn app.main:app --reload
 ```
