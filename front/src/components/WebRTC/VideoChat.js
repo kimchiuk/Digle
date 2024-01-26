@@ -21,9 +21,11 @@ function VideoChat() {
   useEffect(() => {
     if (room_id) {
       setRoomId(room_id); // URL에서 추출한 room_id를 상태로 설정
+      initJanus();
     }
-    // user_id와 role도 필요에 따라 활용 가능
+  
   }, [room_id]);
+
 
   const initJanus = () => {
     Janus.init({
@@ -38,11 +40,12 @@ function VideoChat() {
     });
   };
 
-  const createJanusInstance = () => {
+  const createJanusInstance =  () => {
     janusInstance = new Janus({
       server: "http://34.125.238.83/janus",
-      success: function () {
-        setSessionId(janusInstance.getSessionId());
+      success:  async function () {
+        await setSessionId(janusInstance.getSessionId());
+        console.log(janusInstance.getSessionId());
         attachVideoRoomPlugin();
         startKeepAlive();
         setupPopStateListener();
@@ -101,7 +104,7 @@ function VideoChat() {
         janusInstance.send({ janus: "keepalive", session_id: sessionId });
       }
     }, 30000);
-
+//수정부분
     return () => {
       clearInterval(keepAliveInterval);
       if (janusInstance) {
@@ -213,6 +216,7 @@ function VideoChat() {
       {renderRemoteVideos}
       <button onClick={handleGoBack}>나가기</button>
     </div>
+
   );
 }
 
