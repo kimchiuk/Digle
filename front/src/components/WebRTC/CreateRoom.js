@@ -24,22 +24,22 @@ function CreateRoom() {
           },
         }
       );
+      const { user_id, role } = joinResponse.data;
+      const message = joinResponse.data.message
+      console.log(message);
+  
 
-      console.log(joinResponse.data);
-
-      const { user_id, role, janus_response } = joinResponse.data;
-      const message = janus_response?.message;
-      console.log(joinResponse.data);
-
-      if (message && message.includes("Joined room") && message.includes(user_id)) {
+      if (message && message.includes("Room exists")) {
         // 방 참여가 성공적으로 이루어지면 VideoChat.js로 이동
+        console.log(message);
+
         navigate(`/vchat?roomId=${room_id}&userId=${user_id}&role=${role}`);
       } else {
         // 방이 존재하지 않으면 새로운 방 만들기 시도
         const createResponse = await axios.post(
-          "http://localhost:8000/rooms",
+          "http://localhost:8000/rooms/create",
           {
-            room: {
+             room: {
               room_id: room_id,
             },
           }

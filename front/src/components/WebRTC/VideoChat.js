@@ -25,7 +25,6 @@ function VideoChat() {
   
   }, [room_id]);
 
-
   const initJanus = () => {
     Janus.init({
       debug: "all",
