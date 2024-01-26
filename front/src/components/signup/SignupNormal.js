@@ -1,11 +1,11 @@
-const SignupNormal = ({ image, onChangeImageUpload }) => {
+const SignupNormal = ({ image, onChangeImageUpload, readImage }) => {
   return (
     <>
       <div className="flex justify-between">
         <div>
           <div className="w-40 center">
             <img
-              src={image}
+              src={readImage}
               alt="Profile"
               className="object-cover w-full h-full"
             />
