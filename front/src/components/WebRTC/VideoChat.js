@@ -1,17 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function VideoChat() {
-  const [sessionId, setSessionId] = useState(null);
-  const [roomId, setRoomId] = useState(1000);
-  const [participants, setParticipants] = useState([]);
+  const [roomId, setRoomId] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   let janusInstance = null;
   let videoRoom = null;
   const navigate = useNavigate();
   const [remoteStreams, setRemoteStreams] = useState([]);
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const room_id = queryParams.get("roomId");
+  const user_id = queryParams.get("userId");
+  const role = queryParams.get("role");
+
+  useEffect(() => {
+    if (room_id) {
+      setRoomId(room_id); // URL에서 추출한 room_id를 상태로 설정
+      initJanus();
+    }
+  
+  }, [room_id]);
+
 
   const initJanus = () => {
     Janus.init({
@@ -26,15 +39,13 @@ function VideoChat() {
     });
   };
 
-  const createJanusInstance = () => {
+  const createJanusInstance =  () => {
     janusInstance = new Janus({
       server: "http://34.125.238.83/janus",
-      success: function () {
-        setSessionId(janusInstance.getSessionId());
+      success:  function () {
         attachVideoRoomPlugin();
-        startKeepAlive();
+        startKeepAlive(janusInstance.getSessionId());
         setupPopStateListener();
-        fetchParticipants(); // 초기화 시 참가자 정보 가져오기
       },
       error: function (error) {
         console.error("Error initializing Janus...", error);
@@ -50,7 +61,6 @@ function VideoChat() {
       plugin: "janus.plugin.videoroom",
       success: function (pluginHandle) {
         videoRoom = pluginHandle;
-        console.log(roomId);
         if (roomId) {
           joinRoom(roomId);
         } else {
@@ -62,27 +72,36 @@ function VideoChat() {
       },
       onmessage: function (msg, jsep) {
         // 메시지 처리
+        const event = msg["videoroom"];
+        if (event === "event" && msg["publishers"]) {
+          const list = msg["publishers"];
+          for (let publisher of list) {
+            const id = publisher["id"];
+            const display = publisher["display"];
+            newRemoteFeed(id, display);
+          }
+        }
+        // jsep이 필요한 경우 처리
+        if (jsep) {
+          Janus.debug("SDP도 처리 중...", jsep);
+          videoRoom.handleRemoteJsep({ jsep: jsep });
+        }
       },
       onlocalstream: function (stream) {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
       },
-      onremotestream: function (stream) {
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = stream;
-        }
-      },
     });
   };
 
-  const startKeepAlive = () => {
+  const startKeepAlive = (sessionId) => {
     const keepAliveInterval = setInterval(() => {
       if (janusInstance && janusInstance.send) {
         janusInstance.send({ janus: "keepalive", session_id: sessionId });
       }
     }, 30000);
-
+//수정부분
     return () => {
       clearInterval(keepAliveInterval);
       if (janusInstance) {
@@ -99,8 +118,6 @@ function VideoChat() {
     videoRoom.send({ message: create });
   };
 
-
-
   const joinRoom = async (roomId) => {
     try {
       const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -108,9 +125,6 @@ function VideoChat() {
 
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = cameraStream;
-      }
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = screenStream;
       }
 
       const join = {
@@ -142,40 +156,64 @@ function VideoChat() {
     if (videoRoom) {
       videoRoom.detach();
     }
-    navigate("/CreateRoom"); // 이동할 경로를 변경하거나 필요에 따라 다른 처리 수행
+    navigate("/CreateRoom");
   };
 
+  const newRemoteFeed = (id, display) => {
+    janusInstance.attach({
+      plugin: "janus.plugin.videoroom",
+      success: function (pluginHandle) {
+        const remoteFeed = pluginHandle;
+        remoteFeed.simulcastStarted = false;
+        Janus.log("플러그인이 연결되었습니다!", remoteFeed.getPlugin());
+        Janus.log("  -- 구독자 입니다");
+        const subscribe = {
+          request: "join",
+          room: roomId,
+          ptype: "subscriber",
+          feed: id,
+        };
+        remoteFeed.videoCodec = "vp8";
+        remoteFeed.send({ message: subscribe });
+      },
+      error: function (error) {
+        Janus.error("플러그인 연결 중 오류 발생...", error);
+      },
+      onmessage: function (msg, jsep) {
+        // 필요한 경우 새로운 원격 피드의 메시지 처리
+      },
+      onremotestream: function (stream) {
+        // 원격 스트림 업데이트
+        setRemoteStreams((prev) => [...prev, { id, display, stream }]);
+      },
+      oncleanup: function () {
+        // 원격 피드가 분리될 때 정리
+        Janus.log("원격 피드 정리:", id);
+        setRemoteStreams((prev) => prev.filter((item) => item.id !== id));
+      },
+    });
+  };
+
+  // VideoChat 컴포넌트 내부
+  const renderRemoteVideos = remoteStreams.map((participant) => (
+    <div key={participant.id}>
+      <p>{participant.display}</p>
+      <video ref={(videoRef) => videoRef && (videoRef.srcObject = participant.stream)} autoPlay></video>
+    </div>
+  ));
 
   const handleGoBack = () => {
     leaveRoom();
+    navigate("/CreateRoom");
   };
 
-
-
-
-  const fetchParticipants = async () => {
-    try {
-      const response = await fetch(`/api/rooms/${roomId}/participants`); // 적절한 API 엔드포인트 사용
-      const data = await response.json();
-      setParticipants(data.participants);
-    } catch (error) {
-      console.error("Error fetching participants:", error);
-    }
-  };
-
-  useEffect(() => {
-    initJanus();
-  }, [roomId]);
-  
-
-  // 여기 다른 peer접속로직 구하고 
   return (
     <div>
       <video ref={localVideoRef} autoPlay muted></video>
-      <video ref={remoteVideoRef} autoPlay></video>
-      <div>참가자 수: {participants.length}</div>
+      {renderRemoteVideos}
       <button onClick={handleGoBack}>나가기</button>
     </div>
+
   );
 }
 
