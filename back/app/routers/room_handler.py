@@ -133,10 +133,15 @@ async def join_room(room_id: int, user_id: str):
         raise HTTPException(status_code=500, detail="Failed to create Janus session for room join")
 
     janus_response = communicate_with_janus_join(session_id, room_id, user_id, "publisher")
+    print(janus_response)
+    if "request" in janus_response.get("janus_server_response", {}).get("plugindata", {}).get("data", {}):
+        # "request"가 존재하면 방이 이미 존재하는 것이므로 새로운 방 생성하지 않고 응답 반환
+        return {"janus": "success", "message": "Room already exists", "janus_server_response": janus_response}
 
-    if janus_response["janus"] == "success":
-        participant = {"user_id": user_id, "role": "publisher", "janus_response": janus_response}
-        return participant
+    # "request"가 존재하지 않으면 방이 존재하지 않으므로 새로운 방을 생성하고 응답 반환
+    janus_response_create = create_janus_room()
+    if janus_response_create:
+        return janus_response_create
     else:
         if "request" in janus_response.get("janus_server_response", {}).get("plugindata", {}).get("data", {}):
             # "request"가 존재하면 방이 이미 존재하는 것이므로 새로운 방 생성하지 않고 응답 반환

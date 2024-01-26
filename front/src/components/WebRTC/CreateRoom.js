@@ -10,7 +10,7 @@ function CreateRoom() {
     try {
       // room_id가 비어 있는지 확인
       if (room_id.trim() === "") {
-        alert("방 이름을 입력하세요.");
+        alert("방 번호를 입력하세요.");
         return;
       }
 
@@ -25,6 +25,8 @@ function CreateRoom() {
         }
       );
 
+      console.log(joinResponse.data);
+
       const { user_id, role, janus_response } = joinResponse.data;
       const message = janus_response?.message;
       console.log(joinResponse.data);
@@ -32,8 +34,7 @@ function CreateRoom() {
       if (message && message.includes("Joined room") && message.includes(user_id)) {
         // 방 참여가 성공적으로 이루어지면 VideoChat.js로 이동
         navigate(`/vchat?roomId=${room_id}&userId=${user_id}&role=${role}`);
-      } 
-      else {
+      } else {
         // 방이 존재하지 않으면 새로운 방 만들기 시도
         const createResponse = await axios.post(
           "http://localhost:8000/rooms",
