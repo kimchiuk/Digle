@@ -5,21 +5,29 @@ const ChangePassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+
   const MainImg =
   "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVjBRv%2FbtqHMwKxFgG%2FNPAxkGgvDkXeszqVT7MFm0%2Fimg.jpg";
+  const API_URL = "http://127.0.0.1:8000";
 
   const handleResetPassword = async () => {
+    const formData = new FormData();
+    formData.append('password', password)
+    formData.append('confirm_password', confirmPassword)
+
     if (password !== confirmPassword) {
       setError("비밀번호가 일치하지 않습니다.");
       return;
     }
-
+    
     try {
       // axios를 사용하여 서버에 '비밀번호 재설정' 요청을 보냅니다.
-      await axios.post("/api/", { password });
+      await axios.post(`${API_URL}/change_password`, formData);
       alert("비밀번호가 성공적으로 변경되었습니다.");
+      console.error("수정 성공!");
     } catch (err) {
       setError("비밀번호 변경에 실패하였습니다. 다시 시도해주세요.");
+      console.error("씨바 에러 ㅈㄴ뜨네 ;;;");
     }
   };
 
