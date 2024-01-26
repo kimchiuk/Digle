@@ -5,6 +5,7 @@ const SelectSignup = ({
   isCompany,
   onButtonClick,
   image,
+  readImage,
   onChangeImageUpload,
   setEnrollCompany,
   enrollCompany,
@@ -57,6 +58,7 @@ const SelectSignup = ({
         {!isCompany ? (
           <SignupNormal
             image={image}
+            readImage={readImage}
             onChangeImageUpload={onChangeImageUpload}
           />
         ) : (

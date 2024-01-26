@@ -144,28 +144,40 @@ const SignupDetail = () => {
     "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0"
   );
   const [isImage, setIsImage] = useState(false);
-
+  const [readImage, setReadImage] = useState();
   // 이미지 올리는 함수 1
 
-  const onChangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    console.log(uploadFile);
-    if (uploadFile && uploadFile instanceof Blob) {
+  // const onChangeImageUpload = (e) => {
+  //   const { files } = e.target;
+  //   const uploadFile = files[0];
+  //   console.log(uploadFile);
+  //   if (uploadFile && uploadFile instanceof Blob) {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(uploadFile);
+  //     reader.onloadend = () => {
+  //       setImage(reader.result);
+  //       setIsImage(true);
+  //     };
+  //     console.log(reader);
+  //     console.log(typeof image);
+  //   } else {
+  //     console.error("잘못된 파일 타입. Blob을 기대했습니다.");
+  //     setIsImage(false);
+  //   }
+  // };
+  const onChangeImageUpload = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0]);
       const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
+      reader.readAsDataURL(event.target.files[0]);
       reader.onloadend = () => {
-        setImage(reader.result);
-        setIsImage(true);
+        setReadImage(reader.result);
       };
-      console.log(reader);
-      console.log(typeof image);
-    } else {
-      console.error("잘못된 파일 타입. Blob을 기대했습니다.");
-      setIsImage(false);
+      console.log("선택된 파일:", image);
+      console.log(event.target.files[0]);
+      setIsImage(true);
     }
   };
-
   // image 파일 올리는 방법 2
 
   // const [imageName, setImageName] = useState();
@@ -248,12 +260,14 @@ const SignupDetail = () => {
     } else {
       // 개인 회원을 선택했을 때
       if (isImage) {
+        console.log(image);
         formData.append("profile_img", image);
       }
       formData.append("user_type", "Standard");
     }
 
     try {
+      console.log(formData);
       const response = await axios.post(`${API_URL}/regist`, formData);
       console.log(response);
       if (response.status === 200) {
@@ -384,6 +398,7 @@ const SignupDetail = () => {
               changeHandler={changeHandler}
               companyEmail={companyEmail}
               companyEmailHandler={companyEmailHandler}
+              readImage={readImage}
             />
             <input
               className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "
