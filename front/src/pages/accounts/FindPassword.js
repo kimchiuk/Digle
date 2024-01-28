@@ -35,8 +35,11 @@ const FindPassword = () => {
 
   const verifyEmail = async () => {
     setLoading(true);
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('email', email)
     try {
-      const response = await axios.post(`${API_URL}/verify_email`, { email });
+      const response = await axios.post(`${API_URL}/verify_email`, formData);
       setUsername(response.data.username);
       setIsVerified(true);
       startTimer();
