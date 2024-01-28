@@ -7,8 +7,7 @@ import Video from "./Video/Video";
 function VideoChat() {
   const [roomId, setRoomId] = useState(null);
   const [feeds, setFeeds] = useState([]);
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
+
   let janusInstance = null;
   let videoRoom = null;
   let mystream = null;
@@ -24,8 +23,8 @@ function VideoChat() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const room_id = parseInt(queryParams.get("roomId"), 10);
-  const user_id = queryParams.get("userId");
-  const role = queryParams.get("role");
+  const user_id = (queryParams.get("userId"));
+
   const opaqueId = "videoroomtest-" + Janus.randomString(12); //클라이언트 고유식별값
   const subscriber_mode = false; // true면 비디오 열기
   const [myFeed, setMyFeed] = useState({});
@@ -61,6 +60,7 @@ function VideoChat() {
       setRoomId(room_id); // URL에서 추출한 room_id를 상태로 설정
       initJanus();
       setupPopStateListener();
+
     }
   
   }, [room_id]);
@@ -451,9 +451,8 @@ function newRemoteFeed(id, display, audio, video) {
       );
     },
     onlocalstream: function (stream) {
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
-      }
+         // The subscriber stream is recvonly, we don't expect anything here
+
     },
 
     onremotestream: function (stream) {
@@ -596,10 +595,7 @@ function newRemoteFeed(id, display, audio, video) {
   const handlePopState = () => {
     leaveRoom();
   };
-
-
-
-  
+    
 
   // VideoChat 컴포넌트 내부
   const renderRemoteVideos = remoteStreams.map((participant) => (
@@ -645,9 +641,9 @@ function newRemoteFeed(id, display, audio, video) {
           {/* <button onClick={handleAudioActiveClick}>
             {activeAudio ? "소리 끄기" : "소리 켜기"}
           </button> */}
-          <button onClick={handleVideoActiveClick}>
+          {/* <button onClick={handleVideoActiveClick}>
             {activeVideo ? "비디오 끄기" : "비디오 켜기"}
-          </button>
+          </button> */}
           {/* <button onClick={handleSpeakerActiveClick}>
             {activeSpeaker ? "화자 추적 비활성화" : "화자 추적 활성화"}
           </button> */}
@@ -674,7 +670,7 @@ function newRemoteFeed(id, display, audio, video) {
               <Video
                 stream={myFeed.stream}
                 onClick={handleMainStream}
-                username={username}
+                username={user_id}
                 muted={false}
                 // activeSpeaker={activeSpeaker}
               />
