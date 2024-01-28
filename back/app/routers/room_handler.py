@@ -107,13 +107,14 @@ def create_janus_room(room_id: int):
     
     room_url = f"{janus_url}/{session_client}/{plugin_id}"
     
+  
     create_data = {
         "janus": "message",
         "transaction": str(uuid.uuid4()),
         "admin_secret": admin_secret,
         "body": {
             "request": "create",
-            "room": room_id,
+            "room": room_id
         },
     }
     
@@ -143,6 +144,8 @@ async def create_room(room_id: int):
         return janus_response
     else:
         raise HTTPException(status_code=500, detail="Janus room creation failed")
+
+
 
 
 
@@ -187,6 +190,7 @@ async def get_available_rooms():
     else:
         raise HTTPException(status_code=500, detail="Failed to create Janus session")
  
+ 
 @router.get("/rooms/{room_id}/participants")
 def get_room_participants(session_client: str, room_id: int):
     try:
@@ -201,8 +205,6 @@ def get_room_participants(session_client: str, room_id: int):
         
         if response.status_code == 200 and response.json().get("janus") == "success":
             plugin_id = response.json()["data"]["id"]
-            
-            print(plugin_id)
 
             # 방 참가자 목록을 가져오는 Janus 요청
             janus_request = {
@@ -257,6 +259,7 @@ def destroy_janus_room(session_id: str, room_id: int):
         return response.json()
     else:
         return {"janus": "error", "message": f"Failed to destroy Janus room: {response.status_code}"}
+
 
 #방없애보리기 라우터버젼 
 @router.post("/rooms/{room_id}/destroy")
