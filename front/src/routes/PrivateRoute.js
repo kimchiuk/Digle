@@ -5,7 +5,7 @@ import axios from "axios";
 
 const PrivateRoute = () => {
   const auth = useContext(AuthContext);
-  const API_URL = "https://127.0.0.1:8000";
+  const API_URL = "https://localhost:8000";
 
   useEffect(() => {
     const formData = new FormData();
