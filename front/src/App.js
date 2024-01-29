@@ -19,9 +19,12 @@ import KakaoLoginButton from "./components/KakaoLoginButton";
 import KakaoLoginCallback from "./components/KakaoLoginCallback";
 import CreateRoom from "./components/WebRTC/CreateRoom";
 import VideoChat from "./components/WebRTC/VideoChat";
-import Test from "./pages/TestPage";
+import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
 import ChangePassword from "./pages/accounts/ChangePassword";
+
+// 나중에 반드시 지우셈
+import Anhs from "./components/WebRTC/hyunsung";
 
 function App() {
   return (
@@ -30,8 +33,11 @@ function App() {
         <Navbar />
 
         <Routes>
+          {/* 이부분 반드시 삭제하셈 */}
+          <Route path="/anhs" element={<Anhs />} />
+          
           <Route path="/" element={<Main />} />
-          <Route path="/test" element={<Test />} />
+          <Route path="/test_router" element={<TestRouter />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/detail" element={<SignupDetail />} />
           <Route path="/profile" element={<Profile />} />
