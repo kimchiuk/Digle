@@ -1,3 +1,4 @@
+// VideoChat.js
 import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -22,9 +23,7 @@ function VideoChat() {
       setRoomId(room_id); // URL에서 추출한 room_id를 상태로 설정
       initJanus();
     }
-  
   }, [room_id]);
-
 
   const initJanus = () => {
     Janus.init({
@@ -39,10 +38,10 @@ function VideoChat() {
     });
   };
 
-  const createJanusInstance =  () => {
+  const createJanusInstance = () => {
     janusInstance = new Janus({
       server: "http://34.125.238.83/janus",
-      success:  function () {
+      success: function () {
         attachVideoRoomPlugin();
         startKeepAlive(janusInstance.getSessionId());
         setupPopStateListener();
@@ -98,10 +97,11 @@ function VideoChat() {
   const startKeepAlive = (sessionId) => {
     const keepAliveInterval = setInterval(() => {
       if (janusInstance && janusInstance.send) {
+        // 추가: send 메서드 존재 여부 확인
         janusInstance.send({ janus: "keepalive", session_id: sessionId });
       }
     }, 30000);
-//수정부분
+    //수정부분
     return () => {
       clearInterval(keepAliveInterval);
       if (janusInstance) {
@@ -120,11 +120,16 @@ function VideoChat() {
 
   const joinRoom = async (roomId) => {
     try {
-      const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
 
       if (localVideoRef.current) {
-        localVideoRef.current.srcObject = cameraStream;
+        localVideoRef.current.srcObject = cameraStream; // 내 카메라 화면
       }
 
       const join = {
@@ -198,7 +203,12 @@ function VideoChat() {
   const renderRemoteVideos = remoteStreams.map((participant) => (
     <div key={participant.id}>
       <p>{participant.display}</p>
-      <video ref={(videoRef) => videoRef && (videoRef.srcObject = participant.stream)} autoPlay></video>
+      <video
+        ref={(videoRef) =>
+          videoRef && (videoRef.srcObject = participant.stream)
+        }
+        autoPlay
+      ></video>
     </div>
   ));
 
@@ -213,7 +223,6 @@ function VideoChat() {
       {renderRemoteVideos}
       <button onClick={handleGoBack}>나가기</button>
     </div>
-
   );
 }
 
