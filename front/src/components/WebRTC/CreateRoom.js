@@ -17,7 +17,7 @@ function CreateRoom() {
 
       // 방 만들기 API 호출
       const createResponse = await axios.post(
-        `http://localhost:8000/rooms/create`,
+        `https://localhost:8000/rooms/create`,
         null,  // 요청 바디가 없음을 나타냄
         {
           params: {
