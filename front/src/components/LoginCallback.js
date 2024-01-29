@@ -8,7 +8,10 @@ const LoginCallback = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const code = params.get("code");
-    const provider = params.get("provider");
+    console.log(params.get("state"));
+    const provider = JSON.parse(decodeURIComponent(params.get("state")))[
+      "provider"
+    ];
     if (code) {
       handleOauthLogin(provider, code);
     }
