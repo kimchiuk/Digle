@@ -15,8 +15,8 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 ##혹시나 삭제해야 하는 부분
 origins = [
-    "http://localhost",
-    "http://localhost:3000",  # React 개발 서버의 기본 포트
+    "https://localhost",
+    "https://localhost:3000",  # React 개발 서버의 기본 포트
 ]
 
 app.add_middleware(
