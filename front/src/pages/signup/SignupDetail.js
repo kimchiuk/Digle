@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
 import SelectSignup from "../../components/signup/SelectSignup";
 
 const SignupDetail = () => {
+  const navigate = useNavigate();
+
   // id, pwd, pwd2, name, email, address, phone
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,12 +21,7 @@ const SignupDetail = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isPwd, setIsPwd] = useState(false);
   const [isConfirmPwd, setIsConfirmPwd] = useState(false);
-  const API_URL = "http://127.0.0.1:8000";
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-  };
-  // handler
+  const API_URL = "https://localhost:8000";
 
   // API 만들어지면 axios 요청 보내서 로직 구현
   const [isCheckEmail, setIsCheckEmail] = useState(false);
@@ -31,32 +29,41 @@ const SignupDetail = () => {
   const [emailCode, setEmailCode] = useState("");
   const [emailCodeMsg, setEmailCodeMsg] = useState("");
 
-  const handleCheckEmail = async () => {
+  const handleCheckEmail = async (e) => {
+    e.preventDefault();
     // 폼 데이터에 담아서 전송
     const formData = new FormData();
     formData.append("email", email);
 
-    try {
-      const response = await axios.post(
-        `${API_URL}/request_verify_email`,
-        formData
-      );
-      console.log(response);
+    if (isEmail) {
+      alert("이메일이 발송되었습니다.");
+      setIsCheckEmail(true);
+      try {
+        const response = await axios.post(
+          `${API_URL}/request_verify_email`,
+          formData
+        );
+        console.log(response);
 
-      if (response.data) {
-        // setEmailMessage("이미 가입된 이메일입니다.");
-        // setEmailMessage("사용 가능한 이메일입니다.");
-        setIsCheckEmail(true);
-        setEmailCodeOk(false);
-      } else {
-        setEmailMessage("이미 가입된 이메일입니다.");
-        setIsCheckEmail(false);
-        setEmailCodeOk(true);
+        if (response.data) {
+          // setEmailMessage("이미 가입된 이메일입니다.");
+          // setEmailMessage("사용 가능한 이메일입니다.");
+          setEmailCodeOk(false);
+        } else {
+          setEmailMessage("이미 가입된 이메일입니다.");
+          setEmailCodeOk(true);
+        }
+      } catch (error) {
+        console.error("이메일 중복 확인 오류:", error);
       }
-    } catch (error) {
-      console.error("이메일 중복 확인 오류:", error);
+    } else {
+      alert("이메일 형식을 지켜주세요");
     }
   };
+
+  // const handleEmailVerification = async () => {
+  //   await handleCheckEmail();
+  // };
 
   const emailCodeHandler = (e) => {
     const currentCode = e.target.value;
@@ -64,7 +71,8 @@ const SignupDetail = () => {
   };
 
   // 코드 인증 과정
-  const handleCheckCode = async () => {
+  const handleCheckCode = async (e) => {
+    e.preventDefault();
     // 폼 데이터에 담아서 전송
     const formData = new FormData();
     formData.append("email", email);
@@ -72,6 +80,7 @@ const SignupDetail = () => {
     try {
       const response = await axios.post(`${API_URL}/verify_email`, formData);
       if (response.status === 200) {
+        console.log(response);
         setEmailCodeOk(true);
         alert("인증되었습니다.");
       } else {
@@ -81,8 +90,10 @@ const SignupDetail = () => {
       console.log("에러 내용", error);
     }
   };
+  // const handleCodeVerification = async () => {
+  //   await handleCheckCode();
+  // };
 
-  // const clickId = (e) => {};
   const emailHandler = (e) => {
     const currentEmail = e.target.value;
     setEmail(currentEmail);
@@ -104,7 +115,9 @@ const SignupDetail = () => {
     const passwordRegExp =
       /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
     if (!passwordRegExp.test(currentPassword)) {
-      setPasswordMsg("숫자+영문+특수문자 조합으로 8자리 이상 입력해주세요!");
+      setPasswordMsg(
+        "대문자+소문자+숫자+특수문자 조합으로 8자리 이상 입력해주세요!"
+      );
       setIsPwd(false);
     } else {
       setPasswordMsg("안전한 비밀번호입니다.");
@@ -138,21 +151,72 @@ const SignupDetail = () => {
   const [image, setImage] = useState(
     "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0"
   );
+  const [isImage, setIsImage] = useState(false);
+  const [readImage, setReadImage] = useState();
+  // 이미지 올리는 함수 1
 
-  const onChangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    if (uploadFile && uploadFile instanceof Blob) {
+  // const onChangeImageUpload = (e) => {
+  //   const { files } = e.target;
+  //   const uploadFile = files[0];
+  //   console.log(uploadFile);
+  //   if (uploadFile && uploadFile instanceof Blob) {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(uploadFile);
+  //     reader.onloadend = () => {
+  //       setImage(reader.result);
+  //       setIsImage(true);
+  //     };
+  //     console.log(reader);
+  //     console.log(typeof image);
+  //   } else {
+  //     console.error("잘못된 파일 타입. Blob을 기대했습니다.");
+  //     setIsImage(false);
+  //   }
+  // };
+  const onChangeImageUpload = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0]);
       const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
+      reader.readAsDataURL(event.target.files[0]);
       reader.onloadend = () => {
-        setImage(reader.result);
+        setReadImage(reader.result);
       };
-      console.log(typeof image);
-    } else {
-      console.error("잘못된 파일 타입. Blob을 기대했습니다.");
+      console.log("선택된 파일:", image);
+      console.log(event.target.files[0]);
+      setIsImage(true);
     }
   };
+  // image 파일 올리는 방법 2
+
+  // const [imageName, setImageName] = useState();
+  // const onChangeImageUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   setImageName(file);
+  //   if (file) {
+  //     const allowedExtensions = [
+  //       "png",
+  //       "jpg",
+  //       "jpeg",
+  //       "gif",
+  //       "webp",
+  //       "svg",
+  //       "pdf",
+  //       "psd",
+  //       "gif",
+  //       "ai",
+  //       "tiff",
+  //       "bmp",
+  //       "eps",
+  //     ];
+  //     const fileExtension = file.name.split(".").pop().toLowerCase();
+  //     if (!allowedExtensions.includes(fileExtension)) {
+  //       alert("uploadError");
+  //       return;
+  //     } else {
+  //       setImage(file);
+  //     }
+  //   }
+  // };
 
   // businessSignup 쓰이는 상태, 함수
   const [enrollCompany, setEnrollCompany] = useState({
@@ -199,20 +263,24 @@ const SignupDetail = () => {
       // 기업 회원을 선택했을 때
       formData.append("user_type", "Business");
       formData.append("company_info", companyName);
+      formData.append("company_email", companyEmail);
       formData.append("company_address", companyAddress);
     } else {
       // 개인 회원을 선택했을 때
-      if (image) {
+      if (isImage) {
+        console.log(image);
         formData.append("profile_img", image);
       }
       formData.append("user_type", "Standard");
     }
 
     try {
+      console.log(formData);
       const response = await axios.post(`${API_URL}/regist`, formData);
       console.log(response);
       if (response.status === 200) {
         alert("회원가입이 완료되었습니다.");
+        navigate("/login");
       } else {
         alert("뭔가 이상이 있습니다. ");
       }
@@ -279,6 +347,7 @@ const SignupDetail = () => {
                 id="password"
                 value={password}
                 onChange={passwordHandler}
+                placeholder="8~25자이내 대문자+소문자+특수문자+숫자의 조합"
               />
               <div
                 className={
@@ -298,6 +367,7 @@ const SignupDetail = () => {
                 id="confirmPwd"
                 value={confirmPassword}
                 onChange={confirmPasswordHandler}
+                placeholder="위 비밀번호와 동일하게 입력해주세요"
               />
               <div
                 className={
@@ -339,6 +409,7 @@ const SignupDetail = () => {
               changeHandler={changeHandler}
               companyEmail={companyEmail}
               companyEmailHandler={companyEmailHandler}
+              readImage={readImage}
             />
             <input
               className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "

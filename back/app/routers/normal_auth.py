@@ -67,7 +67,7 @@ async def login_for_access_token(
         raise HTTPException(status_code=409, detail="Invalid or expired token")
     if profile_img and profile_img.filename:
         # 파일 저장 또는 처리
-        file_location = f"files/{profile_img.filename}"
+        file_location = f"C:/files/{profile_img.filename}"
         with open(file_location, "wb+") as file_object:
             file_object.write(profile_img.file.read())
 
