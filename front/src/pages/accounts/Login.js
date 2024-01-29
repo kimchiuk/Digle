@@ -11,7 +11,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const MainImg =
     "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVjBRv%2FbtqHMwKxFgG%2FNPAxkGgvDkXeszqVT7MFm0%2Fimg.jpg";
-  const API_URL = 'http://127.0.0.1:8000'
+  const API_URL = "https://localhost:8000";
   useEffect(() => {
     const handleStorageChange = () => {
       const rememberedEmail = localStorage.getItem("email");
@@ -37,10 +37,10 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Login button clicked!");
-    
+
     const formData = new FormData();
-    formData.append("email", email)
-    formData.append("password", password)
+    formData.append("email", email);
+    formData.append("password", password);
 
     if (rememberMe) {
       localStorage.setItem("email", email);
@@ -51,7 +51,10 @@ const Login = () => {
       const response = await axios.post(`${API_URL}/login`, formData);
       console.log("로그인 성공: ", response);
     } catch (error) {
-      console.error("에라이 씨발 좀 되라고 개 씨발 좆같은거 에러 발생: ", error);
+      console.error(
+        "에라이 씨발 좀 되라고 개 씨발 좆같은거 에러 발생: ",
+        error
+      );
     }
   };
 

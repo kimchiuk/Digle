@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
 import SelectSignup from "../../components/signup/SelectSignup";
 
 const SignupDetail = () => {
+  const navigate = useNavigate();
+
   // id, pwd, pwd2, name, email, address, phone
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +21,7 @@ const SignupDetail = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isPwd, setIsPwd] = useState(false);
   const [isConfirmPwd, setIsConfirmPwd] = useState(false);
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = "https://localhost:8000";
 
   // API 만들어지면 axios 요청 보내서 로직 구현
   const [isCheckEmail, setIsCheckEmail] = useState(false);
@@ -28,30 +31,33 @@ const SignupDetail = () => {
 
   const handleCheckEmail = async (e) => {
     e.preventDefault();
-    alert("이메일이 발송되었습니다.");
     // 폼 데이터에 담아서 전송
     const formData = new FormData();
     formData.append("email", email);
 
-    try {
-      const response = await axios.post(
-        `${API_URL}/request_verify_email`,
-        formData
-      );
-      console.log(response);
+    if (isEmail) {
+      alert("이메일이 발송되었습니다.");
+      setIsCheckEmail(true);
+      try {
+        const response = await axios.post(
+          `${API_URL}/request_verify_email`,
+          formData
+        );
+        console.log(response);
 
-      if (response.data) {
-        // setEmailMessage("이미 가입된 이메일입니다.");
-        // setEmailMessage("사용 가능한 이메일입니다.");
-        setIsCheckEmail(true);
-        setEmailCodeOk(false);
-      } else {
-        setEmailMessage("이미 가입된 이메일입니다.");
-        setIsCheckEmail(false);
-        setEmailCodeOk(true);
+        if (response.data) {
+          // setEmailMessage("이미 가입된 이메일입니다.");
+          // setEmailMessage("사용 가능한 이메일입니다.");
+          setEmailCodeOk(false);
+        } else {
+          setEmailMessage("이미 가입된 이메일입니다.");
+          setEmailCodeOk(true);
+        }
+      } catch (error) {
+        console.error("이메일 중복 확인 오류:", error);
       }
-    } catch (error) {
-      console.error("이메일 중복 확인 오류:", error);
+    } else {
+      alert("이메일 형식을 지켜주세요");
     }
   };
 
@@ -109,7 +115,9 @@ const SignupDetail = () => {
     const passwordRegExp =
       /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
     if (!passwordRegExp.test(currentPassword)) {
-      setPasswordMsg("숫자+영문+특수문자 조합으로 8자리 이상 입력해주세요!");
+      setPasswordMsg(
+        "대문자+소문자+숫자+특수문자 조합으로 8자리 이상 입력해주세요!"
+      );
       setIsPwd(false);
     } else {
       setPasswordMsg("안전한 비밀번호입니다.");
@@ -272,6 +280,7 @@ const SignupDetail = () => {
       console.log(response);
       if (response.status === 200) {
         alert("회원가입이 완료되었습니다.");
+        navigate("/login");
       } else {
         alert("뭔가 이상이 있습니다. ");
       }
@@ -338,6 +347,7 @@ const SignupDetail = () => {
                 id="password"
                 value={password}
                 onChange={passwordHandler}
+                placeholder="8~25자이내 대문자+소문자+특수문자+숫자의 조합"
               />
               <div
                 className={
@@ -357,6 +367,7 @@ const SignupDetail = () => {
                 id="confirmPwd"
                 value={confirmPassword}
                 onChange={confirmPasswordHandler}
+                placeholder="위 비밀번호와 동일하게 입력해주세요"
               />
               <div
                 className={
