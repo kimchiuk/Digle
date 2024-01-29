@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
 import SelectSignup from "../../components/signup/SelectSignup";
 
 const SignupDetail = () => {
+  const navigate = useNavigate();
+
   // id, pwd, pwd2, name, email, address, phone
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +21,7 @@ const SignupDetail = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isPwd, setIsPwd] = useState(false);
   const [isConfirmPwd, setIsConfirmPwd] = useState(false);
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = "https://localhost:8000";
 
   // API 만들어지면 axios 요청 보내서 로직 구현
   const [isCheckEmail, setIsCheckEmail] = useState(false);
@@ -277,6 +280,7 @@ const SignupDetail = () => {
       console.log(response);
       if (response.status === 200) {
         alert("회원가입이 완료되었습니다.");
+        navigate("/login");
       } else {
         alert("뭔가 이상이 있습니다. ");
       }
