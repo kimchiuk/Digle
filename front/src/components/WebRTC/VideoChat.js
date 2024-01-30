@@ -40,8 +40,9 @@ const VideoChat = () => {
   const handleMainStream = (stream, username) => {
     console.log("메인스트림변경");
     if (mainStream.username === username) return;
-    setMainStream(() => {
+    setMainStream((prevMainStream) => {
       return {
+        ...prevMainStream,
         stream: stream,
         username: username,
       };
@@ -279,10 +280,10 @@ const VideoChat = () => {
                   stream: track,
                 }));
 
-                // setMainStream((prev) => ({
-                //   ...prev,
-                //   stream: track,
-                // }));
+                setMainStream((prev) => ({
+                  ...prev,
+                  stream: track,
+                }));
 
                 if (
                   sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
@@ -474,7 +475,7 @@ const VideoChat = () => {
         //여기서 남의 setfeeds를 설정해야함 ㅇㅇㅋ..
         onremotetrack: function (track) {
           // Janus.debug("Remote feed #" + remoteFeed.rfid + ", stream:", stream);
-          console.log("남의 트랙내용:",track);
+          console.log("남의 트랙내용:",track,feeds);
           setFeeds((prev) => {
             let findIndex = prev.findIndex((f) => f.rfid === remoteFeed.rfid);
             let newFeed = [...prev];
@@ -669,7 +670,7 @@ const VideoChat = () => {
       >
         <Video
           stream={feed.stream}
-          onClickFunction={handleMainStream}
+          onClick={handleMainStream}
           username={feed.rfdisplay}
           muted={false}
         />
@@ -677,12 +678,17 @@ const VideoChat = () => {
     );
   });
 
+  
 
   return (
     <>
-      <div className="w-full flex flex-col">
-        <div style={{ width: "100%" }}>
-          <div className="w-[1000px]">
+      <div>
+        <div
+          style={{
+            width: "100%",
+          }}
+        >
+          <div style={{ width: "60%", float: "left" }}>
             <Video
               stream={mainStream.stream}
               username={mainStream.username}
@@ -711,38 +717,27 @@ const VideoChat = () => {
             whiteSpace: "nowrap",
           }}
         >
-          <div className="flex w-[500px]">
+          <div
+            style={{
+              width: "100px",
+              height: "100px",
+              float: "left",
+              margin: "3px",
+            }}
+          >
             {myFeed && (
               <Video
                 stream={myFeed.stream}
                 onClick={handleMainStream}
                 username={username}
                 muted={false}
+                // activeSpeaker={activeSpeaker}
               />
             )}
           </div>
-          {feeds.map((feed) => (
-            <div
-              key={feed.rfid}
-              style={{
-                width: "100px",
-                height: "100px",
-                float: "left",
-                margin: "3px",
-              }}
-            >
-              <Video
-                stream={feed.stream}
-                onClickFunction={handleMainStream}
-                username={feed.rfdisplay}
-                muted={false}
-              />
-            </div>
-          ))}
           {renderRemoteVideos}
         </div>
       </div>
-      11
     </>
   );
 };
