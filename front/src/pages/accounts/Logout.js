@@ -14,6 +14,8 @@ const Logout = () => {
       // 로그인 상태 확인
       if (!cookies.isLogin) {
         console.log("로그인 상태가 아닙니다.")
+
+        // 사용자를 로그인 페이지로 리다이렉트합니다.
         navigate("/login");
         return
       }
@@ -25,8 +27,6 @@ const Logout = () => {
 
         // 로그아웃이 성공하면 쿠키에서 사용자 정보를 지웁니다.
         removeCookie("isLogin", { path: '/', domain: 'localhost'});
-
-        // 사용자를 로그인 페이지로 리다이렉트합니다.
         navigate("/");
 
       } catch (error) {
