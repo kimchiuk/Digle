@@ -3,9 +3,9 @@ pipeline {
     
     stages {
         stage('Checkout') {
-            steps {
+            steps() {
                 script {
-                    git credentialsId: 'id-pw', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
+                    git credentialsId: 'bogeun kim', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
                 }
             }
         }
