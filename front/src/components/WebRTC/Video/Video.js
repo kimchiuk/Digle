@@ -8,7 +8,6 @@ const Video = ({ stream, username, muted, onClickFunction }) => {
   useEffect(() => {
     if (stream) {
       console.log(stream);
-
       // MediaStreamTrack의 인스턴스인 경우 처리
       if (stream instanceof MediaStreamTrack) {
         const newMediaStream = new MediaStream([stream]);
@@ -26,6 +25,7 @@ const Video = ({ stream, username, muted, onClickFunction }) => {
     }
   }, [stream]);
 
+  
   const handleClicked = (e) => {
     e.preventDefault();
     if (!onClickFunction) return;

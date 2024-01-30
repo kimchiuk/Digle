@@ -438,7 +438,7 @@ const VideoChat = () => {
             // Answer and attach
             remoteFeed.createAnswer({
               jsep: jsep,
-              media: { data: true, audioSend: false, videoSend: false }, // We want recvonly audio/video
+              media: { data: false, audioSend: false, videoSend: false }, // We want recvonly audio/video
               success: function (jsep) {
                 Janus.debug("Got SDP!", jsep);
                 var body = { request: "start", room: myroom };
@@ -739,8 +739,10 @@ const VideoChat = () => {
               />
             </div>
           ))}
+          {renderRemoteVideos}
         </div>
       </div>
+      11
     </>
   );
 };
