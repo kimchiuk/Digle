@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import Main2 from "./MainPage2";
 import Main3 from "./MainPage3";
+import MainImg from "../../assets/main.png"
 
 const Main = () => {
-  const MainImg =
-    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVjBRv%2FbtqHMwKxFgG%2FNPAxkGgvDkXeszqVT7MFm0%2Fimg.jpg";
   return (
     <div className="bg-slate-50">
       <div className="relative w-full h-full overflow-hidden">

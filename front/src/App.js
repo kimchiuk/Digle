@@ -20,6 +20,7 @@ import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
 import ChangePassword from "./pages/accounts/ChangePassword";
 import LoginCallback from "./components/LoginCallback";
+import Logout from "./pages/accounts/Logout"
 
 // 나중에 반드시 지우셈
 import Anhs from "./components/WebRTC/hyunsung";
@@ -46,6 +47,7 @@ function App() {
           <Route path="/solution/1/" element={<Solution1 />} />
           <Route path="/solution/2/" element={<Solution2 />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
 
           <Route path="/login/callback" element={<LoginCallback />} />
 

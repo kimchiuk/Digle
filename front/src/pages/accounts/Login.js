@@ -5,15 +5,13 @@ import { useCookies } from "react-cookie";
 import NaverLoginButton from "../../components/NaverLoginButton";
 import KakaoLoginButton from "../../components/KakaoLoginButton";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
-import MainImg from "../../assets/test.png";
-import { useAuth } from "../../context/AuthContext";
+import MainImg from "../../assets/main.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const API_URL = "https://localhost:8000";
-  const { token } = useAuth();
 
   // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
   const [userId, setUserId] = useState(false);
@@ -48,15 +46,6 @@ const Login = () => {
       if (isRemember) {
         setCookie("rememberUserId", email);
       }
-
-      const allCookies = document.cookie;
-      console.log("모든 쿠키:", allCookies);
-
-      // 특정 쿠키 가져오기
-      const specificCookie = document.cookie
-        .split(";")
-        .find((cookie) => cookie.includes("access_token"));
-      console.log("특정 쿠키:", specificCookie);
 
       // 로그인 성공 시 이전 페이지로 이동해줄 거임
       navigate("/");

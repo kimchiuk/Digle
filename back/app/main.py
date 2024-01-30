@@ -3,7 +3,7 @@ from typing import List, Dict
 import json, jwt
 from sqlalchemy.orm import Session
 
-from app.routers import normal_auth
+from app.routers import auth_ext, normal_auth
 from . import models, schemas
 from .database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,6 +30,7 @@ app.add_middleware(
 app.include_router(oauth_login.router)
 app.include_router(normal_auth.router)
 app.include_router(room_handler.router)
+app.include_router(auth_ext.router)
 
 # 추가적인 인증 및 사용자 관리 로직
 if __name__ == "__main__":
