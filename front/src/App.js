@@ -35,11 +35,15 @@ function App() {
         <Routes>
           {/* 이부분 반드시 삭제하셈 */}
           <Route path="/anhs" element={<Anhs />} />
-          
+
           <Route path="/" element={<Main />} />
           <Route path="/test_router" element={<TestRouter />} />
+          {/* authContext가 완성 될 경우 아래 두개와 바꾸기 */}
+          {/* <PublicRoute path="/signup" element={<Signup />} />
+          <PublicRoute path="/signup/detail" element={<SignupDetail />} /> */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/detail" element={<SignupDetail />} />
+          {/* <PrivateRoute path="/profile" element={<Profile />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/solution/1/" element={<Solution1 />} />
           <Route path="/solution/2/" element={<Solution2 />} />

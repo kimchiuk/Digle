@@ -113,7 +113,7 @@ const SignupDetail = () => {
     const currentPassword = e.target.value;
     setPassword(currentPassword);
     const passwordRegExp =
-      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
     if (!passwordRegExp.test(currentPassword)) {
       setPasswordMsg(
         "대문자+소문자+숫자+특수문자 조합으로 8자리 이상 입력해주세요!"
