@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import Logout from "../pages/accounts/Logout";
+import { useCookies } from "react-cookie";
 
 const Navbar = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [cookies, , removeCookie] = useCookies(["isLogin"]);
+
   const [isProductDropdownOpen, setProductDropdownOpen] = useState(false);
   const [isSolutionDropdownOpen, setSolutionDropdownOpen] = useState(false);
 
   // Refs for the dropdown containers
   const productDropdownRef = useRef(null);
   const solutionDropdownRef = useRef(null);
-
-  const toggleLogin = () => {
-    setIsLogin((prevIsLogin) => !prevIsLogin);
-  };
 
   const toggleProductDropdown = () => {
     setProductDropdownOpen(!isProductDropdownOpen);
@@ -44,9 +41,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const loginStatus = localStorage.getItem('loginStatus');
-    setIsLogin(loginStatus === "true");
-
     // Attach event listener when the component mounts
     document.addEventListener("mousedown", handleClickOutside);
     // Detach event listener when the component unmounts
@@ -155,14 +149,14 @@ const Navbar = () => {
         </div>
       </div>
       <div className="mr-4 whitespace-nowrap">
-        {isLogin ? (
+        {cookies.isLogin ? (
           <>
-            <button
-              onClick={toggleLogin}
+            <Link
+              to="/logout"
               className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
             >
-              <Logout/>
-            </button>
+              Logout
+            </Link>
             <Link
               to="/profile"
               className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
