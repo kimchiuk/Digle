@@ -1,17 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ImageUpload from "../../components/ImageUpload";
+import axios from "axios";
 
-const Profile = ({ id, name, email, phone }) => {
-  //   const [changeEmail, setEmail] = useState(email);
-  //   const [changeName, setName] = useState(name);
+const Profile = ({ email, name }) => {
+  const [changeEmail, setEmail] = useState(email);
+  const [changeName, setName] = useState(name);
+  const [] = useState();
+  const [changeInfo, setChangeInfo] = useState(false);
+  const changelick = () => {
+    setChangeInfo((prevChangeInfo) => !prevChangeInfo);
+  };
 
-  //   const [changeInfo, setChangeInfo] = useState(false);
-  //   const changelick = () => {
-  //     setChangeInfo((prevChangeInfo) => !prevChangeInfo);
-  //   };
+  const API_URL = "https://localhost:8000";
+
+  useEffect(() => {
+    // useContext token 추가하기
+    axios
+      .get(`${API_URL}/profile`)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
 
   // 프로필 사진 첨부
+  const profileUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("emage");
+      formData.append("name", changeName);
+      const response = await axios.put(`${API_URL}/profile`, formData);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>

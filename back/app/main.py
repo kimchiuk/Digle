@@ -31,6 +31,7 @@ app.include_router(oauth_login.router)
 app.include_router(normal_auth.router)
 app.include_router(room_handler.router)
 
+
 # 추가적인 인증 및 사용자 관리 로직
 if __name__ == "__main__":
     import uvicorn

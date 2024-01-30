@@ -36,12 +36,12 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  });
+  }, []);
 
   // useEffect(() => {
   //   const checkToken = async () => {
   //     const formData = new FormData();
-  //     formData.append("token", "tokenValue");
+  //     formData.append("token", token);
 
   //     try {
   //       const response = axios.post(`${API_URL}/???`, formData);

@@ -275,7 +275,6 @@ const SignupDetail = () => {
     }
 
     try {
-      console.log(formData);
       const response = await axios.post(`${API_URL}/regist`, formData);
       console.log(response);
       if (response.status === 200) {
