@@ -78,7 +78,7 @@ async def login_for_access_token(
             "code": code,
             "client_id": os.getenv("GOOGLE_CLIENT_ID"),
             "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-            "redirect_uri": f"{REDIRECT_BASE_URI}/google_login/callback",  # 'http'를 사용해야 할 수도 있습니다.
+            "redirect_uri": f"{REDIRECT_BASE_URI}/login/callback",  # 'http'를 사용해야 할 수도 있습니다.
             "grant_type": "authorization_code",
         }
         token_response = await client.post("https://oauth2.googleapis.com/token", data=data)  # 'await' 사용
@@ -117,15 +117,10 @@ async def login_for_access_token(
             "code": code,
             "client_id": os.getenv("NAVER_CLIENT_ID"),
             "client_secret": os.getenv("NAVER_CLIENT_SECRET"),
-            "redirect_uri": f"{REDIRECT_BASE_URI}/naver_login/callback",
+            "redirect_uri": f"{REDIRECT_BASE_URI}/login/callback",
             "grant_type": "authorization_code",
         }
-        token_response = await client.post("https://oauth2.googleapis.com/token", data=data)
-
-        if token_response.resultcode != 200:
-            raise HTTPException(
-                status_code=token_response.status_code, detail="OAuth2 token request failed"
-            )  # 'token_response.status_code' 사용
+        token_response = await client.post("https://nid.naver.com/oauth2.0/token", data=data)
 
         token_data = token_response.json()
         access_token = token_data.get("access_token")
@@ -141,7 +136,7 @@ async def login_for_access_token(
 
         # 유저정보 추출
         user_info = naver_response["response"]
-        message, action, response = user_db_login("Google", user_info["sub"], user_info, db, response)
+        message, action, response = user_db_login("Naver", user_info["id"], user_info, db, response)
 
     return JSONResponse(
         status_code=200,
@@ -159,7 +154,7 @@ async def login_for_access_token(
         data = {
             "grant_type": "authorization_code",
             "client_id": os.getenv("KAKAKO_CLIENT_ID"),
-            "redirect_uri": f"{REDIRECT_BASE_URI}/kakao_login/callback",
+            "redirect_uri": f"{REDIRECT_BASE_URI}/login/callback",
             "code": code,
         }
         token_response = await client.post(
