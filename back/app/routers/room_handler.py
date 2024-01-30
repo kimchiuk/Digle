@@ -59,6 +59,7 @@ def communicate_with_janus_join(session_client: str, room_id: int, user_id: str,
     }
 
     response = requests.post(f"{janus_url}/{session_client}/{plugin_id}", json=janus_message)
+
     
     if response.status_code == 200:
         return {
@@ -132,6 +133,7 @@ async def join_room(room_id: int, user_id: str):
     if session_client is None:
         raise HTTPException(status_code=500, detail="Failed to create Janus session for room join")
     janus_response = communicate_with_janus_join(session_client, room_id, user_id, "publisher")
+    print(janus_response)
     return {"janus": "success", "message": "Room exists", "janus_server_response": janus_response}
 
 
@@ -216,6 +218,7 @@ def get_room_participants(session_client: str, room_id: int):
                 }
             }
             response = requests.post(f"{janus_url}/{session_client}/{plugin_id}", json=janus_request, headers=headers)
+            print(response.json())
             response_data = response.json()
             # 핸들이 없는 경우 오류 처리
             if "error" in response_data:
