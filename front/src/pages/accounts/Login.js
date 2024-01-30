@@ -11,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
   const API_URL = "https://localhost:8000";
 
   // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
@@ -47,7 +48,7 @@ const Login = () => {
         setCookie("rememberUserId", email);
       }
 
-      // 로그인 성공 시 이전 페이지로 이동해줄 거임
+      // 로그인 성공 시 이전 페이지로 이동해줄 거임.
       navigate("/");
     } catch (error) {
       console.error("에러 발생: ", error);

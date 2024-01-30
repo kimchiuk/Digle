@@ -4,85 +4,53 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState("");
-  const [isToken, setIsToken] = useState(false);
-
+  const [accessToken, setAccessToken] = useState(null);
   const API_URL = "https://localhost:8000";
 
-  // axios를 사용하여 데이터 가져오기
   useEffect(() => {
-    const formData = new FormData();
-    formData.append("withCredentials", true);
-    axios
-      .post(`${API_URL}/`, formData)
-      .then((response) => {
-        // 응답 헤더에서 Set-Cookie 가져오기
-        const setCookieHeader = response.headers.get("Set-Cookie");
+    const cookieAccessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("access_token="))
+      ?.split("=")[1];
 
-        // Set-Cookie 헤더에서 access_token 추출
-        const accessTokenMatch = setCookieHeader.match(/access_token=([^;]+)/);
-
-        // 추출한 access_token 값이 있다면 출력
-        if (accessTokenMatch) {
-          const accessToken = accessTokenMatch[1];
-          console.log("Access Token:", accessToken);
-          setToken(accessToken);
-        } else {
-          console.log("Access Token이 없습니다.");
-        }
-        // 다른 응답 처리 로직을 여기에 추가할 수 있습니다.
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    if (cookieAccessToken) {
+      setAccessToken(cookieAccessToken);
+    }
   }, []);
 
-  // useEffect(() => {
-  //   const checkToken = async () => {
-  //     const formData = new FormData();
-  //     formData.append("token", token);
-
-  //     try {
-  //       const response = axios.post(`${API_URL}/???`, formData);
-
-  //       // 토큰이 유효할 시
-  //       console.log(response);
-  //       setIsLoggedIn(true);
-
-  //       // 토큰이 유효하지 않을 시
-  //     } catch (error) {
-  //       console.error("에러내용 ", error);
-  //       setIsLoggedIn(false);
-  //     }
-  //   };
-  //   checkToken();
-  // }, [token]);
-
-  // const isLogin = () => !!localStorage.getItem("token");
-  // const login = () => {
-  //   if (isLogin) {
-  //     setIsLoggedIn(true);
-  //   }
-  // };
-
-  // const logout = () => {
-  //   if (!isLogin) {
-  //     setIsLoggedIn(false);
-  //   }
-  // };
-
-  const contextValue = {
-    isLoggedIn,
-    token,
-    setToken,
+  const updateAccessToken = (newToken) => {
+    setAccessToken(newToken);
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ accessToken, updateAccessToken }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const contextValue = useContext(AuthContext);
+
+  if (!contextValue) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return contextValue;
+};
+
+export const useAuthenticate = () => {
+  const API_URL = "https://localhost:8000";
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  const isUserLoggedIn = false;
+
+  return isUserLoggedIn;
 };
