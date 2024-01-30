@@ -9,10 +9,10 @@ let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
 let receivedFileChunk = {};
 
-const VideoChat = (props) => {
-  const [mainStream, setMainStream] = useState({});
-  const [feeds, setFeeds] = useState([]);
-  const [myFeed, setMyFeed] = useState({});
+const VideoChat = () => {
+  const [mainStream, setMainStream] = useState({}); //지금 메인으로 보여주는 화면
+  const [feeds, setFeeds] = useState([]);   //다른사람의 화면배열 (rfid,rfdisplay)
+  const [myFeed, setMyFeed] = useState({}); //내 컴퓨터화면 공유
   const [receiveChat, setReceiveChat] = useState("");
   const [activeVideo, setActiveVideo] = useState(true);
   const [activeAudio, setActiveAudio] = useState(true);
@@ -37,6 +37,7 @@ const VideoChat = (props) => {
   // };
 
   const handleMainStream = (stream, username) => {
+    console.log("메인스트림변경");
     if (mainStream.username === username) return;
     setMainStream(() => {
       return {
@@ -187,7 +188,7 @@ const VideoChat = (props) => {
                   } else if (event === "event") {
                     // 새로운 접속자가 있으면
                     if (msg["publishers"]) {
-                      console.log("접속자발생!");
+                      console.log("접속자발생!",msg);
                       let list = msg["publishers"];
                       Janus.debug(
                         "Got a list of available publishers/feeds:",
@@ -211,7 +212,8 @@ const VideoChat = (props) => {
                         );
                         newRemoteFeed(id, display, audio, video); //publisher true'''...
                       }
-                    } else if (msg["leaving"]) {
+                    } 
+                    else if (msg["leaving"]) {
                       var leaving = msg["leaving"];
                       Janus.log("Publisher left: " + leaving);
                       var remoteFeed = null;
@@ -242,7 +244,7 @@ const VideoChat = (props) => {
                 }
 ///
                 if (jsep) {
-                  console.log("jsep =============", jsep,"마이스트림:" ,mystream,"마이피드:",myFeed);
+                  console.log("jsep =============", jsep,"마이스트림:" ,mystream);
                   sfutest.handleRemoteJsep({ jsep: jsep });
                   //anwer sdp를 처리해서 janus서버와 webrtc서버 연결 완료
                   var audio = msg["audio_codec"];
@@ -266,15 +268,21 @@ const VideoChat = (props) => {
                 }
               },
 
+
               onlocaltrack : function(track, on) {
-                console.log("getUserMedia 잘 받아옴",track ,on);
+                console.log("내 트랙내용:",track);
                 Janus.debug(" ::: Got a local track :::", track);
                 mystream = track;
                 setMyFeed((prev) => ({
                   ...prev,
                   stream: track,
                 }));
-              
+
+                // setMainStream((prev) => ({
+                //   ...prev,
+                //   stream: track,
+                // }));
+
                 if (
                   sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
                   sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
@@ -291,7 +299,7 @@ const VideoChat = (props) => {
                   }
                 }
               },
-              onremotestream: function (stream) {
+              onremotetrack: function (track) {
                 // 발행하는 스트림은 보내기만함
               },
               ondataopen: function (data) {
@@ -353,9 +361,13 @@ const VideoChat = (props) => {
       });
     }
 
+
+
+
+
+
+
     function newRemoteFeed(id, display, audio, video) {
-      // A new feed has been published, create a new plugin handle and attach to it as a subscriber
-      // 새 피드가 구독되었으므로, 새 플러그인 만들고 remote 연결
       let remoteFeed = null;
       janus.attach({
         plugin: "janus.plugin.videoroom",
@@ -396,7 +408,7 @@ const VideoChat = (props) => {
               remoteFeed.rfdisplay = msg["display"];
               connectFeed(remoteFeed);
               Janus.log(
-                "Successfully attached to feed " +
+                "Successfully attached to rffeed " +
                   remoteFeed.rfid +
                   " (" +
                   remoteFeed.rfdisplay +
@@ -454,26 +466,23 @@ const VideoChat = (props) => {
               " now"
           );
         },
-        onlocalstream: function (stream) {
+        onlocaltrack: function (stream) {
           // The subscriber stream is recvonly, we don't expect anything here
         },
-        onremotestream: function (stream) {
-          Janus.debug("Remote feed #" + remoteFeed.rfid + ", stream:", stream);
 
+        //여기서 남의 setfeeds를 설정해야함 ㅇㅇㅋ..
+        onremotetrack: function (track) {
+          // Janus.debug("Remote feed #" + remoteFeed.rfid + ", stream:", stream);
+          console.log("남의 트랙내용:",track);
           setFeeds((prev) => {
             let findIndex = prev.findIndex((f) => f.rfid === remoteFeed.rfid);
             let newFeed = [...prev];
-            newFeed[findIndex].stream = stream;
+            newFeed[findIndex].track = track;
             // newFeed[findIndex].hark = createSpeechEvents(stream);
             return newFeed;
           });
           // remoteFeed.stream = stream;
-          var videoTracks = stream.getVideoTracks();
-          if (!videoTracks || videoTracks.length === 0) {
-            // 원격 비디오 없는 경우
-          } else {
-            // 있는 경우 뭐 별도 버튼처리
-          }
+          
         },
 
 
@@ -519,13 +528,21 @@ const VideoChat = (props) => {
         },
       });
     }
-
-    // Helper to parse query string
-    function getQueryStringValue(name) {
-      // 쿼리스트링에서 룸네임 찾기
-      return 5678;
-    }
   }, []);
+  
+  useEffect(() => {
+    console.log("내마이피드가 변경습니다요:",myFeed);
+  }, [myFeed]);
+
+  useEffect(() => {
+    console.log("새로운피드 설정됬습니다요:",feeds);
+  }, [feeds]);
+
+  useEffect(() => {
+    console.log("메인스트림이 설정됬습니다요:",mainStream);
+  }, [mainStream]);
+
+
 
   const sendChatData = (data) => {
     let message = {
@@ -622,21 +639,21 @@ const VideoChat = (props) => {
     setActiveSharing((prev) => !prev);
   };
 
-  useEffect(() => {
-    if (activeSpeaker) {
-      for (let i = 0; i < feeds.length; i++) {
-        if (!feeds[i].hark) continue;
-        feeds[i].hark.on("speaking", () => {
-          handleMainStream(feeds[i].stream, feeds[i].rfdisplay);
-        });
-      }
-    } else {
-      for (let i = 0; i < feeds.length; i++) {
-        if (!feeds[i].hark) continue;
-        feeds[i].hark.off("speaking");
-      }
-    }
-  }, [activeSpeaker]);
+  // useEffect(() => {
+  //   if (activeSpeaker) {
+  //     for (let i = 0; i < feeds.length; i++) {
+  //       if (!feeds[i].hark) continue;
+  //       feeds[i].hark.on("speaking", () => {
+  //         handleMainStream(feeds[i].stream, feeds[i].rfdisplay);
+  //       });
+  //     }
+  //   } else {
+  //     for (let i = 0; i < feeds.length; i++) {
+  //       if (!feeds[i].hark) continue;
+  //       feeds[i].hark.off("speaking");
+  //     }
+  //   }
+  // }, [activeSpeaker]);
 
   const renderRemoteVideos = feeds.map((feed) => {
     return (
@@ -651,7 +668,7 @@ const VideoChat = (props) => {
       >
         <Video
           stream={feed.stream}
-          onClick={handleMainStream}
+          onClickFunction={handleMainStream}
           username={feed.rfdisplay}
           muted={false}
         />
@@ -659,36 +676,18 @@ const VideoChat = (props) => {
     );
   });
 
+
   return (
     <>
-      <div>
-        <div
-          style={{
-            width: "100%",
-          }}
-        >
-          {/* <div style={{ width: "15%", float: "left" }}>
-            <UserList
-              feeds={feeds}
-              username={username}
-              sendPrivateMessage={sendPrivateMessage}
-            />
-          </div> */}
-          <div style={{ width: "60%", float: "left" }}>
+      <div className="w-full flex flex-col">
+        <div style={{ width: "100%" }}>
+          <div className="w-[1000px]">
             <Video
               stream={mainStream.stream}
               username={mainStream.username}
               muted={true}
             />
           </div>
-          {/* <div style={{ width: "25%", float: "right", height: "100%" }}>
-            <Chatting
-              sendChatData={sendChatData}
-              receiveChat={receiveChat}
-              transferFile={transferFile}
-              receiveFile={receiveFile}
-            />
-          </div> */}
         </div>
         <div style={{ float: "left" }}>
           <button onClick={handleAudioActiveClick}>
@@ -711,25 +710,34 @@ const VideoChat = (props) => {
             whiteSpace: "nowrap",
           }}
         >
-          <div
-            style={{
-              width: "100px",
-              height: "100px",
-              float: "left",
-              margin: "3px",
-            }}
-          >
+          <div className="flex w-[500px]">
             {myFeed && (
               <Video
                 stream={myFeed.stream}
                 onClick={handleMainStream}
                 username={username}
                 muted={false}
-                 activeSpeaker={activeSpeaker}
               />
             )}
           </div>
-          {renderRemoteVideos}
+          {feeds.map((feed) => (
+            <div
+              key={feed.rfid}
+              style={{
+                width: "100px",
+                height: "100px",
+                float: "left",
+                margin: "3px",
+              }}
+            >
+              <Video
+                stream={feed.stream}
+                onClickFunction={handleMainStream}
+                username={feed.rfdisplay}
+                muted={false}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </>
