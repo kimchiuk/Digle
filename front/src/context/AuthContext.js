@@ -36,46 +36,44 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  });
+  }, []);
 
-  useEffect(() => {
-    const checkToken = async () => {
-      const formData = new FormData();
-      formData.append("token", "tokenValue");
+  // useEffect(() => {
+  //   const checkToken = async () => {
+  //     const formData = new FormData();
+  //     formData.append("token", token);
 
-      try {
-        const response = axios.post(`${API_URL}/???`, formData);
+  //     try {
+  //       const response = axios.post(`${API_URL}/???`, formData);
 
-        // 토큰이 유효할 시
-        console.log(response);
-        setIsLoggedIn(true);
+  //       // 토큰이 유효할 시
+  //       console.log(response);
+  //       setIsLoggedIn(true);
 
-        // 토큰이 유효하지 않을 시
-      } catch (error) {
-        console.error("에러내용 ", error);
-        setIsLoggedIn(false);
-      }
-    };
-    checkToken();
-  }, [token]);
+  //       // 토큰이 유효하지 않을 시
+  //     } catch (error) {
+  //       console.error("에러내용 ", error);
+  //       setIsLoggedIn(false);
+  //     }
+  //   };
+  //   checkToken();
+  // }, [token]);
 
-  const isLogin = () => !!localStorage.getItem("token");
-  const login = () => {
-    if (isLogin) {
-      setIsLoggedIn(true);
-    }
-  };
+  // const isLogin = () => !!localStorage.getItem("token");
+  // const login = () => {
+  //   if (isLogin) {
+  //     setIsLoggedIn(true);
+  //   }
+  // };
 
-  const logout = () => {
-    if (!isLogin) {
-      setIsLoggedIn(false);
-    }
-  };
+  // const logout = () => {
+  //   if (!isLogin) {
+  //     setIsLoggedIn(false);
+  //   }
+  // };
 
   const contextValue = {
     isLoggedIn,
-    login,
-    logout,
     token,
   };
 
