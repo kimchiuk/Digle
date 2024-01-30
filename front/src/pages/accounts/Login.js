@@ -1,58 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 import NaverLoginButton from "../../components/NaverLoginButton";
 import KakaoLoginButton from "../../components/KakaoLoginButton";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
+import MainImg from "../../assets/main.png"
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const MainImg =
-    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVjBRv%2FbtqHMwKxFgG%2FNPAxkGgvDkXeszqVT7MFm0%2Fimg.jpg";
+  const navigate = useNavigate();
   const API_URL = "https://localhost:8000";
+  
+  // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
+  const [userId, setUserId] = useState(false);
+  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId"]); // Coockies 이름임
+  const [isRemember, setIsRemember] = useState(false); // 아이디 저장 체크박스 체크 유무
+
+
   useEffect(() => {
-    const handleStorageChange = () => {
-      const rememberedEmail = localStorage.getItem("email");
-      const rememberedRememberMe = localStorage.getItem("rememberMe");
-
-      if (rememberedRememberMe) {
-        setRememberMe(JSON.parse(rememberedRememberMe));
-        if (JSON.parse(rememberedRememberMe)) {
-          setEmail(rememberedEmail);
-        } else {
-          setEmail("");
-        }
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    // 저장된 쿠키값이 있으면 checkbox를 True 설정 및 UserId에 값 할당
+    if (cookies.rememberUserId !== undefined) {
+      setUserId(cookies.rememberUserId);
+      setIsRemember(true);
+    }
   }, []);
+
+  const handleOnChange = (event) => {
+    setIsRemember(event.target.checked);
+    if (!event.target.checked) {
+      removeCookie("remembrUserId");
+    }
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Login button clicked!");
-
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
 
-    if (rememberMe) {
-      localStorage.setItem("email", email);
-    } else {
-      localStorage.removeItem("email");
-    }
     try {
       const response = await axios.post(`${API_URL}/login`, formData);
       console.log("로그인 성공: ", response);
+
+      if (isRemember) {
+        setCookie("rememberUserId", email);
+      }
+      
+      // 로그인 성공 시 이전 페이지로 이동해줄 거임
+      navigate('/');
     } catch (error) {
       console.error(
-        "에라이 씨발 좀 되라고 개 씨발 좆같은거 에러 발생: ",
+        "에러 발생: ",
         error
       );
     }
@@ -68,10 +68,12 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <input
-              type="text"
+              type="email"
               placeholder="아이디"
               id="email"
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
               value={email}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
               required
@@ -90,11 +92,14 @@ const Login = () => {
             <div className="flex items-center mt-2">
               <input
                 type="checkbox"
-                id="rememberMe"
-                onChange={(event) => setRememberMe(event.target.checked)}
-                checked={rememberMe}
+                id="saveId"
+                name="saveId"
+                onChange={(event) => {
+                  handleOnChange(event);
+                }}
+                checked={isRemember}
               />
-              <label htmlFor="rememberMe" className="text-white ml-2">
+              <label htmlFor="saveId" className="text-white ml-2">
                 아이디 저장
               </label>
             </div>

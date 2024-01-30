@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import MainImg from "../../assets/main.png"
 
 const FindPassword = () => {
   const [email, setEmail] = useState("");
@@ -13,8 +14,6 @@ const FindPassword = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const navigate = useNavigate();
   
-  const MainImg =
-    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVjBRv%2FbtqHMwKxFgG%2FNPAxkGgvDkXeszqVT7MFm0%2Fimg.jpg";
   const API_URL = "http://127.0.0.1:8000";
 
   const handleUsernameChange = (event) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import Logout from "../pages/accounts/Logout";
 
 const Navbar = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -43,6 +44,9 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    const loginStatus = localStorage.getItem('loginStatus');
+    setIsLogin(loginStatus === "true");
+
     // Attach event listener when the component mounts
     document.addEventListener("mousedown", handleClickOutside);
     // Detach event listener when the component unmounts
@@ -157,7 +161,7 @@ const Navbar = () => {
               onClick={toggleLogin}
               className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
             >
-              Logout
+              <Logout/>
             </button>
             <Link
               to="/profile"
