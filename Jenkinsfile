@@ -5,8 +5,8 @@ node {
     stage('Test') {
         echo 'Testing....'
     }
-    stage('execute sh') {
-		sh "chmod 774 ./project.sh"
-        sh "./project.sh"
-    }
+    // stage('execute sh') {
+	// 	sh "chmod 774 ./project.sh"
+    //     sh "./project.sh"
+    // }
 }
