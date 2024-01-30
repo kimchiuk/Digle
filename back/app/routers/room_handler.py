@@ -12,7 +12,7 @@ class Room(BaseModel):
     host_id: str
 
 
-janus_url = "http://34.125.238.83/janus"
+janus_url = "http://localhost:8088/janus"  # 또는 원하는 로컬 호스트 및 포트를 사용합니다.
 admin_secret = "janusoverlord"
 headers = {"Content-Type": "application/json"}
 
