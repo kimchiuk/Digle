@@ -8,16 +8,17 @@ import GoogleLoginButton from "../../components/GoogleLoginButton";
 import MainImg from "../../assets/main.png";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
+  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId, isLogin"]); // Coockies 이름임
+  const [userId, setUserId] = useState(false);
+  const [isRemember, setIsRemember] = useState(false); // 아이디 저장 체크박스 체크 유무
+
+  const [email, setEmail] = useState(cookies.rememberUserId || "");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const API_URL = "https://localhost:8000";
-
-  // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
-  const [userId, setUserId] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId"]); // Coockies 이름임
-  const [isRemember, setIsRemember] = useState(false); // 아이디 저장 체크박스 체크 유무
+  
 
   useEffect(() => {
     // 저장된 쿠키값이 있으면 checkbox를 True 설정 및 UserId에 값 할당
@@ -29,8 +30,10 @@ const Login = () => {
 
   const handleOnChange = (event) => {
     setIsRemember(event.target.checked);
+
     if (!event.target.checked) {
-      removeCookie("remembrUserId");
+      removeCookie("rememberUserId");
+      console.log("체크박스 해제하고 쿠키에서 아이디 지아라", cookies.rememberUserId)
     }
   };
 
@@ -43,6 +46,8 @@ const Login = () => {
     try {
       const response = await axios.post(`${API_URL}/login`, formData);
       console.log("로그인 성공: ", response);
+      setCookie("isLogin", true)
+      
 
       if (isRemember) {
         setCookie("rememberUserId", email);
@@ -51,6 +56,7 @@ const Login = () => {
       // 로그인 성공 시 이전 페이지로 이동해줄 거임.
       navigate("/");
     } catch (error) {
+      alert("이메일 또는 비밀번호를 다시 확인해주세요.")
       console.error("에러 발생: ", error);
     }
   };
