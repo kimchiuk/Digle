@@ -33,7 +33,7 @@ app.include_router(room_handler.router)
 
 
 # 추가적인 인증 및 사용자 관리 로직
-if __name__ == "__main__";
+if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
