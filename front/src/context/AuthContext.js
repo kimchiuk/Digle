@@ -10,12 +10,12 @@ export const AuthProvider = ({ children }) => {
 
   const API_URL = "https://localhost:8000";
 
-  // fetch를 사용하여 데이터 가져오기
+  // axios를 사용하여 데이터 가져오기
   useEffect(() => {
     const formData = new FormData();
-    formData.append("withCredentials", "include");
+    formData.append("withCredentials", true);
     axios
-      .post(`${API_URL}/???`, formData)
+      .post(`${API_URL}/`, formData)
       .then((response) => {
         // 응답 헤더에서 Set-Cookie 가져오기
         const setCookieHeader = response.headers.get("Set-Cookie");
@@ -38,45 +38,44 @@ export const AuthProvider = ({ children }) => {
       });
   });
 
-  useEffect(() => {
-    const checkToken = async () => {
-      const formData = new FormData();
-      formData.append("token", "tokenValue");
+  // useEffect(() => {
+  //   const checkToken = async () => {
+  //     const formData = new FormData();
+  //     formData.append("token", "tokenValue");
 
-      try {
-        const response = axios.post(`${API_URL}/???`, formData);
+  //     try {
+  //       const response = axios.post(`${API_URL}/???`, formData);
 
-        // 토큰이 유효할 시
-        console.log(response);
-        setIsLoggedIn(true);
+  //       // 토큰이 유효할 시
+  //       console.log(response);
+  //       setIsLoggedIn(true);
 
-        // 토큰이 유효하지 않을 시
-      } catch (error) {
-        console.error("에러내용 ", error);
-        setIsLoggedIn(false);
-      }
-    };
-    checkToken();
-  }, [token]);
+  //       // 토큰이 유효하지 않을 시
+  //     } catch (error) {
+  //       console.error("에러내용 ", error);
+  //       setIsLoggedIn(false);
+  //     }
+  //   };
+  //   checkToken();
+  // }, [token]);
 
-  const isLogin = () => !!localStorage.getItem("token");
-  const login = () => {
-    if (isLogin) {
-      setIsLoggedIn(true);
-    }
-  };
+  // const isLogin = () => !!localStorage.getItem("token");
+  // const login = () => {
+  //   if (isLogin) {
+  //     setIsLoggedIn(true);
+  //   }
+  // };
 
-  const logout = () => {
-    if (!isLogin) {
-      setIsLoggedIn(false);
-    }
-  };
+  // const logout = () => {
+  //   if (!isLogin) {
+  //     setIsLoggedIn(false);
+  //   }
+  // };
 
   const contextValue = {
     isLoggedIn,
-    login,
-    logout,
     token,
+    setToken,
   };
 
   return (
