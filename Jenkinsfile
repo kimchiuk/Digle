@@ -13,7 +13,7 @@ pipeline {
         stage('Install Conda') {
             steps {
                 script {
-                    sh 'curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh'
+                    sh 'curl -0 https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh'
                     sh 'bash miniconda.sh -b -p $HOME/miniconda'
                     sh '$HOME/miniconda/bin/conda init'
                     sh 'source ~/.bashrc'  // 또는 새로운 터미널을 열어도 됩니다.
