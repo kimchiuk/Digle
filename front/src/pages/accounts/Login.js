@@ -15,7 +15,7 @@ const Login = () => {
 
   // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
   const [userId, setUserId] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId"]); // Coockies 이름임
+  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId, isLogin"]); // Coockies 이름임
   const [isRemember, setIsRemember] = useState(false); // 아이디 저장 체크박스 체크 유무
 
   useEffect(() => {
@@ -42,6 +42,8 @@ const Login = () => {
     try {
       const response = await axios.post(`${API_URL}/login`, formData);
       console.log("로그인 성공: ", response);
+      setCookie("isLogin", true)
+      
 
       if (isRemember) {
         setCookie("rememberUserId", email);
