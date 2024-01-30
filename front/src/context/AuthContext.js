@@ -8,16 +8,14 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [isToken, setIsToken] = useState(false);
 
+  const API_URL = "https://localhost:8000";
+
+  // fetch를 사용하여 데이터 가져오기
   useEffect(() => {
-    // fetch를 사용하여 데이터 가져오기
-    axios("apiUrl", {
-      method: "GET",
-      credentials: "include", // include credentials (cookies)
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
+    const formData = new FormData();
+    formData.append("withCredentials", "include");
+    axios
+      .post(`${API_URL}/???`, formData)
       .then((response) => {
         // 응답 헤더에서 Set-Cookie 가져오기
         const setCookieHeader = response.headers.get("Set-Cookie");
@@ -29,6 +27,7 @@ export const AuthProvider = ({ children }) => {
         if (accessTokenMatch) {
           const accessToken = accessTokenMatch[1];
           console.log("Access Token:", accessToken);
+          setToken(accessToken);
         } else {
           console.log("Access Token이 없습니다.");
         }
@@ -37,26 +36,45 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  });
+  }, []);
 
-  const isLogin = () => !!localStorage.getItem("token");
-  const login = () => {
-    if (isLogin) {
-      setIsLoggedIn(true);
-    }
-  };
+  // useEffect(() => {
+  //   const checkToken = async () => {
+  //     const formData = new FormData();
+  //     formData.append("token", token);
 
-  const logout = () => {
-    if (!isLogin) {
-      localStorage.removeItem("token");
-      setIsLoggedIn(false);
-    }
-  };
+  //     try {
+  //       const response = axios.post(`${API_URL}/???`, formData);
+
+  //       // 토큰이 유효할 시
+  //       console.log(response);
+  //       setIsLoggedIn(true);
+
+  //       // 토큰이 유효하지 않을 시
+  //     } catch (error) {
+  //       console.error("에러내용 ", error);
+  //       setIsLoggedIn(false);
+  //     }
+  //   };
+  //   checkToken();
+  // }, [token]);
+
+  // const isLogin = () => !!localStorage.getItem("token");
+  // const login = () => {
+  //   if (isLogin) {
+  //     setIsLoggedIn(true);
+  //   }
+  // };
+
+  // const logout = () => {
+  //   if (!isLogin) {
+  //     setIsLoggedIn(false);
+  //   }
+  // };
 
   const contextValue = {
     isLoggedIn,
-    login,
-    logout,
+    token,
   };
 
   return (

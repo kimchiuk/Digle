@@ -97,7 +97,8 @@ RUN cd / \
 
 # libwebsocket 설치
 RUN cd / \
-    && git clone https://libwebsockets.org/repo/libwebsockets \
+    # && git clone https://libwebsockets.org/repo/libwebsockets \
+    && git clone https://github.com/warmcat/libwebsockets.git \
     && cd libwebsockets \
     # If you want the stable version of libwebsockets, uncomment the next line
     # git checkout v4.3-stable

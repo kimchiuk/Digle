@@ -19,15 +19,11 @@ from app.services.auth_service import (
     create_access_token,
     generate_internal_id,
     hash_password,
-    integer_to_8_digit_string_with_hash,
     verify_password,
 )
 
 # email verify
 from dotenv import load_dotenv
-from googleapiclient.discovery import build  # Google API
-from google.oauth2 import service_account
-from google_auth_oauthlib.flow import InstalledAppFlow
 
 router = APIRouter(tags=["normal_auth"])
 
