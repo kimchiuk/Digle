@@ -5,9 +5,9 @@ import json, jwt
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.routers import auth_ext, normal_auth, delete_accounts
-from . import models, schemas
-from .database import SessionLocal, engine, Base, get_db
+from routers import auth_ext, normal_auth, delete_accounts
+import models, schemas
+from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers import oauth_login, room_handler
