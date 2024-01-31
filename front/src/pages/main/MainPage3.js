@@ -56,11 +56,11 @@ const Main3 = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full h-screen">
       <div className="text-center items-center mb-8">
-        <h1 className="text-4xl font-extrabold my-4 mt-5 mb-3">고객을 만족시키는 화상 서비스</h1>
+        <h1 className="text-4xl font-bold my-4 mt-[50px] mb-[30px]">고객을 만족시키는 화상 서비스</h1>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-screen-md mb-8 ml-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-screen-md mb-[80px] ml-0">
         {items.map((item, index) => (
           <div key={index} className="w-64 h-72 mx-[30px] mb-8 flex flex-col">
             <div className="w-40 h-40 m-auto mb-4 aspect-w-1 aspect-h-1 object-cover object-center border rounded-full bg-indigo-900">
@@ -74,11 +74,11 @@ const Main3 = () => {
           </div>
         ))}
       </div>
-      <div className="text-center mt-8">
+      {/* <div className="text-center mt-8">
         <button className="px-5 py-4 rounded-full bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white mt-5 mb-3 text-lg font-bold">
           자세히 보러가기 <span className="ml-2">&#8594;</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
