@@ -146,6 +146,7 @@ RUN cd /janus-gateway \
 
 # Dockerfile과 같은 위치에 있는 janus.transport.http.jcfg를 복사
 COPY janus.transport.http.jcfg /opt/janus/etc/janus/janus.transport.http.jcfg
+COPY janus.jcfg /opt/janus/etc/janus/janus.jcfg
 
 RUN rm -rf \
     /libnice \

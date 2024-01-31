@@ -18,7 +18,7 @@ import VideoChat from "./components/WebRTC/VideoChat";
 import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
 import ChangePassword from "./pages/accounts/ChangePassword";
-import LoginCallback from "./components/LoginCallback";
+import LoginCallback from "./components/auth_login/LoginCallback";
 import Logout from "./pages/accounts/Logout";
 
 import { AuthProvider } from "./context/AuthContext";

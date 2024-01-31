@@ -4,12 +4,13 @@ from fastapi import APIRouter, Form, HTTPException, Request, Depends, Response
 from fastapi.responses import JSONResponse
 import httpx
 from sqlalchemy.orm import Session
-from ..database import get_db
+from database import get_db
 
-from app.models.user import User
-from app.services.auth_service import (
+from models.user import User
+from services.auth_service import (
     create_access_token,
     generate_internal_id,
+    generate_random_state,
 )
 
 
@@ -57,9 +58,9 @@ def user_db_login(auth_provider, auth_provider_id, user_info, db, response):
     access_token = create_access_token(user.internal_id)
     # access token을 보안때문에 header에다 cookie를 담아서 줄것.
     response.set_cookie(
-        key="access_token",
+        key="__Host-access_token",
         value=access_token,
-        httponly=False,
+        httponly=True,
         secure=True,
         samesite="None",
         # domain = '어쩌고 저쩌고',
@@ -69,11 +70,25 @@ def user_db_login(auth_provider, auth_provider_id, user_info, db, response):
     return message, action, response
 
 
+@router.post("/session_state")
+async def login_for_access_token(request: Request, language: str = Form(None)):
+    state = generate_random_state()  # 고유한 state 값 생성
+    request.session["oauth_state"] = state  # 세션에 state 저장
+    return JSONResponse(content={"stateValue": state})
+
+
 @router.post("/google_login")
 async def login_for_access_token(
-    response: Response, request: Request, code: str = Form(None), db: Session = Depends(get_db)
+    response: Response,
+    request: Request,
+    code: str = Form(None),
+    state: str = Form(None),
+    db: Session = Depends(get_db),
 ):
     async with httpx.AsyncClient() as client:
+        original_state = request.session.get("oauth_state")
+        if not original_state or original_state != state:
+            raise HTTPException(status_code=400, detail="State mismatch")
         data = {
             "code": code,
             "client_id": os.getenv("GOOGLE_CLIENT_ID"),
@@ -82,7 +97,6 @@ async def login_for_access_token(
             "grant_type": "authorization_code",
         }
         token_response = await client.post("https://oauth2.googleapis.com/token", data=data)  # 'await' 사용
-
         if token_response.status_code != 200:
             raise HTTPException(
                 status_code=token_response.status_code, detail="OAuth2 token request failed"
@@ -110,9 +124,16 @@ async def login_for_access_token(
 
 @router.post("/naver_login")
 async def login_for_access_token(
-    response: Response, request: Request, code: str = Form(None), db: Session = Depends(get_db)
+    response: Response,
+    request: Request,
+    code: str = Form(None),
+    state: str = Form(None),
+    db: Session = Depends(get_db),
 ):
     async with httpx.AsyncClient() as client:
+        original_state = request.session.get("oauth_state")
+        if not original_state or original_state != state:
+            raise HTTPException(status_code=400, detail="State mismatch")
         data = {
             "code": code,
             "client_id": os.getenv("NAVER_CLIENT_ID"),
@@ -147,9 +168,16 @@ async def login_for_access_token(
 
 @router.post("/kakao_login")
 async def login_for_access_token(
-    response: Response, request: Request, code: str = Form(None), db: Session = Depends(get_db)
+    response: Response,
+    request: Request,
+    code: str = Form(None),
+    state: str = Form(None),
+    db: Session = Depends(get_db),
 ):
     async with httpx.AsyncClient() as client:
+        original_state = request.session.get("oauth_state")
+        if not original_state or original_state != state:
+            raise HTTPException(status_code=400, detail="State mismatch")
         TOKEN_URL = "https://kauth.kakao.com/oauth/token"
         data = {
             "grant_type": "authorization_code",

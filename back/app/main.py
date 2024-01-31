@@ -1,14 +1,16 @@
+import os
 from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect, Depends
 from typing import List, Dict
 import json, jwt
 from sqlalchemy.orm import Session
+from starlette.middleware.sessions import SessionMiddleware
 
-from app.routers import auth_ext, normal_auth
-from . import models, schemas
-from .database import SessionLocal, engine, Base, get_db
+from routers import auth_ext, normal_auth
+import models, schemas
+from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import oauth_login, room_handler
+from routers import oauth_login, room_handler
 
 Base.metadata.create_all(bind=engine)
 
@@ -27,6 +29,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET_KEY"),
+    https_only=True,
+    same_site="None",
+)
+
+
 app.include_router(oauth_login.router)
 app.include_router(normal_auth.router)
 app.include_router(room_handler.router)
@@ -37,4 +48,14 @@ app.include_router(auth_ext.router)
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        log_level="debug",
+        reload=True,
+        ssl_keyfile="../localhost-key.pem",
+        ssl_certfile="../localhost.pem",
+        forwarded_allow_ips="*",  # 모든 프록시된 IP 주소 허용
+        proxy_headers=True,  # X-Forwarded-Proto 헤더를 신뢰
+    )
