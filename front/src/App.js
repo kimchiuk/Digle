@@ -5,7 +5,6 @@ import Main from "./pages/main/MainPage";
 import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 
-import "./App.css";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/profile/Profile";
 import Login from "./pages/accounts/Login";
@@ -48,6 +47,7 @@ function App() {
           <Route path="/solution/2/" element={<Solution2 />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
+          
 
           <Route path="/login/callback" element={<LoginCallback />} />
 
