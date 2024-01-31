@@ -19,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://hub.docker.com/repository/docker/geunbo/digle/general', DOCKER_REGISTRY_CREDENTIALS) {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
                         def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                     }
                 }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // 도커 이미지를 레지스트리에 푸시
-                    docker.withRegistry('https://hub.docker.com/repository/docker/geunbo/digle/general', DOCKER_REGISTRY_CREDENTIALS) {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
                         customImage.push()
                     }
                 }
