@@ -1,56 +1,38 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
   const API_URL = "https://localhost:8000";
 
   useEffect(() => {
-    const cookieAccessToken = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("access_token="))
-      ?.split("=")[1];
-
-    if (cookieAccessToken) {
-      setAccessToken(cookieAccessToken);
-    }
+    const formData = new FormData();
+    formData.append("withCredentials", true);
+    axios
+      .get(`${API_URL}/`, formData)
+      .then((response) => {
+        console.log(response);
+        setIsLoggedIn(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoggedIn(false);
+      });
   }, []);
 
-  const updateAccessToken = (newToken) => {
-    setAccessToken(newToken);
-  };
-
   return (
-    <AuthContext.Provider value={{ accessToken, updateAccessToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const contextValue = useContext(AuthContext);
-
-  if (!contextValue) {
+  const context = useContext(AuthContext);
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  return contextValue;
-};
-
-export const useAuthenticate = () => {
-  const API_URL = "https://localhost:8000";
-  useEffect(() => {
-    axios
-      .get(`${API_URL}/`)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-  const isUserLoggedIn = false;
-
-  return isUserLoggedIn;
+  return context;
 };
