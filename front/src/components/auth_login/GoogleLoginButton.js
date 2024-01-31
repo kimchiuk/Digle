@@ -1,3 +1,4 @@
+import { getSessionState } from "api/authService";
 import React from "react";
 
 const GoogleLoginButton = () => {
@@ -6,6 +7,7 @@ const GoogleLoginButton = () => {
 
   const handleGoogleLogin = async () => {
     try {
+      const stateValue = await getSessionState();
       const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
       const responseType = "code";
       const redirectUri = encodeURIComponent(
@@ -14,7 +16,9 @@ const GoogleLoginButton = () => {
       const scope = encodeURIComponent(
         "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
       );
-      const state = encodeURIComponent(JSON.stringify({ provider: "google" }));
+      const state = encodeURIComponent(
+        JSON.stringify({ provider: "google", stateValue: stateValue })
+      );
       const googleURL = `${googleAuthUrl}?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&state=${encodeURIComponent(
         state
       )}`;

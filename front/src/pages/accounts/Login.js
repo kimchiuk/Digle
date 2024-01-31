@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import NaverLoginButton from "../../components/NaverLoginButton";
-import KakaoLoginButton from "../../components/KakaoLoginButton";
-import GoogleLoginButton from "../../components/GoogleLoginButton";
-import MainImg from "../../assets/main.png";
+import NaverLoginButton from "components/auth_login/NaverLoginButton";
+import KakaoLoginButton from "components/auth_login/KakaoLoginButton";
+import GoogleLoginButton from "components/auth_login/GoogleLoginButton";
+import MainImg from "assets/main.png";
 
 const Login = () => {
   // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
-  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId, isLogin"]); // Coockies 이름임
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "rememberUserId, isLogin",
+  ]); // Coockies 이름임
   const [userId, setUserId] = useState(false);
   const [isRemember, setIsRemember] = useState(false); // 아이디 저장 체크박스 체크 유무
 
@@ -18,7 +20,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const API_URL = "https://localhost:8000";
-  
 
   useEffect(() => {
     // 저장된 쿠키값이 있으면 checkbox를 True 설정 및 UserId에 값 할당
@@ -33,7 +34,10 @@ const Login = () => {
 
     if (!event.target.checked) {
       removeCookie("rememberUserId");
-      console.log("체크박스 해제하고 쿠키에서 아이디 지아라", cookies.rememberUserId)
+      console.log(
+        "체크박스 해제하고 쿠키에서 아이디 지아라",
+        cookies.rememberUserId
+      );
     }
   };
 
@@ -46,8 +50,7 @@ const Login = () => {
     try {
       const response = await axios.post(`${API_URL}/login`, formData);
       console.log("로그인 성공: ", response);
-      setCookie("isLogin", true)
-      
+      setCookie("isLogin", true);
 
       if (isRemember) {
         setCookie("rememberUserId", email);
@@ -56,7 +59,7 @@ const Login = () => {
       // 로그인 성공 시 이전 페이지로 이동해줄 거임.
       navigate("/");
     } catch (error) {
-      alert("이메일 또는 비밀번호를 다시 확인해주세요.")
+      alert("이메일 또는 비밀번호를 다시 확인해주세요.");
       console.error("에러 발생: ", error);
     }
   };

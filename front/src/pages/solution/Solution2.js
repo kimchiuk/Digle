@@ -16,7 +16,7 @@ const Solution2 = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-20 pt-16 pb-8 max-w-2xl mx-auto h-[640px] flex flex-col items-start">
+    <form onSubmit={handleSubmit} className="px-20 pt-16 pb-8 max-w-2xl mx-auto h-[651px] flex flex-col items-start">
       <h2 className="text-2xl font-bold mt-12 mb-6">FAQ</h2>
 
       <label htmlFor="questionTitle" className="block text-sm font-medium text-gray-700">

@@ -1,11 +1,23 @@
 import datetime
 import hashlib
+import os
+import secrets
 from jose import jwt
+import bcrypt
+import uuid
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 ALGORITHM = "HS256"
 # 임시로 설정. .env로 옮겨야됨
-SECRET_KEY = "Qb7VoxZ6UFQ8caVHLUVAccWcipUBLmuH"
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+
+def generate_random_state(length=32):
+    # 안전한 랜덤 문자열 생성
+    # 'length'는 생성할 문자열의 길이를 지정합니다.
+    # secrets.token_urlsafe() 함수는 안전한 랜덤 문자열을 생성합니다.
+    # Base64 인코딩을 사용하기 때문에, 실제 문자열 길이는 인자로 지정한 값보다 조금 더 길 수 있습니다.
+    return secrets.token_urlsafe(length)
 
 
 # 엑세스 토큰 생성
@@ -34,9 +46,6 @@ def integer_to_8_digit_string_with_hash(num):
     return ten_digit_str
 
 
-import bcrypt
-
-
 def hash_password(password):
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
@@ -44,9 +53,6 @@ def hash_password(password):
 def verify_password(password, hashed):
     hashed_bytes = hashed.encode("utf-8")
     return bcrypt.checkpw(password.encode("utf-8"), hashed_bytes)
-
-
-import uuid
 
 
 def generate_internal_id():
