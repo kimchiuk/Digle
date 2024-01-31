@@ -26,6 +26,6 @@ async def verifyToken(request: Request, db: Session = Depends(get_db)):
     user = get_user_by_token(request, db)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
-    if not user.additional_info_submitted:
+    if not user.is_additional_info_provided:
         return {"message": "Token is valid", "action": "Additional_info_needed"}
     return {"message": "Token is valid"}
