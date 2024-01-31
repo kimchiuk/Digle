@@ -5,7 +5,6 @@ import Main from "./pages/main/MainPage";
 import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 
-import "./App.css";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/profile/Profile";
 import Login from "./pages/accounts/Login";

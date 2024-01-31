@@ -5,8 +5,8 @@ import MainImg from "../../assets/main.png";
 const Main = () => {
   return (
     <div className="bg-slate-50">
-      <div className="relative w-full h-full overflow-hidden">
-        <img className="object-cover w-full h-[800px]" src={MainImg} />
+      <div className="flex items-center justify-center h-screen">
+      <img className="absolute w-full h-full object-cover " src={MainImg} />
         <div className="absolute inset-y-0 right-0 flex items-center justify-center w-full md:w-1/2 lg:w-1/3 px-4 md:px-8 lg:px-2 bg-black bg-opacity-70">
           <div className="text-center">
             <p className="text-2xl font-bold text-white">
