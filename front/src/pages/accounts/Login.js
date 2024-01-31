@@ -16,6 +16,7 @@ const Login = () => {
   const [email, setEmail] = useState(cookies.rememberUserId || "");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
   const API_URL = "https://localhost:8000";
   
 
@@ -52,7 +53,7 @@ const Login = () => {
         setCookie("rememberUserId", email);
       }
 
-      // 로그인 성공 시 이전 페이지로 이동해줄 거임
+      // 로그인 성공 시 이전 페이지로 이동해줄 거임.
       navigate("/");
     } catch (error) {
       alert("이메일 또는 비밀번호를 다시 확인해주세요.")

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer";
 import Main from "./pages/main/MainPage";
@@ -20,7 +20,11 @@ import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
 import ChangePassword from "./pages/accounts/ChangePassword";
 import LoginCallback from "./components/LoginCallback";
-import Logout from "./pages/accounts/Logout"
+import Logout from "./pages/accounts/Logout";
+
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 // 나중에 반드시 지우셈
 import Anhs from "./components/WebRTC/hyunsung";
@@ -28,6 +32,7 @@ import Anhs from "./components/WebRTC/hyunsung";
 function App() {
   return (
     <div className="select-none">
+      {/* <AuthProvider> */}
       <BrowserRouter>
         <Navbar />
 
@@ -37,20 +42,21 @@ function App() {
 
           <Route path="/" element={<Main />} />
           <Route path="/test_router" element={<TestRouter />} />
-          {/* authContext가 완성 될 경우 아래 두개와 바꾸기 */}
-          {/* <PublicRoute path="/signup" element={<Signup />} />
-          <PublicRoute path="/signup/detail" element={<SignupDetail />} /> */}
+
+          {/* <Route element={<PublicRoute />}> */}
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/detail" element={<SignupDetail />} />
-          {/* <PrivateRoute path="/profile" element={<Profile />} /> */}
-          <Route path="/profile" element={<Profile />} />
+          {/* </Route> */}
           <Route path="/solution/1/" element={<Solution1 />} />
           <Route path="/solution/2/" element={<Solution2 />} />
-          <Route path="/login" element={<Login />} />
+
+          {/* <Route element={<PrivateRoute />}> */}
+          <Route path="/profile" element={<Profile />} />
           <Route path="/logout" element={<Logout />} />
+          {/* </Route> */}
 
           <Route path="/login/callback" element={<LoginCallback />} />
-
           <Route path="/google_login" element={<GoogleLoginButton />} />
           <Route path="/naver_login" element={<NaverLoginButton />} />
           <Route path="/kakao_login" element={<KakaoLoginButton />} />
@@ -62,6 +68,7 @@ function App() {
         </Routes>
         <Footer />
       </BrowserRouter>
+      {/* </AuthProvider> */}
     </div>
   );
 }

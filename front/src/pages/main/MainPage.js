@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import Main2 from "./MainPage2";
 import Main3 from "./MainPage3";
-import MainImg from "../../assets/main.png"
-
+import MainImg from "../../assets/main.png";
 const Main = () => {
   return (
     <div className="bg-slate-50">
