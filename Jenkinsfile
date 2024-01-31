@@ -4,7 +4,7 @@ pipeline {
     environment {
         // 환경 변수 설정
         DOCKER_REGISTRY_CREDENTIALS = credentials('bogeun_docker') // 도커 레지스트리 크레덴셜 ID
-        IMAGE_NAME = 'S10P12D107'
+        IMAGE_NAME = 'digle'
     }
     
     stages {
