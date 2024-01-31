@@ -1,62 +1,56 @@
 pipeline {
     agent any
+
+    environment {
+        // 환경 변수 설정
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker') // 도커 레지스트리 크레덴셜 ID
+        IMAGE_NAME = 'digle'
+    }
     
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    git credentialsId: 'bogeun kim', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
+                    git credentialsId: 'gitlab', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
                 }
             }
-         }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'bogeun_docker', url: 'https://registry.hub.docker.com') {
+                        def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    }
+                }
+            }
+        }
+
+        stage('Push to Docker Registry') {
+            steps {
+                script {
+                    // 도커 이미지를 레지스트리에 푸시
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        customImage.push()
+                    }
+                }
+            }
+        }      
         
-        stage('Install Conda') {
-            steps {
-                script {
-                    sh 'curl -0 https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh'
-                    sh 'bash miniconda.sh -b -p $HOME/miniconda'
-                    sh '$HOME/miniconda/bin/conda init'
-                    sh 'source ~/.bashrc'  // 또는 새로운 터미널을 열어도 됩니다.
-                }
-            }
-        }
-
-        stage('Create Conda Environment') {
-            steps {
-                script {
-                    sh 'conda create --name myenv python=3.8'
-                    sh 'conda activate myenv'
-                }
-            }
-        }
-
-        stage('Install Packages') {
+        stage('Run Backend') {
             steps {
                 dir('./back') {
-                    sh 'pip install -r requirements.txt'
+                    sh 'uvicorn app.main:app --reload'
                 }
             }
         }
 
-
-
-         stage('run backend') {
-            steps {
-              dir('./back') {
-                sh 'uvicorn app.main:app --reload'
-              }
-            }
-         }
-
-         stage('run frontend') {
+        stage('Run Frontend') {
             steps {
                 dir('./front') {
                     sh 'npm start'
                 }
             }
-         }
+        }
     }
-
-   
-        
 }

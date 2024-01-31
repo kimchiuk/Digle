@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-import SelectSignup from "../../components/signup/SelectSignup";
+import SelectSignup from "components/signup/SelectSignup";
 
 const SignupDetail = () => {
   const navigate = useNavigate();
@@ -29,36 +29,41 @@ const SignupDetail = () => {
   const [emailCode, setEmailCode] = useState("");
   const [emailCodeMsg, setEmailCodeMsg] = useState("");
 
+  const [emailCheck, setEmailCheck] = useState(false);
   const handleCheckEmail = async (e) => {
     e.preventDefault();
     // 폼 데이터에 담아서 전송
-    const formData = new FormData();
-    formData.append("email", email);
 
-    if (isEmail) {
-      alert("이메일이 발송되었습니다.");
-      setIsCheckEmail(true);
-      try {
-        const response = await axios.post(
-          `${API_URL}/request_verify_email`,
-          formData
-        );
-        console.log(response);
-
-        if (response.data) {
-          // setEmailMessage("이미 가입된 이메일입니다.");
-          // setEmailMessage("사용 가능한 이메일입니다.");
-          setEmailCodeOk(false);
-        } else {
-          setEmailMessage("이미 가입된 이메일입니다.");
-          setEmailCodeOk(true);
-        }
-      } catch (error) {
-        console.error("이메일 중복 확인 오류:", error);
-      }
-    } else {
-      alert("이메일 형식을 지켜주세요");
+    if (!isEmail) {
+      alert("이메일 형식을 지켜주세요!");
+      return;
     }
+    setEmailCheck(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      const response = await axios.post(
+        `${API_URL}/request_verify_email`,
+        formData
+      );
+      console.log(response);
+
+      if (response.data) {
+        // setEmailMessage("이미 가입된 이메일입니다.");
+        // setEmailMessage("사용 가능한 이메일입니다.");
+        setIsCheckEmail(true);
+        setEmailCodeOk(false);
+      } else {
+        setEmailMessage("이미 가입된 이메일입니다.");
+        setEmailCodeOk(true);
+      }
+    } catch (error) {
+      console.error("이메일 중복 확인 오류:", error);
+      alert("이미 가입된 이메일입니다.");
+      setIsCheckEmail(false);
+    }
+    setEmailCheck(false);
   };
 
   // const handleEmailVerification = async () => {
@@ -303,6 +308,7 @@ const SignupDetail = () => {
                 <button
                   className="py-1 px-3 bg-blue-500 rounded-lg text-white"
                   onClick={handleCheckEmail}
+                  disabled={emailCheck}
                 >
                   이메일 확인
                 </button>
