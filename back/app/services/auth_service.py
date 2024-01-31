@@ -1,12 +1,15 @@
 import datetime
 import hashlib
+import os
 import secrets
 from jose import jwt
+import bcrypt
+import uuid
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 ALGORITHM = "HS256"
 # 임시로 설정. .env로 옮겨야됨
-SECRET_KEY = "Qb7VoxZ6UFQ8caVHLUVAccWcipUBLmuH"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 def generate_random_state(length=32):
@@ -43,9 +46,6 @@ def integer_to_8_digit_string_with_hash(num):
     return ten_digit_str
 
 
-import bcrypt
-
-
 def hash_password(password):
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
@@ -53,9 +53,6 @@ def hash_password(password):
 def verify_password(password, hashed):
     hashed_bytes = hashed.encode("utf-8")
     return bcrypt.checkpw(password.encode("utf-8"), hashed_bytes)
-
-
-import uuid
 
 
 def generate_internal_id():
