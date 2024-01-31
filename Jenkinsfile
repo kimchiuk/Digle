@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // 환경 변수 설정
-        DOCKER_REGISTRY_CREDENTIALS = credentials('bogeun_docker') // 도커 레지스트리 크레덴셜 ID
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker') // 도커 레지스트리 크레덴셜 ID
         IMAGE_NAME = 'digle'
     }
     
@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    git credentialsId: 'bogeun kim', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
+                    git credentialsId: 'gitlab', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
                 }
             }
         }
