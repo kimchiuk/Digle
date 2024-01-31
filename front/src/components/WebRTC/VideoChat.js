@@ -129,16 +129,14 @@ const VideoChat = () => {
 
               onmessage: function (msg, jsep) { //msg,jsep같이와 offer로보냇자 /answer
                 Janus.debug(" ::: Got a message (publisher) :::", msg);
-                console.log("onmessage 수신", msg);
                 var event = msg["videoroom"];
                 Janus.debug("Event : " + event);
                 if (event) {
                   if (event === "joined") {
-                    console.log("myfeed설정")
-                    setMyFeed(() => ({
-                      id: msg["id"],
-                      pvtid: msg["private_id"],
-                    }));
+                    // setMyFeed(() => ({
+                    //   id: msg["id"],
+                    //   pvtid: msg["private_id"],
+                    // }));
                     // myid = msg["id"];
                     // mypvtid = msg["private_id"];
                     Janus.log(
@@ -248,7 +246,6 @@ const VideoChat = () => {
                 if (jsep) {
                   console.log("jsep =============", jsep,"마이스트림:" ,mystream);
                   sfutest.handleRemoteJsep({ jsep: jsep });
-                  //anwer sdp를 처리해서 janus서버와 webrtc서버 연결 완료
                   var audio = msg["audio_codec"];
                   if (
                     !audio
@@ -274,7 +271,6 @@ const VideoChat = () => {
               onlocaltrack : function(track, on) {
                 console.log("내 트랙내용:",track);
                 Janus.debug(" ::: Got a local track :::", track);
-                mystream = track;
                 setMyFeed((prev) => ({
                   ...prev,
                   stream: track,
@@ -358,7 +354,7 @@ const VideoChat = () => {
           if (useAudio) {
             publishOwnFeed(false);
           } else {
-          }
+          } 
         }
       });
     }
@@ -368,7 +364,7 @@ const VideoChat = () => {
 
 
 
-
+///////////////////////////////////새로운참여자가 등록햇을경우////////////////////////
     function newRemoteFeed(id, display, audio, video) {
       let remoteFeed = null;
       janus.attach({
@@ -393,11 +389,12 @@ const VideoChat = () => {
             private_id: myFeed.mypvtid,
           };
           remoteFeed.videoCodec = video;
-          remoteFeed.send({ message: subscribe });
+          remoteFeed.send({ message: subscribe }); //
         },
         error: function (error) {
           Janus.error("  -- Error attaching plugin...", error);
         },
+
         onmessage: function (msg, jsep) {
           Janus.debug(" ::: Got a message (subscriber) :::", msg);
           var event = msg["videoroom"];
@@ -475,15 +472,15 @@ const VideoChat = () => {
         //여기서 남의 setfeeds를 설정해야함 ㅇㅇㅋ..
         onremotetrack: function (track) {
           // Janus.debug("Remote feed #" + remoteFeed.rfid + ", stream:", stream);
-          console.log("남의 트랙내용:",track,feeds);
-          setFeeds((prev) => {
-            let findIndex = prev.findIndex((f) => f.rfid === remoteFeed.rfid);
-            let newFeed = [...prev];
-            newFeed[findIndex].track = track;
-            // newFeed[findIndex].hark = createSpeechEvents(stream);
-            return newFeed;
-          });
-          // remoteFeed.stream = stream;
+          console.log("onremotetrack 콜백발생:",track);
+          setFeeds((prev) => [
+            ...prev,
+            {
+              stream: track,
+              rfid:remoteFeed.rfid,
+              // rfid: remoteFeed.rfid,
+            }
+          ]);
           
         },
 
@@ -662,17 +659,18 @@ const VideoChat = () => {
       <div
         key={feed.rfid}
         style={{
-          width: "100px",
-          height: "100px",
+          width: "500px",
+          height: "500px",
           float: "left",
           margin: "3px",
         }}
       >
         <Video
+        key={feed.rfid}
           stream={feed.stream}
           onClick={handleMainStream}
           username={feed.rfdisplay}
-          muted={false}
+          muted={true}
         />
       </div>
     );
@@ -683,12 +681,19 @@ const VideoChat = () => {
   return (
     <>
       <div>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+        > 
         <div
           style={{
-            width: "100%",
+            width: "50%",
           }}
         >
-          <div style={{ width: "60%", float: "left" }}>
+          <div>
             <Video
               stream={mainStream.stream}
               username={mainStream.username}
@@ -696,6 +701,9 @@ const VideoChat = () => {
             />
           </div>
         </div>
+      </div>
+
+        
         <div style={{ float: "left" }}>
           <button onClick={handleAudioActiveClick}>
             {activeAudio ? "소리 끄기" : "소리 켜기"}
@@ -719,12 +727,12 @@ const VideoChat = () => {
         >
           <div
             style={{
-              width: "100px",
-              height: "100px",
+              width: "500px",
+              height: "500px",
               float: "left",
               margin: "3px",
             }}
-          >
+          >111
             {myFeed && (
               <Video
                 stream={myFeed.stream}
