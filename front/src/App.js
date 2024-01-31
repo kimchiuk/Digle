@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer";
 import Main from "./pages/main/MainPage";
-import Signup from "./pages/signup/Signup";
-import SignupDetail from "./pages/signup/SignupDetail";
+import Signup from "./pages/accounts/signup/Signup";
+import SignupDetail from "./pages/accounts/signup/SignupDetail";
 
 import Navbar from "./components/Navbar";
 import Profile from "./pages/accounts/profile/Profile";
