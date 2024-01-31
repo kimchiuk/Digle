@@ -1,13 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import ImageUpload from "../../components/ImageUpload";
-import axios from "axios";
+import Loading from "../../routes/Loading";
 
 const Profile = () => {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(null);
+
   // 초기 값
+  const [image, setImage] = useState("");
   const [Email, setEmail] = useState("");
   const [name, setName] = useState("");
 
@@ -16,37 +20,53 @@ const Profile = () => {
   const [changeName, setChangeName] = useState();
 
   // 프로필 변경 버튼 클릭 시 잠겨있는 블럭 해제
-  const [buttonClick, setButtonClick] = useState(false);
+  const [updateButton, setUpdateButton] = useState(false);
 
   const API_URL = "https://localhost:8000";
 
-  useEffect(() => {
-    // useContext token 추가하기
-    axios
-      .get(`${API_URL}/profile`)
-      .then((response) => {
-        console.log(response);
-        // 이 부분 값 확인 후 수정
-        setEmail(response.data);
-        setName(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   setLoading(true)
+
+  //   // useContext token 추가하기
+  //   axios
+  //     .get(`${API_URL}/profile`)
+  //     .then((response) => {
+  //       console.log(response);
+  //       // 이 부분 값 확인 후 수정
+  //       setEmail(response.data);
+  //       setName(response.data);
+  //       setLoading(false)
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, []);
+
+  const imageHandler = (e) => {};
 
   const emailHandler = (e) => {
     const currentCode = e.target.value;
     setEmail(currentCode);
   };
 
+  const nameHandler = (e) => {
+    const currentCode = e.target.value;
+    setName(currentCode);
+  };
+
+  const buttonClick = () => {
+    setUpdateButton((pre) => !pre);
+  };
+
   // 프로필 사진 첨부
   const profileUpdate = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("name", name);
+
     try {
-      const formData = new FormData();
-      formData.append("emage");
-      formData.append("name", changeName);
       const response = await axios.put(`${API_URL}/profile`, formData);
       console.log(response);
     } catch (error) {
@@ -70,10 +90,10 @@ const Profile = () => {
         {/* 회원정보 수정 form */}
         <div className="relative flex h-screen border-4 rounded-lg">
           <div className="pt-20 w-[600px] text-left px-5">
-            <form className="flex flex-col p-2">
+            <form onSubmit={profileUpdate} className="flex flex-col p-2">
               <div className="flex flex-col">
                 <label htmlFor="email">이메일</label>
-                {!buttonClick ? (
+                {!updateButton ? (
                   <input
                     className="border-b-2 rounded m-2 bg-gray-100"
                     disabled
@@ -102,7 +122,7 @@ const Profile = () => {
                 <label className="" htmlFor="name">
                   이름
                 </label>
-                {!buttonClick ? (
+                {!updateButton ? (
                   <input
                     className="border-b-2 rounded m-2 w-48"
                     type="text"
@@ -116,6 +136,7 @@ const Profile = () => {
                     type="text"
                     id="name"
                     value={name}
+                    onChange={nameHandler}
                   />
                 )}
               </div>
@@ -126,11 +147,12 @@ const Profile = () => {
                 >
                   뒤로가기
                 </button>
-                {!buttonClick ? (
+                {!updateButton ? (
                   <input
                     className="bg-blue-500 text-white py-2 px-8 rounded cursor-pointer mt-2"
                     type="button"
                     value="수정"
+                    onClick={buttonClick}
                   />
                 ) : (
                   <input
@@ -144,6 +166,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      {/* {loading && <Loading />} */}
     </>
   );
 };

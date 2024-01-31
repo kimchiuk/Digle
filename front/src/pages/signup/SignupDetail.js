@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 import SelectSignup from "../../components/signup/SelectSignup";
@@ -34,9 +34,10 @@ const SignupDetail = () => {
     // 폼 데이터에 담아서 전송
     const formData = new FormData();
     formData.append("email", email);
+    // 로딩창 키기
 
     if (isEmail) {
-      alert("이메일이 발송되었습니다.");
+      alert("이메일 중복 검사중 ...");
       setIsCheckEmail(true);
       try {
         const response = await axios.post(
@@ -44,6 +45,8 @@ const SignupDetail = () => {
           formData
         );
         console.log(response);
+
+        // 로딩창 끄기
 
         if (response.data) {
           // setEmailMessage("이미 가입된 이메일입니다.");
@@ -254,6 +257,7 @@ const SignupDetail = () => {
   // 폼 제출 시
   const onSubmitButton = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("name", name);
