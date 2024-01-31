@@ -5,7 +5,6 @@ pipeline {
         // 환경 변수 설정
         DOCKER_REGISTRY_CREDENTIALS = credentials('bogeun_docker') // 도커 레지스트리 크레덴셜 ID
         IMAGE_NAME = 'S10P12D107'
-        
     }
     
     stages {
@@ -15,18 +14,19 @@ pipeline {
                     git credentialsId: 'bogeun kim', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
                 }
             }
-         }
+        }
 
-         stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
                         def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    }
                 }
             }
-         }
+        }
 
-         stage('Push to Docker Registry') {
+        stage('Push to Docker Registry') {
             steps {
                 script {
                     // 도커 이미지를 레지스트리에 푸시
@@ -37,24 +37,20 @@ pipeline {
             }
         }      
         
-
-         stage('run backend') {
+        stage('Run Backend') {
             steps {
-              dir('./back') {
-                sh 'uvicorn app.main:app --reload'
-              }
+                dir('./back') {
+                    sh 'uvicorn app.main:app --reload'
+                }
             }
-         }
+        }
 
-         stage('run frontend') {
+        stage('Run Frontend') {
             steps {
                 dir('./front') {
                     sh 'npm start'
                 }
             }
-         }
+        }
     }
-
-    }
-        
 }
