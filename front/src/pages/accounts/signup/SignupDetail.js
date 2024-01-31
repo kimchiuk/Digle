@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import SelectSignup from "../../components/signup/SelectSignup";
+import SelectSignup from "components/signup/SelectSignup";
 
 const SignupDetail = () => {
   const navigate = useNavigate();
