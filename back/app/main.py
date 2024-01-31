@@ -5,9 +5,9 @@ import json, jwt
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
-from routers import auth_ext, normal_auth
-import models, schemas
-from database import SessionLocal, engine, Base, get_db
+from app.routers import auth_ext, normal_auth, delete_accounts
+from . import models, schemas
+from .database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers import oauth_login, room_handler
@@ -42,6 +42,7 @@ app.include_router(oauth_login.router)
 app.include_router(normal_auth.router)
 app.include_router(room_handler.router)
 app.include_router(auth_ext.router)
+app.include_router(delete_accounts.router)
 
 
 # 추가적인 인증 및 사용자 관리 로직

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import DeleteAccount from "../DeleteAccount";
 
-import ImageUpload from "../../components/ImageUpload";
+import ImageUpload from "../../../components/ImageUpload";
 import axios from "axios";
 
 const Profile = ({ email, name }) => {
@@ -84,6 +85,7 @@ const Profile = ({ email, name }) => {
                 <button className="bg-gray-500 text-white py-2 px-8 rounded cursor-pointer">
                   뒤로가기
                 </button>
+                <DeleteAccount/>
                 <input
                   className="bg-blue-500 text-white py-2 px-8 rounded cursor-pointer mt-2"
                   type="submit"

@@ -6,7 +6,7 @@ import Signup from "./pages/signup/Signup";
 import SignupDetail from "./pages/signup/SignupDetail";
 
 import Navbar from "./components/Navbar";
-import Profile from "./pages/profile/Profile";
+import Profile from "./pages/accounts/profile/Profile";
 import Login from "./pages/accounts/Login";
 import Solution1 from "./pages/solution/Solution1";
 import Solution2 from "./pages/solution/Solution2";
