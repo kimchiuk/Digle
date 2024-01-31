@@ -8,10 +8,8 @@ export const AuthProvider = ({ children }) => {
   const API_URL = "https://localhost:8000";
 
   useEffect(() => {
-    const formData = new FormData();
-    formData.append("withCredentials", true);
     axios
-      .get(`${API_URL}/`, formData)
+      .get(`${API_URL}/`, { withCredentials: true })
       .then((response) => {
         console.log(response);
         setIsLoggedIn(true);
@@ -27,12 +25,4 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 };
