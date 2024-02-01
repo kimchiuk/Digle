@@ -29,39 +29,41 @@ const SignupDetail = () => {
   const [emailCode, setEmailCode] = useState("");
   const [emailCodeMsg, setEmailCodeMsg] = useState("");
 
+  const [emailCheck, setEmailCheck] = useState(false);
   const handleCheckEmail = async (e) => {
     e.preventDefault();
     // 폼 데이터에 담아서 전송
-    const formData = new FormData();
-    formData.append("email", email);
-    // 로딩창 키기
 
-    if (isEmail) {
-      alert("이메일 중복 검사중 ...");
-      setIsCheckEmail(true);
-      try {
-        const response = await axios.post(
-          `${API_URL}/request_verify_email`,
-          formData
-        );
-        console.log(response);
-
-        // 로딩창 끄기
-
-        if (response.data) {
-          // setEmailMessage("이미 가입된 이메일입니다.");
-          // setEmailMessage("사용 가능한 이메일입니다.");
-          setEmailCodeOk(false);
-        } else {
-          setEmailMessage("이미 가입된 이메일입니다.");
-          setEmailCodeOk(true);
-        }
-      } catch (error) {
-        console.error("이메일 중복 확인 오류:", error);
-      }
-    } else {
-      alert("이메일 형식을 지켜주세요");
+    if (!isEmail) {
+      alert("이메일 형식을 지켜주세요!");
+      return;
     }
+    setEmailCheck(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      const response = await axios.post(
+        `${API_URL}/request_verify_email`,
+        formData
+      );
+      console.log(response);
+
+      if (response.data) {
+        // setEmailMessage("이미 가입된 이메일입니다.");
+        // setEmailMessage("사용 가능한 이메일입니다.");
+        setIsCheckEmail(true);
+        setEmailCodeOk(false);
+      } else {
+        setEmailMessage("이미 가입된 이메일입니다.");
+        setEmailCodeOk(true);
+      }
+    } catch (error) {
+      console.error("이메일 중복 확인 오류:", error);
+      alert("이미 가입된 이메일입니다.");
+      setIsCheckEmail(false);
+    }
+    setEmailCheck(false);
   };
 
   // const handleEmailVerification = async () => {
@@ -156,26 +158,7 @@ const SignupDetail = () => {
   );
   const [isImage, setIsImage] = useState(false);
   const [readImage, setReadImage] = useState();
-  // 이미지 올리는 함수 1
 
-  // const onChangeImageUpload = (e) => {
-  //   const { files } = e.target;
-  //   const uploadFile = files[0];
-  //   console.log(uploadFile);
-  //   if (uploadFile && uploadFile instanceof Blob) {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(uploadFile);
-  //     reader.onloadend = () => {
-  //       setImage(reader.result);
-  //       setIsImage(true);
-  //     };
-  //     console.log(reader);
-  //     console.log(typeof image);
-  //   } else {
-  //     console.error("잘못된 파일 타입. Blob을 기대했습니다.");
-  //     setIsImage(false);
-  //   }
-  // };
   const onChangeImageUpload = (event) => {
     if (event.target.files && event.target.files[0]) {
       setImage(event.target.files[0]);
@@ -189,37 +172,6 @@ const SignupDetail = () => {
       setIsImage(true);
     }
   };
-  // image 파일 올리는 방법 2
-
-  // const [imageName, setImageName] = useState();
-  // const onChangeImageUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   setImageName(file);
-  //   if (file) {
-  //     const allowedExtensions = [
-  //       "png",
-  //       "jpg",
-  //       "jpeg",
-  //       "gif",
-  //       "webp",
-  //       "svg",
-  //       "pdf",
-  //       "psd",
-  //       "gif",
-  //       "ai",
-  //       "tiff",
-  //       "bmp",
-  //       "eps",
-  //     ];
-  //     const fileExtension = file.name.split(".").pop().toLowerCase();
-  //     if (!allowedExtensions.includes(fileExtension)) {
-  //       alert("uploadError");
-  //       return;
-  //     } else {
-  //       setImage(file);
-  //     }
-  //   }
-  // };
 
   // businessSignup 쓰이는 상태, 함수
   const [enrollCompany, setEnrollCompany] = useState({
@@ -307,6 +259,7 @@ const SignupDetail = () => {
                 <button
                   className="py-1 px-3 bg-blue-500 rounded-lg text-white"
                   onClick={handleCheckEmail}
+                  disabled={emailCheck}
                 >
                   이메일 확인
                 </button>

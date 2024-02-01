@@ -1,16 +1,18 @@
+from multiprocessing import Process
 import os
+import sys
 from fastapi import APIRouter, FastAPI, WebSocket, WebSocketDisconnect, Depends
 from typing import List, Dict
 import json, jwt
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
-
+import uvicorn
 from routers import auth_ext, normal_auth, delete_accounts
 import models, schemas
 from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import oauth_login, room_handler
+from routers import oauth_login, room_handler, user_profile
 
 Base.metadata.create_all(bind=engine)
 
@@ -43,12 +45,9 @@ app.include_router(normal_auth.router)
 app.include_router(room_handler.router)
 app.include_router(auth_ext.router)
 app.include_router(delete_accounts.router)
+app.include_router(user_profile.router)
 
-
-# 추가적인 인증 및 사용자 관리 로직
-if __name__ == "__main__":
-    import uvicorn
-
+def local_run():
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
@@ -60,3 +59,26 @@ if __name__ == "__main__":
         forwarded_allow_ips="*",  # 모든 프록시된 IP 주소 허용
         proxy_headers=True,  # X-Forwarded-Proto 헤더를 신뢰
     )
+
+
+def deploy_run():
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        log_level="debug",
+        forwarded_allow_ips="*",  # 모든 프록시된 IP 주소 허용
+        proxy_headers=True,  # X-Forwarded-Proto 헤더를 신뢰
+    )
+
+
+# 추가적인 인증 및 사용자 관리 로직
+if __name__ == "__main__":
+    if sys.argv[1] == "local":
+        api_process = Process(target=local_run)
+        api_process.start()
+        api_process.join()
+    elif sys.argv[1] == "deploy":
+        api_process = Process(target=deploy_run)
+        api_process.start()
+        api_process.join()

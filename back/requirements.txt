@@ -9,6 +9,7 @@ httpx
 python-multipart
 python-jose
 # db table migration lib
+
 alembic
 requests
 bcrypt
@@ -17,3 +18,4 @@ pydantic[email]
 google-auth
 google-api-python-client
 google-auth-oauthlib
+itsdangerous==2.1.2

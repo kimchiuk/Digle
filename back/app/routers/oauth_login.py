@@ -55,7 +55,7 @@ def user_db_login(auth_provider, auth_provider_id, user_info, db, response):
         message = "Login Complete"
 
     # 그걸로 access token을 생성
-    access_token = create_access_token(user.internal_id)
+    access_token = create_access_token(user.internal_id, "service_access")
     # access token을 보안때문에 header에다 cookie를 담아서 줄것.
     response.set_cookie(
         key="__Host-access_token",

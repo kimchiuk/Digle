@@ -3,9 +3,9 @@ import { Outlet, Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const PublicRoute = () => {
-  const { AuthProvider } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
 
-  return AuthProvider.isLoggedIn ? <Navigate to="/login" /> : <Outlet />;
+  return isLoggedIn ? <Navigate to="/" /> : <Outlet />;
 };
 
 export default PublicRoute;

@@ -7,18 +7,13 @@ const Video = ({ stream, username, muted, onClickFunction }) => {
 
 
   useEffect(() => {
-    if (stream) {
-      // MediaStreamTrack의 인스턴스인 경우 처리
-      if (stream instanceof MediaStreamTrack) {
-        const newMediaStream = new MediaStream([stream]);
-        console.log(newMediaStream,stream);
-        setMediaStream(newMediaStream);
-      }
-
-      else {
-        console.error("지원되지 않는 스트림 유형입니다:", stream);
-      }
-      // 비디오 엘리먼트에 MediaStream 할당
+    if (stream instanceof MediaStream) {
+      videoRef.current.srcObject = stream;
+    } else if (stream instanceof MediaStreamTrack) {
+      const newMediaStream = new MediaStream([stream]);
+      videoRef.current.srcObject = newMediaStream;
+    } else {
+      console.error("지원되지 않는 스트림 유형입니다:", stream);
     }
   }, [stream]);
 

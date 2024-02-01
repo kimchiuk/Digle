@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
+import Chatting from "./Chatting/Chatting";
 
 
 
@@ -24,13 +25,27 @@ const VideoChat = () => {
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
 
-  const connectFeed = (feed) => {
-    setFeeds((prevFeeds) => [...prevFeeds, feed]);
+  const connectFeed = (newFeed) => {
+    setFeeds((prevFeeds) => {
+      if (prevFeeds.some((feed) => feed.rfid === newFeed.rfid)) {
+        return prevFeeds;
+      }
+      return [...prevFeeds, newFeed];
+    });
   };
 
-  const disconnectFeed = (feed) => {
-    setFeeds((prevFeeds) => prevFeeds.filter((f) => f.rfid !== feed.rfid));
-  };
+// useEffect(() => {
+//   return () => {
+//       setFeeds([]);
+//   };
+// }, []);
+
+
+
+const disconnectFeed = (rfid) => {
+  setFeeds((prevFeeds) => prevFeeds.filter((feed) => feed.rfid !== rfid));
+};
+
 
   // const createSpeechEvents = (stream) => {
   //   let speechEvents = hark(stream, {});
@@ -88,6 +103,7 @@ const VideoChat = () => {
                     room: myroom,
                     ptype: "publisher",
                     display: username,
+                    data: true
                   },
                 });
               },
@@ -100,7 +116,7 @@ const VideoChat = () => {
               consentDialog: function (on) {
                 // getusermedia 호출 되기전 true
                 // 호출되고 false
-                Janus.debug(
+                Janus.debug(  
                   "Consent dialog should be " + (on ? "on" : "off") + " now"
                 );
               },
@@ -125,6 +141,10 @@ const VideoChat = () => {
                   // 꺼짐 처리
                   return;
                 }
+              },
+
+              ondataopen: function (data) {
+                console.log("data channel opened");
               },
 
               onmessage: function (msg, jsep) { //msg,jsep같이와 offer로보냇자 /answer
@@ -214,34 +234,20 @@ const VideoChat = () => {
                       }
                     } 
                     else if (msg["leaving"]) {
-                      var leaving = msg["leaving"];
-                      Janus.log("Publisher left: " + leaving);
-                      var remoteFeed = null;
-                      for (var i = 0; i < feeds.length; i++) {
-                        if (feeds[i] && feeds[i].rfid === leaving) {
-                          remoteFeed = feeds[i];
-                          break;
-                        }
-                      }
-                      if (remoteFeed != null) {
-                        // 나간 피드 처리
-                        Janus.debug(
-                          "Feed " +
-                            remoteFeed.rfid +
-                            " (" +
-                            remoteFeed.rfdisplay +
-                            ") has left the room, detaching"
-                        );
-                        // ++ 해당 비디오 닫아주는 코드
-                        disconnectFeed(remoteFeed);
-                        remoteFeed.detach();
-                      }
+                      console.log(feeds);
+                      let leaving = msg["leaving"];
+                      Janus.log("Publisher left: " + leaving); //여기서 leaveing은 나간놈의 고유rfid임 
+                                          
+                      disconnectFeed(leaving);                   
+  
                     } else if (msg["error"]) {
-                      // 426 코드 방 X
+                      // 에러 처리
                       alert(msg["error"]);
                     }
                   }
                 }
+                
+                
 ///
                 if (jsep) {
                   console.log("jsep =============", jsep,"마이스트림:" ,mystream);
@@ -267,9 +273,14 @@ const VideoChat = () => {
                 }
               },
 
+              disconnectFeed: function(rfid) {
+                // rfid와 일치하는 피드를 feeds 배열에서 제거
+                setFeeds(prevFeeds => prevFeeds.filter(feed => feed.rfid !== rfid));
+                
+              },
+
 
               onlocaltrack : function(track, on) {
-                console.log("내 트랙내용:",track);
                 Janus.debug(" ::: Got a local track :::", track);
                 setMyFeed((prev) => ({
                   ...prev,
@@ -327,34 +338,29 @@ const VideoChat = () => {
       },
     });
 
-    function publishOwnFeed(useAudio) { //true
-      let tracks = [];
-      if (useAudio) {
-        tracks.push({ type: 'audio', capture: true,});
-      }//track이란곳에 오디으쓰고
-      tracks.push({
-        type: 'video',
-        capture: true,
-        simulcast: doSimulcast,
-      });
-      //video관련쓰고 track에
+    function publishOwnFeed(useAudio) {
+      // Create an offer for audio and video
       sfutest.createOffer({
-        tracks: tracks,
-
+        media: {
+          audioRecv: false, 
+          videoRecv: false, 
+          audioSend: useAudio, 
+          videoSend: true, 
+          data: true 
+        },
         success: function (jsep) {
           Janus.debug("Got publisher SDP!");
           Janus.debug(jsep);
           let publish = { request: "configure", audio: useAudio, video: true };
-          console.log("미디어서버 받으쇼",publish,jsep);
-
-          sfutest.send({ message: publish, jsep: jsep }); //실행
+          sfutest.send({ message: publish, jsep: jsep });
         },
         error: function (error) {
           Janus.error("WebRTC error:", error);
           if (useAudio) {
             publishOwnFeed(false);
           } else {
-          } 
+            // Handle error
+          }
         }
       });
     }
@@ -385,6 +391,7 @@ const VideoChat = () => {
             request: "join",
             room: myroom,
             ptype: "subscriber",
+            display: display,
             feed: id,
             private_id: myFeed.mypvtid,
           };
@@ -436,7 +443,7 @@ const VideoChat = () => {
             // Answer and attach
             remoteFeed.createAnswer({
               jsep: jsep,
-              media: { data: false, audioSend: false, videoSend: false }, // We want recvonly audio/video
+              media: { data: true, audioSend: false, videoSend: false }, // We want recvonly audio/video
               success: function (jsep) {
                 Janus.debug("Got SDP!", jsep);
                 var body = { request: "start", room: myroom };
@@ -471,18 +478,31 @@ const VideoChat = () => {
 
         //여기서 남의 setfeeds를 설정해야함 ㅇㅇㅋ..
         onremotetrack: function (track) {
-          // Janus.debug("Remote feed #" + remoteFeed.rfid + ", stream:", stream);
-          console.log("onremotetrack 콜백발생:",track);
-          setFeeds((prev) => [
-            ...prev,
-            {
-              stream: track,
-              rfid:remoteFeed.rfid,
-              // rfid: remoteFeed.rfid,
-            }
-          ]);
-          
+          if (track.kind === "video") {
+            setFeeds((prevFeeds) => {
+              // 이미 제거된 피드는 처리하지 않음
+              if (!prevFeeds.find((feed) => feed.rfid === remoteFeed.rfid)) {
+                return prevFeeds;
+              }
+              
+              // 피드에 비디오 트랙 추가
+              if (!remoteFeed.streams) {
+                remoteFeed.streams = {};
+              }
+              if (!remoteFeed.streams[track.id]) {
+                remoteFeed.streams[track.id] = new MediaStream();
+              }
+              remoteFeed.streams[track.id].addTrack(track);
+      
+              return prevFeeds.map((feed) =>
+                feed.rfid === remoteFeed.rfid
+                  ? { ...feed, stream: remoteFeed.streams[track.id] }
+                  : feed
+              );
+            });
+          }
         },
+      
 
 
 
@@ -497,7 +517,9 @@ const VideoChat = () => {
         ondataopen: function () {
           console.log("remote datachannel opened");
         },
+        
         ondata: function (data) {
+          console.log("데이터왓다씨발아",data); 
           let json = JSON.parse(data);
           let what = json["textroom"];
           if (what === "message") {
@@ -548,6 +570,7 @@ const VideoChat = () => {
       textroom: "message",
       room: myroom,
       text: data,
+      transaction: Janus.randomString(12),
       display: username,
     };
     sfutest.data({
@@ -607,10 +630,11 @@ const VideoChat = () => {
       sfutest.createOffer({
         media: {
           replaceVideo: true,
+          data: true,
         },
         success: function (jsep) {
           Janus.debug(jsep);
-          sfutest.send({ message: { audio: true, video: true }, jsep: jsep });
+          sfutest.send({ message: { audio: true, video: true,data:true}, jsep: jsep });
         },
         error: function (error) {
           alert("WebRTC error... " + JSON.stringify(error));
@@ -625,10 +649,11 @@ const VideoChat = () => {
         media: {
           video: "screen",
           replaceVideo: true,
+          data: true,
         },
         success: function (jsep) {
           Janus.debug(jsep);
-          sfutest.send({ message: { audio: true, video: true }, jsep: jsep });
+          sfutest.send({ message: { audio: true, video: true ,data:true}, jsep: jsep });
         },
         error: function (error) {
           alert("WebRTC error... " + JSON.stringify(error));
@@ -693,13 +718,24 @@ const VideoChat = () => {
             width: "50%",
           }}
         >
-          <div>
+          
+          <div style={{ width: "75%", float: "left", height: "50%" }}>
             <Video
               stream={mainStream.stream}
               username={mainStream.username}
               muted={true}
             />
           </div>
+
+          <div style={{ width: "25%", float: "right", height: "100%" }}>
+            <Chatting
+              sendChatData={sendChatData}
+              receiveChat={receiveChat}
+              transferFile={transferFile}
+              receiveFile={receiveFile}
+            />
+          </div>
+
         </div>
       </div>
 
