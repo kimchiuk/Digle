@@ -19,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'bogeun_docker', url: 'https://registry.hub.docker.com') {
+                    withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                         def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                     }
                 }
