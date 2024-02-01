@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 
 const DeleteAccount = () => {
   const navigate = useNavigate();
-  const API_URL = "https://localhost:5000";
+  const API_URL = "https://localhost:8000";
   const [cookies, , removeCookie] = useCookies(["isLogin"]);
 
   const deleteAccount = async () => {
