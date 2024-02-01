@@ -5,19 +5,10 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        // PATH = "/usr/bin:$PATH"  // Docker 바이너리 경로 추가
-        PATH = "/usr/local/bin:/usr/bin:$PATH"
         IMAGE_NAME = 'digle'
     }
     
     stages {
-        stage('Install Docker') {
-            steps {
-                script {
-                    sh 'docker run --name jenkins-docker -d --privileged docker:dind'
-                }
-            }
-        }
         
         stage('Checkout') {
             steps {
@@ -41,24 +32,16 @@ pipeline {
                     sh 'echo "Starting Build Back Docker Image"'
                    
                     dir('back') {
-                        // withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                        //      def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
-                        //     // Docker 빌드 결과 출력
-                        //     if (customImage == 0) {
-                        //         echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                        //     } else {
-                        //         error "Docker build failed"
-                        //     }
-                        // }
-                        // 도커 빌드를 직접 수행
-                            def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
-
+                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+                             def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
-                            if (customImage != null) {
+                            if (customImage == 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                             } else {
                                 error "Docker build failed"
                             }
+                        }
+                            
                     }
                 }
             }
