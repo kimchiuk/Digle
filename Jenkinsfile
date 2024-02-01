@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     // 도커 이미지를 레지스트리에 푸시
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                         customImage.push()
                     }
                 }
