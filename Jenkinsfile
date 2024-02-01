@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    git credentialsId: GIT_REGISTRY_CREDENTIALS, url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
+                    git credentialsId: $GIT_REGISTRY_CREDENTIALS, url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12D107.git'
                 }
             }
         }
