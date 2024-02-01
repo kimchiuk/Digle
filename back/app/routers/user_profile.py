@@ -38,18 +38,20 @@ async def read_users_me(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    user = get_user_by_token(request, db)
+    
+    user = get_user_by_token(request, db, "service_access")
+
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
-
+    print(user)
     # 사용자 정보를 직접 반환하거나  객체를 사용해서 반환
     if user.user_type == UserType.Standard:
         user_data = {
-            "email": user.email,
+            "email" : user.email,
             "name" : user.name,
-            "profile_picture_url":user.profile_picture_url,
-            "user_type":user.user_type,
-            "auth_provider":user.auth_provider
+            "profile_picture_url" : user.profile_picture_url,
+            "user_type" : user.user_type,
+            "auth_provider" : user.auth_provider
         }
         return user_data
     

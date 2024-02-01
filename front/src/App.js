@@ -31,43 +31,43 @@ import Anhs from "./components/WebRTC/hyunsung";
 function App() {
   return (
     <div className="select-none">
-      {/* <AuthProvider> */}
-      <BrowserRouter>
-        <Navbar />
+      <AuthProvider>
+        <BrowserRouter>
+          <Navbar />
 
-        <Routes>
-          {/* 이부분 반드시 삭제하셈 */}
-          <Route path="/anhs" element={<Anhs />} />
+          <Routes>
+            {/* 이부분 반드시 삭제하셈 */}
+            <Route path="/anhs" element={<Anhs />} />
 
-          <Route path="/" element={<Main />} />
-          <Route path="/test_router" element={<TestRouter />} />
+            <Route path="/" element={<Main />} />
+            <Route path="/test_router" element={<TestRouter />} />
 
-          {/* <Route element={<PublicRoute />}> */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signup/detail" element={<SignupDetail />} />
-          {/* </Route> */}
-          <Route path="/solution/1/" element={<Solution1 />} />
-          <Route path="/solution/2/" element={<Solution2 />} />
+            {/* <Route element={<PublicRoute />}> */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup/detail" element={<SignupDetail />} />
+            {/* </Route> */}
+            <Route path="/solution/1/" element={<Solution1 />} />
+            <Route path="/solution/2/" element={<Solution2 />} />
 
-          {/* <Route element={<PrivateRoute />}> */}
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/logout" element={<Logout />} />
-          {/* </Route> */}
+            {/* <Route element={<PrivateRoute />}> */}
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<Logout />} />
+            {/* </Route> */}
 
-          <Route path="/login/callback" element={<LoginCallback />} />
-          <Route path="/google_login" element={<GoogleLoginButton />} />
-          <Route path="/naver_login" element={<NaverLoginButton />} />
-          <Route path="/kakao_login" element={<KakaoLoginButton />} />
+            <Route path="/login/callback" element={<LoginCallback />} />
+            <Route path="/google_login" element={<GoogleLoginButton />} />
+            <Route path="/naver_login" element={<NaverLoginButton />} />
+            <Route path="/kakao_login" element={<KakaoLoginButton />} />
 
-          <Route path="/find_password" element={<FindPassword />} />
-          <Route path="/change_password" element={<ChangePassword />} />
-          <Route path="/CreateRoom" element={<CreateRoom />} />
-          <Route path="/vchat" element={<VideoChat />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-      {/* </AuthProvider> */}
+            <Route path="/find_password" element={<FindPassword />} />
+            <Route path="/change_password" element={<ChangePassword />} />
+            <Route path="/CreateRoom" element={<CreateRoom />} />
+            <Route path="/vchat" element={<VideoChat />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
