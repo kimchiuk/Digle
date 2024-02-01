@@ -9,6 +9,7 @@ httpx
 python-multipart
 python-jose
 # db table migration lib
+
 alembic
 requests
 bcrypt

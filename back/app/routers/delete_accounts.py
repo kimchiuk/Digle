@@ -51,7 +51,7 @@ async def delete_accounts(
             key="__Host-access_token",
             httponly=True,
             secure=True,
-            samesite=None,
+            samesite="None",
             path="/",
         )
         return {"message": "회원 탈퇴가 성공적으로 완료되었습니다."}  # 들여쓰기 확인

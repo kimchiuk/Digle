@@ -95,14 +95,14 @@ async def login_for_access_token(
         db.add(business_data)
         db.commit()
         db.refresh()
-    access_token = create_access_token(internal_id)
+    access_token = create_access_token(internal_id, "service_access")
 
     response.set_cookie(
         key="__Host-access_token",
         value=access_token,
         httponly=False,
         secure=True,
-        samesite=None,
+        samesite="None",
         path="/",
         max_age=3600,
     )
@@ -131,7 +131,7 @@ async def login_for_access_token(
     if user:
         if verify_password(login_data.password, user.hashed_password):
             # 그걸로 access token을 생성
-            access_token = create_access_token(user.internal_id)
+            access_token = create_access_token(user.internal_id, "service_access")
             # access token을 보안때문에 header에다 cookie를 담아서 줄것.
             response.set_cookie(
                 key="__Host-access_token",

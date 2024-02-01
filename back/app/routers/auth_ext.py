@@ -23,7 +23,7 @@ async def logout(response: Response):
 
 @router.post("/verifyToken")
 async def verifyToken(request: Request, db: Session = Depends(get_db)):
-    user = get_user_by_token(request, db)
+    user = get_user_by_token(request, db, "service_access")
     if not user:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     if not user.is_additional_info_provided:
