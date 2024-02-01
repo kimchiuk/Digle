@@ -124,7 +124,7 @@ const Login = () => {
               to="/find_password"
               className="text-white text-sm hover:underline"
             >
-              아이디 및 비밀번호 찾기
+              비밀번호를 잊으셨나요?
             </Link>
           </div>
           <div className="flex items-center justify-center space-x-2">

@@ -11,7 +11,7 @@ const ChangePassword = () => {
   const [isPwd, setIsPwd] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = "https://localhost:8000";
 
   const handleResetPassword = async () => {
     const formData = new FormData();
@@ -25,7 +25,7 @@ const ChangePassword = () => {
 
     try {
       // axios를 사용하여 서버에 '비밀번호 재설정' 요청을 보냅니다.
-      await axios.post(`${API_URL}/change_password`, formData);
+      await axios.post(`${API_URL}/reset_password`, formData);
       alert("비밀번호가 성공적으로 변경되었습니다.");
       setPasswordMsg("");
       console.log("비밀번호가 수정되었습니다.");
