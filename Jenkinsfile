@@ -5,8 +5,6 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        DOCKER_HOME = tool 'DOCKER_HOME'
-        DOCKER_COMMAND = "${DOCKER_HOME}/docker"
         IMAGE_NAME = 'digle'
     }
     
