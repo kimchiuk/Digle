@@ -17,7 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("chosami/webrtc_back:$DOCKER_TAG", './back/')
+                    docker.build("chosami/${DOCKER_IMAGE}:${DOCKER_TAG}", './back/')
                 }
             }
         }
