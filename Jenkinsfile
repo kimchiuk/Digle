@@ -11,6 +11,14 @@ pipeline {
     }
     
     stages {
+        stage('Install Docker') {
+            steps {
+                script {
+                    sh 'docker run --name jenkins-docker -d --privileged docker:dind'
+                }
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 script {
