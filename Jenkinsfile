@@ -3,9 +3,10 @@ pipeline {
 
     environment {
         // 환경 변수 설정
-        GIT_REGISTRY_CREDENTIALS = credentials('gitlab') // 깃 레지스트리 크레덴셜
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker') // 도커 레지스트리 크레덴셜 ID
-        def dockerCommand = '${DOCKER_HOME}/docker'
+        GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
+        DOCKER_HOME = tool 'DOCKER_HOME'
+        DOCKER_COMMAND = "${DOCKER_HOME}/docker"
         IMAGE_NAME = 'digle'
     }
     
