@@ -19,9 +19,9 @@ pipeline {
         stage('Build Back Docker Image') {
             steps {
                 script {
-
-                    sh 'echo $PATH'  // $PATH 출력
-                    sh 'which docker'  // Docker 실행 파일 위치 출력
+                    sh 'echo "Starting Build Back Docker Image"'
+                    // sh 'echo $PATH'  // $PATH 출력
+                    // sh 'which docker'  // Docker 실행 파일 위치 출력
                     dir('/back/Dockerfile') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
