@@ -14,7 +14,7 @@ const FindPassword = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const navigate = useNavigate();
   
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = "https://localhost:8000";
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -35,10 +35,11 @@ const FindPassword = () => {
   const verifyEmail = async () => {
     setLoading(true);
     const formData = new FormData();
-    formData.append('username', username);
+    formData.append('name', username);
     formData.append('email', email)
+    
     try {
-      const response = await axios.post(`${API_URL}/verify_email`, formData);
+      const response = await axios.post(`${API_URL}/find_password`, formData);
       setUsername(response.data.username);
       setIsVerified(true);
       startTimer();
@@ -70,8 +71,8 @@ const FindPassword = () => {
 
   const verifyCode = async () => {
     try {
-      await axios.post("/api/verify_code", { code: verificationCode });
-      navigate.push("/change_password");
+      await axios.post(`${API_URL}/verify_password_reset`, { code: verificationCode });
+      navigate.push(`/reset_password`);
     } catch (err) {
       setError(err.response?.data?.message || "인증번호가 올바르지 않습니다.");
     }
