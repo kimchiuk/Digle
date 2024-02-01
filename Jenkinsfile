@@ -16,17 +16,6 @@ pipeline {
             }
         }
 
-        stage('Install Docker') {
-            steps {
-                script {
-                    sh 'sudo apt update'
-                    sh 'sudo apt install docker.io -y'
-                    sh 'sudo usermod -aG docker $USER'
-                    sh 'sudo systemctl restart jenkins'
-                }
-            }
-        }
-        
         stage('Build Back Docker Image') {
             steps {
                 script {
