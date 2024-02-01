@@ -6,7 +6,7 @@ pipeline {
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
         // PATH = "/usr/bin:$PATH"  // Docker 바이너리 경로 추가
-         PATH = "/usr/local/bin:/usr/bin:$PATH"
+        PATH = "/usr/local/bin:/usr/bin:$PATH"
         IMAGE_NAME = 'digle'
     }
     
@@ -22,12 +22,7 @@ pipeline {
         stage('Check Docker') {
             steps {
                 script {
-                    def dockerCheck = sh(script: 'docker --version', returnStatus: true)
-                    if (dockerCheck == 0) {
-                        echo "Docker is available on the Jenkins agent."
-                    } else {
-                        error "Docker is not available on the Jenkins agent."
-                    }
+                    sh 'docker --version'
                 }
             }
         }
