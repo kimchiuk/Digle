@@ -16,21 +16,34 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Back Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'bogeun_docker', url: 'https://registry.hub.docker.com') {
-                        def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    sh 'echo "Starting Build Back Docker Image"'
+                    // sh 'echo $PATH'  // $PATH 출력
+                    // sh 'which docker'  // Docker 실행 파일 위치 출력
+                    dir('back') {
+                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+                            def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+
+                            // Docker 빌드 결과 출력
+                            if (customImage != null) {
+                                echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                            } else {
+                                error "Docker build failed"
+                            }
+                        }
                     }
                 }
             }
+            
         }
 
         stage('Push to Docker Registry') {
             steps {
                 script {
                     // 도커 이미지를 레지스트리에 푸시
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                         customImage.push()
                     }
                 }

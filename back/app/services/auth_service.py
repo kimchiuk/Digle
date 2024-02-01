@@ -27,9 +27,9 @@ def generate_random_state(length=32):
 
 
 # 엑세스 토큰 생성
-def create_access_token(internal_id: str):
+def create_access_token(internal_id: str, scope: str):
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"sub": internal_id, "exp": expire}
+    to_encode = {"sub": internal_id, "exp": expire, "aud": scope}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -66,11 +66,18 @@ def generate_internal_id():
 
 
 # token으로부터 internal_id 추출
-def verify_token(token: str):
+def verify_token(token: str, scope: str):
     if token is None:
         raise HTTPException(status_code=400, detail="이재민 바보")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+        aud = payload.get("aud")
+        if scope != aud:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid Scope",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         internal_id = payload.get("sub")
         if internal_id is None:
             raise HTTPException(
@@ -89,11 +96,12 @@ def verify_token(token: str):
 
 
 # token으로부터 user객체 획득
-def get_user_by_token(request, db):
+# scope = "service_access", "reset_password"
+def get_user_by_token(request, db, scope):
     token = request.cookies.get("__Host-access_token")
-    if not token or not verify_token(token):
+    if not token or not verify_token(token, scope):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
-    internal_id = verify_token(token)
+    internal_id = verify_token(token, scope)
     user = db.query(User).filter(User.internal_id == internal_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
