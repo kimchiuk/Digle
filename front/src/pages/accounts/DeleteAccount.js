@@ -10,17 +10,16 @@ const DeleteAccount = () => {
 
   const deleteAccount = async () => {
     if (!cookies.isLogin) {
-      console.log("로그인 상태가 아닙니다.")
+      console.log("로그인 상태가 아닙니다.");
       navigate("/login");
       return;
     }
-  
-    try {  
+
+    try {
       const response = await axios.post(`${API_URL}/delete_account`);
       console.log("회원 탈퇴 성공: ", response);
-      removeCookie("isLogin", { path: '/', domain: 'localhost'});
+      removeCookie("isLogin", { path: "/", domain: "localhost" });
       navigate("/");
-  
     } catch (error) {
       console.error("에러 발생: ", error);
     }
@@ -32,8 +31,8 @@ const DeleteAccount = () => {
 
   return (
     <div>
-      <button 
-        onClick={deleteAccount} 
+      <button
+        onClick={deleteAccount}
         className="px-4 py-2 bg-red-500 text-white rounded-lg"
       >
         회원 탈퇴
