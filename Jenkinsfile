@@ -4,7 +4,7 @@ pipeline {
     environment {
         // 환경 변수 설정
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker') // 도커 레지스트리 크레덴셜 ID
-        IMAGE_NAME = 'DockerFile'
+        IMAGE_NAME = 'Dockerfile'
     }
     
     stages {
