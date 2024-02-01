@@ -5,7 +5,8 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        PATH = "/usr/bin:$PATH"  // Docker 바이너리 경로 추가
+        // PATH = "/usr/bin:$PATH"  // Docker 바이너리 경로 추가
+         PATH = "/usr/local/bin:/usr/bin:$PATH"
         IMAGE_NAME = 'digle'
     }
     
