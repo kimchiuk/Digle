@@ -5,6 +5,7 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab') // 깃 레지스트리 크레덴셜
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker') // 도커 레지스트리 크레덴셜 ID
+        def dockerCommand = '${DOCKER_HOME}/docker'
         IMAGE_NAME = 'digle'
     }
     
@@ -25,7 +26,7 @@ pipeline {
                     // sh 'which docker'  // Docker 실행 파일 위치 출력
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                            def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                            def customImage = ${dockerCommand}.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
 
                             // Docker 빌드 결과 출력
                             if (customImage != null) {
