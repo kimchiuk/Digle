@@ -24,7 +24,7 @@ target_metadata = None
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-from app.database import Base
+from database import Base
 
 target_metadata = Base.metadata
 

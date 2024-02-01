@@ -30,7 +30,7 @@ const Solution1 = () => {
   };
 
   return (
-    <div className="px-20 pt-16 pb-4 max-w-2xl mx-auto">
+    <div className="px-20 h-auto pt-16 pb-4 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold pt-2 pb-2 mt-4 mb-6">자주 묻는 질문</h2>
 
       {currentItems.map((item, index) => (

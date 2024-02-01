@@ -11,11 +11,11 @@ from fastapi.responses import JSONResponse
 import httpx
 from sqlalchemy.orm import Session
 
-from app.schemas.user_schema import UserCreate, UserLogin
-from ..database import get_db
+from schemas.user_schema import UserCreate, UserLogin
+from database import get_db
 
-from app.models.user import BusinessUser, EmailVerification, User
-from app.services.auth_service import (
+from models.user import BusinessUser, EmailVerification, User
+from services.auth_service import (
     create_access_token,
     generate_internal_id,
     hash_password,
@@ -95,14 +95,14 @@ async def login_for_access_token(
         db.add(business_data)
         db.commit()
         db.refresh()
-    access_token = create_access_token(internal_id)
+    access_token = create_access_token(internal_id, "service_access")
 
     response.set_cookie(
         key="__Host-access_token",
         value=access_token,
         httponly=False,
         secure=True,
-        samesite=None,
+        samesite="None",
         path="/",
         max_age=3600,
     )
@@ -131,10 +131,10 @@ async def login_for_access_token(
     if user:
         if verify_password(login_data.password, user.hashed_password):
             # 그걸로 access token을 생성
-            access_token = create_access_token(user.internal_id)
+            access_token = create_access_token(user.internal_id, "service_access")
             # access token을 보안때문에 header에다 cookie를 담아서 줄것.
             response.set_cookie(
-                key="access_token",
+                key="__Host-access_token",
                 value=access_token,
                 httponly=False,
                 secure=True,
@@ -160,6 +160,24 @@ async def login_for_access_token(
             content={"message": "Invalid Email"},
             headers=dict(response.headers),
         )
+
+
+@router.post("/check_duplicate_email")
+async def request_verify_email(
+    response: Response,
+    request: Request,
+    email: str = Form(None),
+    db: Session = Depends(get_db),
+):
+    # 이메일 중복 확인
+    email_duplicate = db.query(User).filter(User.auth_provider == "None").filter(User.email == email).first()
+    if email_duplicate:
+        raise HTTPException(status_code=409, detail="Email already registered")
+    return JSONResponse(
+        status_code=200,
+        content={"message": "Can use email"},
+        headers=dict(response.headers),
+    )
 
 
 @router.post("/request_verify_email")
