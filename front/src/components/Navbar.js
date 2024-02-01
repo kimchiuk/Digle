@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 const Navbar = () => {
-  const [cookies, , removeCookie] = useCookies(["isLogin"]);
+  const [cookies] = useCookies(["isLogin"]);
 
   const [isProductDropdownOpen, setProductDropdownOpen] = useState(false);
   const [isSolutionDropdownOpen, setSolutionDropdownOpen] = useState(false);
@@ -86,14 +86,14 @@ const Navbar = () => {
           >
             <div className="py-2">
               <Link
-                to="/test"
+                to="/examPage"
                 className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
                 Test
               </Link>
               <Link
-                to="/conference"
+                to="/anhs"
                 className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
