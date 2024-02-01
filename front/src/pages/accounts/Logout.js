@@ -8,7 +8,7 @@ const Logout = () => {
   const API_URL = "https://localhost:8000";
   
   // 두 번째 콤마는 setCookie 함수를 건너뛰기 위한 것(구조 분해 할당)
-  const [cookies, , removeCookie] = useCookies(["isLogin"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["isLogin"]);
 
   useEffect(() => {
     const logout = async () => {
@@ -23,7 +23,7 @@ const Logout = () => {
       
       try {  
         // 서버에 로그아웃 요청을 보냅니다.
-        const response = await axios.post(`${API_URL}/logout`);
+        const response = await axios.post(`${API_URL}/logout`, {withCredentials: true});
         console.log("로그아웃 성공: ", response);
 
         // 로그아웃이 성공하면 쿠키에서 사용자 정보를 지웁니다.
