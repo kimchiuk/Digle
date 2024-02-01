@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/`, { withCredentials: true })
+      .post(`${API_URL}/verifyToken`, {}, { withCredentials: true })
       .then((response) => {
         console.log(response);
         setIsLoggedIn(true);
