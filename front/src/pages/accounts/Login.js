@@ -48,7 +48,9 @@ const Login = () => {
     formData.append("password", password);
 
     try {
-      const response = await axios.post(`${API_URL}/login`, formData, {withCredentials: true});
+      const response = await axios.post(`${API_URL}/login`, formData, {
+        withCredentials: true,
+      });
       console.log("로그인 성공: ", response);
       setCookie("isLogin", true);
 

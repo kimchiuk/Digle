@@ -158,26 +158,7 @@ const SignupDetail = () => {
   );
   const [isImage, setIsImage] = useState(false);
   const [readImage, setReadImage] = useState();
-  // 이미지 올리는 함수 1
 
-  // const onChangeImageUpload = (e) => {
-  //   const { files } = e.target;
-  //   const uploadFile = files[0];
-  //   console.log(uploadFile);
-  //   if (uploadFile && uploadFile instanceof Blob) {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(uploadFile);
-  //     reader.onloadend = () => {
-  //       setImage(reader.result);
-  //       setIsImage(true);
-  //     };
-  //     console.log(reader);
-  //     console.log(typeof image);
-  //   } else {
-  //     console.error("잘못된 파일 타입. Blob을 기대했습니다.");
-  //     setIsImage(false);
-  //   }
-  // };
   const onChangeImageUpload = (event) => {
     if (event.target.files && event.target.files[0]) {
       setImage(event.target.files[0]);
@@ -191,37 +172,6 @@ const SignupDetail = () => {
       setIsImage(true);
     }
   };
-  // image 파일 올리는 방법 2
-
-  // const [imageName, setImageName] = useState();
-  // const onChangeImageUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   setImageName(file);
-  //   if (file) {
-  //     const allowedExtensions = [
-  //       "png",
-  //       "jpg",
-  //       "jpeg",
-  //       "gif",
-  //       "webp",
-  //       "svg",
-  //       "pdf",
-  //       "psd",
-  //       "gif",
-  //       "ai",
-  //       "tiff",
-  //       "bmp",
-  //       "eps",
-  //     ];
-  //     const fileExtension = file.name.split(".").pop().toLowerCase();
-  //     if (!allowedExtensions.includes(fileExtension)) {
-  //       alert("uploadError");
-  //       return;
-  //     } else {
-  //       setImage(file);
-  //     }
-  //   }
-  // };
 
   // businessSignup 쓰이는 상태, 함수
   const [enrollCompany, setEnrollCompany] = useState({

@@ -12,7 +12,7 @@ import models, schemas
 from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import oauth_login, room_handler
+from routers import oauth_login, room_handler, user_profile
 
 Base.metadata.create_all(bind=engine)
 
@@ -46,7 +46,7 @@ app.include_router(room_handler.router)
 app.include_router(auth_ext.router)
 app.include_router(delete_accounts.router)
 app.include_router(find_password.router)
-
+app.include_router(user_profile.router)
 
 def local_run():
     uvicorn.run(
