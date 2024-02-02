@@ -13,7 +13,7 @@ const FAQ_DATA = [
   { question: "테스트 도중에 서비스가 끊겼어요", answer: "테스트 중에 서비스가 중단된 경우, 네트워크 연결 상태를 확인하고 서비스 제공자의 공지사항을 참고하여 장애 여부를 확인하세요." },
   { question: "Digle에서 제공하는 두 서비스의 차이는 무엇인가요?", answer: "Digle은 Test 서비스와 Conference 서비스 두 가지를 제공하고 있습니다. Test는 A/B 테스트 및 사용자 행동 분석을 위한 도구로, Conference는 온라인 회의 및 협업 도구로 사용됩니다. 각 서비스는 고유한 목적과 기능을 가지고 있습니다." },
 ];
-
+                   
 const ITEMS_PER_PAGE = 5;
 
 const Solution1 = () => {

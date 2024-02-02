@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainImg from "../../assets/main.png"
+import { useCookies } from "react-cookie";
 
 const ChangePassword = () => {
   const [password, setPassword] = useState("");
@@ -10,11 +11,15 @@ const ChangePassword = () => {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [isPwd, setIsPwd] = useState("");
   const navigate = useNavigate();
+  const [cookies, , removeCookie] = useCookies([
+    "email"
+  ]); // Coockies 이름임
 
   const API_URL = "https://localhost:8000";
 
   const handleResetPassword = async () => {
     const formData = new FormData();
+    formData.append("email", cookies.email)
     formData.append("password", password);
     formData.append("confirm_password", confirmPassword);
 
@@ -28,6 +33,7 @@ const ChangePassword = () => {
       await axios.post(`${API_URL}/reset_password`, formData);
       alert("비밀번호가 성공적으로 변경되었습니다.");
       setPasswordMsg("");
+      removeCookie("email")
       console.log("비밀번호가 수정되었습니다.");
       navigate("/login")
     } catch (err) {

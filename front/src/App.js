@@ -10,6 +10,7 @@ import Profile from "./pages/accounts/profile/Profile";
 import Login from "./pages/accounts/Login";
 import Solution1 from "./pages/solution/Solution1";
 import Solution2 from "./pages/solution/Solution2";
+import Solution2Submit from "./pages/solution/Solution2Submit";
 import GoogleLoginButton from "components/auth_login/GoogleLoginButton";
 import NaverLoginButton from "components/auth_login/NaverLoginButton";
 import KakaoLoginButton from "components/auth_login/KakaoLoginButton";
@@ -17,7 +18,7 @@ import CreateRoom from "./components/WebRTC/CreateRoom";
 import VideoChat from "./components/WebRTC/VideoChat";
 import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
-import ChangePassword from "./pages/accounts/ResetPassword";
+import ResetPassword from "./pages/accounts/ResetPassword";
 import LoginCallback from "./components/auth_login/LoginCallback";
 import Logout from "./pages/accounts/Logout";
 
@@ -51,6 +52,7 @@ function App() {
           {/* </Route> */}
           <Route path="/solution/1/" element={<Solution1 />} />
           <Route path="/solution/2/" element={<Solution2 />} />
+          <Route path="/solution/2/submit" element={<Solution2Submit />} />
 
           {/* <Route element={<PrivateRoute />}> */}
           <Route path="/profile" element={<Profile />} />
@@ -63,7 +65,7 @@ function App() {
           <Route path="/kakao_login" element={<KakaoLoginButton />} />
 
           <Route path="/find_password" element={<FindPassword />} />
-          <Route path="/change_password" element={<ChangePassword />} />
+          <Route path="/reset_password" element={<ResetPassword />} />
           <Route path="/CreateRoom" element={<CreateRoom />} />
           <Route path="/vchat" element={<VideoChat />} />
         </Routes>
