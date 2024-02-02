@@ -49,7 +49,7 @@ pipeline {
             steps {
                 dir('back') {
                     script {
-                        sh 'docker run -p 8000:8000 ${IMAGE_NAME}:${env.BUILD_NUMBER}'
+                        sh "docker run -p 8000:8000 ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                     }
                 }
             }
