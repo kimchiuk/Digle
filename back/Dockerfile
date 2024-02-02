@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 애플리케이션 실행 커맨드 지정
-CMD ["python", "main.py", "deploy"]
+CMD ["uvicorn", "app.main:app", "--reload"]
