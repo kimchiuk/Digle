@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('Build Back Docker Image') {
+        stage('Build and Push the Back-end Docker Image') {
             steps {
                 script {
                     sh 'echo "Starting Build Back Docker Image"'
