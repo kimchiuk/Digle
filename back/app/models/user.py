@@ -70,3 +70,16 @@ class RoomInfo(Base):
     access_token = Column(String, unique=True, index=True)
     create_time = Column(DateTime, default=datetime.utcnow)
     room_type = Column(String, unique=True, index=True)
+
+
+class PasswordResetVerification(Base):
+    __tablename__ = "password_reset_verifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    verification_code = Column(String, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    is_verified = Column(Boolean, default=False)  # 인증 여부
+
+    def is_expired(self):
+        return datetime.utcnow() > self.created_at + timedelta(minutes=3)

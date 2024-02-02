@@ -35,7 +35,8 @@ async def delete_accounts(
     password: str = Form(None),
     db: Session = Depends(get_db),
 ):
-    user = get_user_by_token(request, db)
+    user = get_user_by_token(request, db, "service_access")
+    print("에러발생?")
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     if email != user.email:
@@ -54,6 +55,7 @@ async def delete_accounts(
             samesite="None",
             path="/",
         )
+        
         return {"message": "회원 탈퇴가 성공적으로 완료되었습니다."}  # 들여쓰기 확인
     else:
         raise HTTPException(status_code=404, detail="해당 ID 등록된 사용자가 없습니다.")

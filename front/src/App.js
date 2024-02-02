@@ -10,6 +10,7 @@ import Profile from "./pages/accounts/profile/Profile";
 import Login from "./pages/accounts/Login";
 import Solution1 from "./pages/solution/Solution1";
 import Solution2 from "./pages/solution/Solution2";
+import Solution2Submit from "./pages/solution/Solution2Submit";
 import GoogleLoginButton from "components/auth_login/GoogleLoginButton";
 import NaverLoginButton from "components/auth_login/NaverLoginButton";
 import KakaoLoginButton from "components/auth_login/KakaoLoginButton";
@@ -17,10 +18,12 @@ import CreateRoom from "./components/WebRTC/CreateRoom";
 import VideoChat from "./components/WebRTC/VideoChat";
 import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
-import ChangePassword from "./pages/accounts/ChangePassword";
+import ResetPassword from "./pages/accounts/ResetPassword";
 import LoginCallback from "./components/auth_login/LoginCallback";
 import Logout from "./pages/accounts/Logout";
 
+// 쿠키 지우기 성공 시 사용할 수 있는 로직
+// 다른 방향으로 구현해보자.
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -49,6 +52,7 @@ function App() {
           {/* </Route> */}
           <Route path="/solution/1/" element={<Solution1 />} />
           <Route path="/solution/2/" element={<Solution2 />} />
+          <Route path="/solution/2/submit" element={<Solution2Submit />} />
 
           {/* <Route element={<PrivateRoute />}> */}
           <Route path="/profile" element={<Profile />} />
@@ -61,7 +65,7 @@ function App() {
           <Route path="/kakao_login" element={<KakaoLoginButton />} />
 
           <Route path="/find_password" element={<FindPassword />} />
-          <Route path="/change_password" element={<ChangePassword />} />
+          <Route path="/reset_password" element={<ResetPassword />} />
           <Route path="/CreateRoom" element={<CreateRoom />} />
           <Route path="/vchat" element={<VideoChat />} />
         </Routes>

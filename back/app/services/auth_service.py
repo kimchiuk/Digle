@@ -68,16 +68,12 @@ def generate_internal_id():
 # token으로부터 internal_id 추출
 def verify_token(token: str, scope: str):
     if token is None:
-        raise HTTPException(status_code=400, detail="이재민 바보")
+        raise HTTPException(status_code=400, detail="Token is missing")
+
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        aud = payload.get("aud")
-        if scope != aud:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid Scope",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], audience=scope)
+
+        # `aud` 필드는 자동으로 검증됩니다. 따라서 추가적인 `aud` 검증은 필요하지 않습니다.
         internal_id = payload.get("sub")
         if internal_id is None:
             raise HTTPException(
@@ -85,13 +81,14 @@ def verify_token(token: str, scope: str):
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-    except Exception as e:
+    except JWTError as e:  # JWTError는 pyjwt의 기본 예외 클래스입니다.
         print(e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
+            detail=str(e),  # 구체적인 에러 메시지 제공
             headers={"WWW-Authenticate": "Bearer"},
         )
+
     return internal_id
 
 
@@ -99,9 +96,12 @@ def verify_token(token: str, scope: str):
 # scope = "service_access", "reset_password"
 def get_user_by_token(request, db, scope):
     token = request.cookies.get("__Host-access_token")
+
     if not token or not verify_token(token, scope):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+
     internal_id = verify_token(token, scope)
+    
     user = db.query(User).filter(User.internal_id == internal_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")

@@ -1,22 +1,29 @@
-const ImageUpload = ({ setImage, image }) => {
-  const onChangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    if (uploadFile && uploadFile instanceof Blob) {
+const ImageUpload = ({
+  setImage,
+  image,
+  setIsImage,
+  setReadImage,
+  readImage,
+  name,
+}) => {
+  const onChangeImageUpload = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0]);
       const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
+      reader.readAsDataURL(event.target.files[0]);
       reader.onloadend = () => {
-        setImage(reader.result);
+        setReadImage(reader.result);
       };
-    } else {
-      console.error("잘못된 파일 타입. Blob을 기대했습니다.");
+      console.log("선택된 파일:", image);
+      console.log(event.target.files[0]);
+      setIsImage(true);
     }
   };
   return (
     <>
-      <div className="flex-col w-[250px] h-full p-4 mr-4 border-4">
+      <div className="flex-col w-[250px] h-full p-4 mr-4 ">
         <div className="grid place-items-center">
-          <img className="w-32 h-40" src={image} alt="" />
+          <img className="w-32 h-40" src={readImage} alt="" />
         </div>
         <div className="grid place-content-end mt-2">
           <label
@@ -35,7 +42,7 @@ const ImageUpload = ({ setImage, image }) => {
           onChange={onChangeImageUpload}
         />
         <div className="grid place-items-center mt-4">
-          <div>Name님 프로필</div>
+          <div>{name}님 프로필</div>
         </div>
       </div>
     </>

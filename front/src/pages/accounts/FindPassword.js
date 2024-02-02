@@ -2,19 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainImg from "../../assets/main.png"
+import { useCookies } from "react-cookie";
 
 const FindPassword = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [timer, setTimer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies([
+    "email"
+  ]); // Coockies 이름임
   
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = "https://localhost:8000";
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -33,23 +37,21 @@ const FindPassword = () => {
   };
 
   const verifyEmail = async () => {
-    setLoading(true);
     const formData = new FormData();
-    formData.append('username', username);
+    formData.append('name', username);
     formData.append('email', email)
+    
     try {
-      const response = await axios.post(`${API_URL}/verify_email`, formData);
-      setUsername(response.data.username);
+      const response = await axios.post(`${API_URL}/find_password`, formData);
       setIsVerified(true);
       startTimer();
+      console.log(response);
     } catch (err) {
       setError(
         err.response?.data?.message ||
           "이메일 주소 또는 이름이 일치하지 않습니다."
       );
       setIsVerified(false);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -62,6 +64,11 @@ const FindPassword = () => {
     );
   };
 
+  const onClickErrorCode = () => {
+    setError("")
+  }
+
+
   const resetTimer = () => {
     clearInterval(timer);
     setTimer(null);
@@ -69,9 +76,14 @@ const FindPassword = () => {
   };
 
   const verifyCode = async () => {
+    const formData = new FormData();
+    formData.append('email', email)
+    formData.append('auth_code', verificationCode);
     try {
-      await axios.post("/api/verify_code", { code: verificationCode });
-      navigate.push("/change_password");
+      await axios.post(`${API_URL}/verify_password_reset`, formData);
+      setCookie("email", email)
+      navigate(`/reset_password`);
+      console.log("인증이 확인 되었습니다!")
     } catch (err) {
       setError(err.response?.data?.message || "인증번호가 올바르지 않습니다.");
     }
@@ -81,7 +93,8 @@ const FindPassword = () => {
     if (timeLeft === 0) {
       resetTimer();
       setIsVerified(false);
-      setError("인증 시간이 만료되었습니다. 다시 시도해주세요.");
+      setError("");
+      alert("인증 시간이 만료되었습니다. 다시 시도해주세요.")
     }
   }, [timeLeft, timer]);
 
@@ -127,6 +140,7 @@ const FindPassword = () => {
                 <input
                   type="text"
                   value={verificationCode}
+                  onClick={onClickErrorCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
                   placeholder="인증번호를 입력하세요."
                   className="w-4/5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"

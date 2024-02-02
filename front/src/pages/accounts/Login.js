@@ -48,7 +48,9 @@ const Login = () => {
     formData.append("password", password);
 
     try {
-      const response = await axios.post(`${API_URL}/login`, formData);
+      const response = await axios.post(`${API_URL}/login`, formData, {
+        withCredentials: true,
+      });
       console.log("로그인 성공: ", response);
       setCookie("isLogin", true);
 
@@ -122,7 +124,7 @@ const Login = () => {
               to="/find_password"
               className="text-white text-sm hover:underline"
             >
-              아이디 및 비밀번호 찾기
+              비밀번호를 잊으셨나요?
             </Link>
           </div>
           <div className="flex items-center justify-center space-x-2">

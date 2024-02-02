@@ -36,7 +36,7 @@ const DaumPost = ({
               placeholder="우편번호"
             />
           </div>
-          <button className="" onClick={() => setIsOpen(true)}>
+          <button className="" type="button" onClick={() => setIsOpen(true)}>
             우편번호 검색
           </button>
         </div>
