@@ -10,6 +10,7 @@ import Profile from "./pages/accounts/profile/Profile";
 import Login from "./pages/accounts/Login";
 import Solution1 from "./pages/solution/Solution1";
 import Solution2 from "./pages/solution/Solution2";
+import Solution2Submit from "./pages/solution/Solution2Submit";
 import GoogleLoginButton from "components/auth_login/GoogleLoginButton";
 import NaverLoginButton from "components/auth_login/NaverLoginButton";
 import KakaoLoginButton from "components/auth_login/KakaoLoginButton";
@@ -51,6 +52,7 @@ function App() {
           {/* </Route> */}
           <Route path="/solution/1/" element={<Solution1 />} />
           <Route path="/solution/2/" element={<Solution2 />} />
+          <Route path="/solution/2/submit" element={<Solution2Submit />} />
 
           {/* <Route element={<PrivateRoute />}> */}
           <Route path="/profile" element={<Profile />} />
