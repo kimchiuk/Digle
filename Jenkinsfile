@@ -51,10 +51,10 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Starting Build Back Docker Image"'
-                   
+                    echo "DEBUG: DATABASE_URL=${env.DATABASE_URL}"
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                            echo "DEBUG: DATABASE_URL=${env.DATABASE_URL}"
+                            
                              customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", "--build-arg MY_ENV_VAR=${env.DATABASE_URL} .")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
