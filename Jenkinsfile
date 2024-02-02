@@ -1,4 +1,6 @@
 def customImage
+def jenkinsInstance = Jenkins.getInstance()
+def systemProperties = jenkinsInstance.systemProperties
 
 pipeline {
     agent any
@@ -8,16 +10,16 @@ pipeline {
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
         IMAGE_NAME = 'geunbo/digle'
-        DATABASE_URL = "${Jenkins.instance.systemProperties['DATABASE_URL']}"
-        HTTPS = "${Jenkins.instance.systemProperties['HTTPS']}"
-        NAVER_CLIENT_ID = "${Jenkins.instance.systemProperties['NAVER_CLIENT_ID']}"
-        NAVER_CLIENT_SECRET = "${Jenkins.instance.systemProperties['NAVER_CLIENT_SECRET']}"
-        SMTP_PASSWORD = "${Jenkins.instance.systemProperties['SMTP_PASSWORD']}"
-        SMTP_PORT = "${Jenkins.instance.systemProperties['SMTP_PORT']}"
-        SMTP_SERVER = "${Jenkins.instance.systemProperties['SMTP_SERVER']}"
-        SMTP_USERNAME = "${Jenkins.instance.systemProperties['SMTP_USERNAME']}"
-        SSL_CRT_FILE = "${Jenkins.instance.systemProperties['SSL_CRT_FILE']}"
-        SSL_KEY_FILE = "${Jenkins.instance.systemProperties['SSL_KEY_FILE']}"
+        DATABASE_URL = systemProperties['DATABASE_URL']
+        HTTPS = systemProperties['HTTPS']
+        NAVER_CLIENT_ID = systemProperties['NAVER_CLIENT_ID']
+        NAVER_CLIENT_SECRET = systemProperties['NAVER_CLIENT_SECRET']
+        SMTP_PASSWORD = systemProperties['SMTP_PASSWORD']
+        SMTP_PORT = systemProperties['SMTP_PORT']
+        SMTP_SERVER = systemProperties['SMTP_SERVER']
+        SMTP_USERNAME = systemProperties['SMTP_USERNAME']
+        SSL_CRT_FILE = systemProperties['SSL_CRT_FILE']
+        SSL_KEY_FILE = systemProperties['SSL_KEY_FILE']
 
         
     }
