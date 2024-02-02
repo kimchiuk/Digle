@@ -22,14 +22,8 @@ FROM python:3.8
 # 작업 디렉토리를 /app으로 설정
 WORKDIR /app
 
-# 현재 디렉토리의 requirements.txt 파일을 컨테이너의 /app/back 디렉토리로 복사
-COPY back/requirements.txt ./
-
-# 현재 디렉토리의 alembic.ini 파일을 컨테이너의 /app/back 디렉토리로 복사
-COPY back/alembic.ini ./
-
 # 필요한 Python 패키지 설치
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # 현재 디렉토리의 모든 파일을 컨테이너의 /app 디렉토리로 복사
 COPY . .
