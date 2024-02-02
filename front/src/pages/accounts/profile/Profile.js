@@ -195,7 +195,6 @@ const Profile = () => {
                 </>
               ) : null}
               <div className="flex justify-between mt-8">
-                <DeleteAccount />
                 <input
                   className="bg-blue-500 text-white py-2 px-8 rounded cursor-pointer mt-2"
                   type="submit"
@@ -204,6 +203,7 @@ const Profile = () => {
                 />
               </div>
             </form>
+                <DeleteAccount />
           </div>
         </div>
       </div>
