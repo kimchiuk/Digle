@@ -35,7 +35,7 @@ pipeline {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                              def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
-                            if (customImage == 0) {
+                            if (customImage != 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                             } else {
                                 error "Docker build failed"
