@@ -57,11 +57,12 @@ const Profile = () => {
         // 일반 유저와 비즈니스 유저 데이터 정보 저장
         if (response.data.user_type === "Standard") {
           if (response.data.profile_picture_url != null) {
-            const reader = new FileReader();
-            reader.readAsDataURL(response.data.profile_picture_url[0]);
-            reader.onloadend = () => {
-              setImage(reader.result);
-            };
+            setImage(response.data.profile_picture_url[0]);
+            // const reader = new FileReader();
+            // reader.readAsDataURL(response.data.profile_picture_url[0]);
+            // reader.onloadend = () => {
+            //   setImage(reader.result);
+            // };
           }
         } else if (response.data.user_type === "Business") {
           if (response.data.company_info != null) {

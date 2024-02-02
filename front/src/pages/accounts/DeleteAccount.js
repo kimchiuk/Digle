@@ -17,10 +17,8 @@ const DeleteAccount = () => {
     axios
       .get(`${API_URL}/profile`, { withCredentials: true })
       .then((response) => {
-        console.log(response);
         // 이메일 가져오기
         setEmail(response.data.email);
-        setPassword(response.data.hashed_password);
       })
       .catch((error) => {
         console.error(error);
@@ -29,34 +27,49 @@ const DeleteAccount = () => {
 
 
   const deleteAccount = async () => {
-
     // 회원탈퇴 전 확인 과정
     if (!window.confirm("정말 계정을 탈퇴하시겠습니까?")) {
       return;
     }
-    
-    const formData = new FormData();
-    formData.append('email', email)
-    formData.append('password', password);
 
+    if (!password) {
+      alert("비밀번호를 입력해주세요.")
+      return;
+    }
+    
     if (!cookies.isLogin) {
       console.log("로그인 상태가 아닙니다.");
       navigate("/login");
       return;
     }
-
+    
+    
     try {
-      const response = await axios.post(`${API_URL}/delete_account`, formData);
+      const formData = new FormData();
+      formData.append('email', email)
+      formData.append('password', password);
+
+      const response = await axios.post(`${API_URL}/delete_account`, formData, {
+        withCredentials: true
+      });
       console.log("회원 탈퇴 성공: ", response);
       removeCookie("isLogin", { path: "/", domain: "localhost" });
+      alert("정상적으로 회원 탈퇴 되었습니다.")
       navigate("/");
     } catch (error) {
       console.error("에러 발생: ", error);
+      console.log(email, password)
+      alert("정확한 정보를 입력해주세요.")
     }
   };
 
   return (
     <div>
+      <input 
+      type="password" 
+      placeholder="비밀번호"
+      onChange={(e) => {setPassword(e.target.value)}}
+      />
       <button
         onClick={deleteAccount}
         className="px-4 py-2 bg-red-500 text-white rounded-lg"
