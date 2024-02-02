@@ -40,7 +40,7 @@ async def read_users_me(
 ):
     
     user = get_user_by_token(request, db, "service_access")
-
+    
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     print(user)
@@ -50,6 +50,7 @@ async def read_users_me(
             "email" : user.email,
             "name" : user.name,
             "profile_picture_url" : user.profile_picture_url,
+            
             "user_type" : user.user_type,
             "auth_provider" : user.auth_provider
         }
@@ -83,19 +84,28 @@ async def update_user_profile(
     company_address: str = Form(None),
     db: Session = Depends(get_db),
 ):
-    user = get_user_by_token(request, db)
+    user = get_user_by_token(request, db, "service_access")
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     if user.user_type == UserType.Standard:
+
+        file_location = None
+
+        if profile_img and profile_img.filename:
+        # 파일 저장 또는 처리
+            file_location = f"C:/files/{profile_img.filename}"
+            with open(file_location, "wb+") as file_object:
+                file_object.write(profile_img.file.read())
+
         user.name = name
-        user.profile_picture_url = profile_img
+        user.profile_picture_url = file_location
 
         db.commit()
-        
+
         user_data = {
             "email": email,
             "name" : name,
-            "profile_picture_url": profile_img,
+            "profile_picture_url": file_location,
             "user_type":user.user_type,
             "auth_provider":user.auth_provider
         }
