@@ -76,7 +76,7 @@ class PasswordResetVerification(Base):
     __tablename__ = "password_reset_verifications"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     verification_code = Column(String, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_verified = Column(Boolean, default=False)  # 인증 여부
