@@ -17,7 +17,7 @@ import CreateRoom from "./components/WebRTC/CreateRoom";
 import VideoChat from "./components/WebRTC/VideoChat";
 import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
-import ChangePassword from "./pages/accounts/ResetPassword";
+import ResetPassword from "./pages/accounts/ResetPassword";
 import LoginCallback from "./components/auth_login/LoginCallback";
 import Logout from "./pages/accounts/Logout";
 
@@ -63,7 +63,7 @@ function App() {
           <Route path="/kakao_login" element={<KakaoLoginButton />} />
 
           <Route path="/find_password" element={<FindPassword />} />
-          <Route path="/change_password" element={<ChangePassword />} />
+          <Route path="/reset_password" element={<ResetPassword />} />
           <Route path="/CreateRoom" element={<CreateRoom />} />
           <Route path="/vchat" element={<VideoChat />} />
         </Routes>
