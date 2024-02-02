@@ -4,9 +4,7 @@ import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
-import UserList from './UserList/UserList';
-
-
+import UserList from "./UserList/UserList";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -14,7 +12,7 @@ let receivedFileChunk = {};
 
 const VideoChat = () => {
   const [mainStream, setMainStream] = useState({}); //지금 메인으로 보여주는 화면
-  const [feeds, setFeeds] = useState([]);   //다른사람의 화면배열 (rfid,rfdisplay)
+  const [feeds, setFeeds] = useState([]); //다른사람의 화면배열 (rfid,rfdisplay)
   const [myFeed, setMyFeed] = useState({}); //내 컴퓨터화면 공유
   const [receiveChat, setReceiveChat] = useState("");
   const [activeVideo, setActiveVideo] = useState(true);
@@ -35,18 +33,15 @@ const VideoChat = () => {
     });
   };
 
-// useEffect(() => {
-//   return () => {
-//       setFeeds([]);
-//   };
-// }, []);
+  // useEffect(() => {
+  //   return () => {
+  //       setFeeds([]);
+  //   };
+  // }, []);
 
-
-
-const disconnectFeed = (rfid) => {
-  setFeeds((prevFeeds) => prevFeeds.filter((feed) => feed.rfid !== rfid));
-};
-
+  const disconnectFeed = (rfid) => {
+    setFeeds((prevFeeds) => prevFeeds.filter((feed) => feed.rfid !== rfid));
+  };
 
   // const createSpeechEvents = (stream) => {
   //   let speechEvents = hark(stream, {});
@@ -66,9 +61,7 @@ const disconnectFeed = (rfid) => {
   };
 
   useEffect(() => {
-    let servers = [
-      "https://localhost/janus",
-    ];
+    let servers = ["http://localhost:8088/janus"];
     let opaqueId = "videoroomtest-" + Janus.randomString(12); // 개인 식별
     let janus = null;
     let subscriber_mode = false; // true면 비디오 열어줌
@@ -87,7 +80,7 @@ const disconnectFeed = (rfid) => {
               plugin: "janus.plugin.videoroom",
               opaqueId: opaqueId,
               success: function (pluginHandle) {
-                sfutest = pluginHandle;//요청이성공햇으니 어태치가 성공햇으니깐
+                sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐
 
                 Janus.log(
                   "Plugin attached! (" +
@@ -104,11 +97,10 @@ const disconnectFeed = (rfid) => {
                     room: myroom,
                     ptype: "publisher",
                     display: username,
-                    data: true
+                    data: true,
                   },
                 });
               },
-
 
               error: function (cause) {
                 // Error, can't go on...
@@ -117,7 +109,7 @@ const disconnectFeed = (rfid) => {
               consentDialog: function (on) {
                 // getusermedia 호출 되기전 true
                 // 호출되고 false
-                Janus.debug(  
+                Janus.debug(
                   "Consent dialog should be " + (on ? "on" : "off") + " now"
                 );
               },
@@ -148,7 +140,8 @@ const disconnectFeed = (rfid) => {
                 console.log("data channel opened");
               },
 
-              onmessage: function (msg, jsep) { //msg,jsep같이와 offer로보냇자 /answer
+              onmessage: function (msg, jsep) {
+                //msg,jsep같이와 offer로보냇자 /answer
                 Janus.debug(" ::: Got a message (publisher) :::", msg);
                 var event = msg["videoroom"];
                 Janus.debug("Event : " + event);
@@ -169,7 +162,7 @@ const disconnectFeed = (rfid) => {
                     if (subscriber_mode) {
                       // 비디오 숨김 무시하고
                     } else {
-                      console.log("publishOwnFeed시작")
+                      console.log("publishOwnFeed시작");
                       publishOwnFeed(true);
                     }
 
@@ -201,15 +194,14 @@ const disconnectFeed = (rfid) => {
                         newRemoteFeed(id, display, audio, video); // 새로운 원격피드 등록
                       }
                     }
-                  } 
-                  else if (event === "destroyed") {
+                  } else if (event === "destroyed") {
                     // 룸 삭제 이벤트
                     Janus.warn("The room has been destroyed!");
                     alert("룸파괴");
                   } else if (event === "event") {
                     // 새로운 접속자가 있으면
                     if (msg["publishers"]) {
-                      console.log("접속자발생!",msg);
+                      console.log("접속자발생!", msg);
                       let list = msg["publishers"];
                       Janus.debug(
                         "Got a list of available publishers/feeds:",
@@ -233,40 +225,37 @@ const disconnectFeed = (rfid) => {
                         );
                         newRemoteFeed(id, display, audio, video); //publisher true'''...
                       }
-                    } 
-                    else if (msg["leaving"]) {
+                    } else if (msg["leaving"]) {
                       console.log(feeds);
                       let leaving = msg["leaving"];
-                      Janus.log("Publisher left: " + leaving); //여기서 leaveing은 나간놈의 고유rfid임 
-                      
-                                          
-                      disconnectFeed(leaving);                   
-  
+                      Janus.log("Publisher left: " + leaving); //여기서 leaveing은 나간놈의 고유rfid임
+
+                      disconnectFeed(leaving);
                     } else if (msg["error"]) {
                       // 에러 처리
                       alert(msg["error"]);
                     }
                   }
                 }
-                
-                
-///
+
+                ///
                 if (jsep) {
-                  console.log("jsep =============", jsep,"마이스트림:" ,mystream);
+                  console.log(
+                    "jsep =============",
+                    jsep,
+                    "마이스트림:",
+                    mystream
+                  );
                   sfutest.handleRemoteJsep({ jsep: jsep });
                   var audio = msg["audio_codec"];
-                  if (
-                    !audio
-                  ) {
+                  if (!audio) {
                     // 오디오 뮤트한 경우
                     console.log(
                       "Our audio stream has been rejected, viewers won't hear us"
                     );
                   }
                   var video = msg["video_codec"];
-                  if (
-                    !video
-                  ) {
+                  if (!video) {
                     // 비디오 가린경우
                     console.log(
                       "Our video stream has been rejected, viewers won't see us"
@@ -275,14 +264,14 @@ const disconnectFeed = (rfid) => {
                 }
               },
 
-              disconnectFeed: function(rfid) {
+              disconnectFeed: function (rfid) {
                 // rfid와 일치하는 피드를 feeds 배열에서 제거
-                setFeeds(prevFeeds => prevFeeds.filter(feed => feed.rfid !== rfid));
-                
+                setFeeds((prevFeeds) =>
+                  prevFeeds.filter((feed) => feed.rfid !== rfid)
+                );
               },
 
-
-              onlocaltrack : function(track, on) {
+              onlocaltrack: function (track, on) {
                 Janus.debug(" ::: Got a local track :::", track);
                 setMyFeed((prev) => ({
                   ...prev,
@@ -300,7 +289,7 @@ const disconnectFeed = (rfid) => {
                 ) {
                   // 아직 연결 중인 상태
                 }
-              
+
                 if (track.kind === "video") {
                   // 비디오 트랙인 경우
                   if (track.enabled) {
@@ -344,11 +333,11 @@ const disconnectFeed = (rfid) => {
       // Create an offer for audio and video
       sfutest.createOffer({
         media: {
-          audioRecv: false, 
-          videoRecv: false, 
-          audioSend: useAudio, 
-          videoSend: true, 
-          data: true 
+          audioRecv: false,
+          videoRecv: false,
+          audioSend: useAudio,
+          videoSend: true,
+          data: true,
         },
         success: function (jsep) {
           Janus.debug("Got publisher SDP!");
@@ -363,16 +352,11 @@ const disconnectFeed = (rfid) => {
           } else {
             // Handle error
           }
-        }
+        },
       });
     }
 
-
-
-
-
-
-///////////////////////////////////새로운참여자가 등록햇을경우////////////////////////
+    ///////////////////////////////////새로운참여자가 등록햇을경우////////////////////////
     function newRemoteFeed(id, display, audio, video) {
       let remoteFeed = null;
       janus.attach({
@@ -488,7 +472,7 @@ const disconnectFeed = (rfid) => {
               if (!prevFeeds.find((feed) => feed.rfid === remoteFeed.rfid)) {
                 return prevFeeds;
               }
-              
+
               // 피드에 비디오 트랙 추가
               if (!remoteFeed.streams) {
                 remoteFeed.streams = {};
@@ -497,7 +481,7 @@ const disconnectFeed = (rfid) => {
                 remoteFeed.streams[track.id] = new MediaStream();
               }
               remoteFeed.streams[track.id].addTrack(track);
-      
+
               return prevFeeds.map((feed) =>
                 feed.rfid === remoteFeed.rfid
                   ? { ...feed, stream: remoteFeed.streams[track.id] }
@@ -506,9 +490,6 @@ const disconnectFeed = (rfid) => {
             });
           }
         },
-      
-
-
 
         oncleanup: function () {
           Janus.log(
@@ -521,16 +502,15 @@ const disconnectFeed = (rfid) => {
         ondataopen: function () {
           console.log("remote datachannel opened");
         },
-        
+
         ondata: function (data) {
-          console.log("데이터왓다씨발아",data); 
+          console.log("데이터왓다씨발아", data);
           let json = JSON.parse(data);
           let what = json["textroom"];
           if (what === "message") {
             // public message
             setReceiveChat(() => `${json["display"]} : ${json["text"]}`);
-          }
-          else if (what === "message" && json["to"] === username) {
+          } else if (what === "message" && json["to"] === username) {
             // 귓속말 메시지 처리
             setReceiveChat(`${json["display"]} (whisper): ${json["text"]}`);
           }
@@ -541,16 +521,23 @@ const disconnectFeed = (rfid) => {
             let filename = json["text"]["filename"];
             let chunk = base64ToArrayBuffer(json["text"]["message"]); // Base64 디코딩
             let last = json["text"]["last"];
-          
+
             if (!receivedFileChunk[from]) receivedFileChunk[from] = {};
             if (!receivedFileChunk[from][filename]) {
-              receivedFileChunk[from][filename] = new Blob([], {type: "application/octet-stream"});
+              receivedFileChunk[from][filename] = new Blob([], {
+                type: "application/octet-stream",
+              });
             }
-            
-            receivedFileChunk[from][filename] = new Blob([receivedFileChunk[from][filename], chunk], {type: "application/octet-stream"});
-          
+
+            receivedFileChunk[from][filename] = new Blob(
+              [receivedFileChunk[from][filename], chunk],
+              { type: "application/octet-stream" }
+            );
+
             if (last) {
-              let url = window.URL.createObjectURL(receivedFileChunk[from][filename]);
+              let url = window.URL.createObjectURL(
+                receivedFileChunk[from][filename]
+              );
               setReceiveFile(() => {
                 return {
                   url: url,
@@ -558,28 +545,25 @@ const disconnectFeed = (rfid) => {
                   from: from,
                 };
               });
-              delete receivedFileChunk[from][filename]; 
+              delete receivedFileChunk[from][filename];
             }
           }
-
         },
       });
     }
   }, []);
-  
+
   useEffect(() => {
-    console.log("내마이피드가 변경습니다요:",myFeed);
+    console.log("내마이피드가 변경습니다요:", myFeed);
   }, [myFeed]);
 
   useEffect(() => {
-    console.log("새로운피드 설정됬습니다요:",feeds);
+    console.log("새로운피드 설정됬습니다요:", feeds);
   }, [feeds]);
 
   useEffect(() => {
-    console.log("메인스트림이 설정됬습니다요:",mainStream);
+    console.log("메인스트림이 설정됬습니다요:", mainStream);
   }, [mainStream]);
-
-
 
   const sendChatData = (data) => {
     let message = {
@@ -600,21 +584,19 @@ const disconnectFeed = (rfid) => {
     });
   };
 
-
   function base64ToArrayBuffer(base64) {
     try {
-        var binaryString = window.atob(base64);
-        var bytes = new Uint8Array(binaryString.length);
-        for (var i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        return bytes.buffer;
+      var binaryString = window.atob(base64);
+      var bytes = new Uint8Array(binaryString.length);
+      for (var i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
     } catch (error) {
-        console.error('Base64 decoding failed:', error);
-        // 적절한 에러 처리 로직 추가
+      console.error("Base64 decoding failed:", error);
+      // 적절한 에러 처리 로직 추가
     }
-}
-
+  }
 
   const transferFile = (data) => {
     let message = {
@@ -633,8 +615,6 @@ const disconnectFeed = (rfid) => {
       },
     });
   };
-
-
 
   const sendPrivateMessage = (data, target) => {
     let message = {
@@ -655,9 +635,6 @@ const disconnectFeed = (rfid) => {
       },
     });
   };
-
-
-
 
   const handleAudioActiveClick = () => {
     let muted = sfutest.isAudioMuted();
@@ -686,7 +663,10 @@ const disconnectFeed = (rfid) => {
         },
         success: function (jsep) {
           Janus.debug(jsep);
-          sfutest.send({ message: { audio: true, video: true,data:true}, jsep: jsep });
+          sfutest.send({
+            message: { audio: true, video: true, data: true },
+            jsep: jsep,
+          });
         },
         error: function (error) {
           alert("WebRTC error... " + JSON.stringify(error));
@@ -705,7 +685,10 @@ const disconnectFeed = (rfid) => {
         },
         success: function (jsep) {
           Janus.debug(jsep);
-          sfutest.send({ message: { audio: true, video: true ,data:true}, jsep: jsep });
+          sfutest.send({
+            message: { audio: true, video: true, data: true },
+            jsep: jsep,
+          });
         },
         error: function (error) {
           alert("WebRTC error... " + JSON.stringify(error));
@@ -743,7 +726,7 @@ const disconnectFeed = (rfid) => {
         }}
       >
         <Video
-        key={feed.rfid}
+          key={feed.rfid}
           stream={feed.stream}
           onClick={handleMainStream}
           username={feed.rfdisplay}
@@ -753,57 +736,47 @@ const disconnectFeed = (rfid) => {
     );
   });
 
-  
-
   return (
     <>
-      
       <div
         style={{
           width: "100%",
           display: "flex",
           justifyContent: "center",
         }}
-        > 
+      >
         <div
           style={{
             width: "50%",
           }}
         >
           <div className="video-chat-container">
-      <div className="main-video-section">
-        <Video
-          stream={mainStream.stream}
-          username={mainStream.username}
-          muted={true}
-        />
-      </div>
+            <div className="main-video-section">
+              <Video
+                stream={mainStream.stream}
+                username={mainStream.username}
+                muted={true}
+              />
+            </div>
 
-      <div className="sidebar-section">
-        <UserList
-          feeds={feeds}
-          username={username}
-          sendPrivateMessage={sendPrivateMessage}
-        />
-        <Chatting
-          sendChatData={sendChatData}
-          receiveChat={receiveChat}
-          transferFile={transferFile}
-          receiveFile={receiveFile}
-        />
-      </div>
+            <div className="sidebar-section">
+              <UserList
+                feeds={feeds}
+                username={username}
+                sendPrivateMessage={sendPrivateMessage}
+              />
+              <Chatting
+                sendChatData={sendChatData}
+                receiveChat={receiveChat}
+                transferFile={transferFile}
+                receiveFile={receiveFile}
+              />
+            </div>
 
-      <div className="controls-section">
-        {/* 버튼 및 기타 컨트롤 */}
-      </div>
-    </div>
+            <div className="controls-section">{/* 버튼 및 기타 컨트롤 */}</div>
+          </div>
+        </div>
 
-
-
-        
-      </div>
-
-        
         <div style={{ float: "left" }}>
           <button onClick={handleAudioActiveClick}>
             {activeAudio ? "소리 끄기" : "소리 켜기"}
@@ -839,7 +812,6 @@ const disconnectFeed = (rfid) => {
                 onClick={handleMainStream}
                 username={username}
                 muted={false}
-             
               />
             )}
           </div>
