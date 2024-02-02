@@ -74,7 +74,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Starting Build Front Docker Image"'
-                    dir('back') {
+                    dir('front') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
                              customImage = docker.build("${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}")
