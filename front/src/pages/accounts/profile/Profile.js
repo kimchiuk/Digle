@@ -11,7 +11,11 @@ const Profile = () => {
   const [userType, setUserType] = useState("");
 
   // 일반 유저
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(
+    "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0"
+  );
+  const [isImage, setIsImage] = useState(false);
+  const [readImage, setReadImage] = useState();
 
   // 비즈니스 유저
   const [companyName, setCompanyName] = useState("");
@@ -52,8 +56,13 @@ const Profile = () => {
 
         // 일반 유저와 비즈니스 유저 데이터 정보 저장
         if (response.data.user_type === "Standard") {
-          if (response.data.profile_picture_url !== null)
-            setImage(response.data.profile_picture_url);
+          if (response.data.profile_picture_url != null) {
+            const reader = new FileReader();
+            reader.readAsDataURL(response.data.profile_picture_url[0]);
+            reader.onloadend = () => {
+              setImage(reader.result);
+            };
+          }
         } else if (response.data.user_type === "Business") {
           if (response.data.company_info != null) {
             setCompanyName(response.data.company_info);
@@ -90,7 +99,9 @@ const Profile = () => {
       formData.append("name", name);
       // 일반 유저
       if (userType === "Standard") {
-        formData.append("image", image);
+        if (isImage) {
+          formData.append("profile_img", image);
+        }
       } else if (userType === "Business") {
         setCompanyAddress(`${roadAddress} (${zipCode}) ${detailAddress}`);
         formData.append("company_info", companyName);
@@ -112,15 +123,24 @@ const Profile = () => {
     <>
       <div className="pt-20 text-xl font-bold mb-2 ml-8">회원정보 수정</div>
       <hr className="mb-2 p-2 ml-8" />
-      <div className="flex justify-center flex-wrap">
-        {/* 프로필 사진 및 수정 */}
-        <div>
-          <ImageUpload image={image} setImage={setImage} />
-        </div>
+      <div className="flex justify-center flex-wrap pb-8">
         {/* 회원정보 수정 form */}
         <div className="relative flex h-screen border-4 rounded-lg">
-          <div className="pt-20 w-[600px] text-left px-5">
+          <div className="pt-8 w-[600px] text-left px-5">
             <form onSubmit={profileUpdate} className="flex flex-col p-2">
+              {userType === "Standard" ? (
+                <div className="flex justify-center">
+                  <ImageUpload
+                    image={image}
+                    setImage={setImage}
+                    setIsImage={setIsImage}
+                    setReadImage={setReadImage}
+                    readImage={readImage}
+                    name={name}
+                  />
+                </div>
+              ) : null}
+              {/* 프로필 사진 및 수정 */}
               <div className="flex flex-col">
                 <label htmlFor="email">이메일</label>
                 <input

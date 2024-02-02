@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 import SelectSignup from "components/signup/SelectSignup";
@@ -209,6 +209,7 @@ const SignupDetail = () => {
   // 폼 제출 시
   const onSubmitButton = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("name", name);
