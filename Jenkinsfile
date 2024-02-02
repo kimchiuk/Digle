@@ -35,34 +35,36 @@ pipeline {
                     sh 'echo "Starting Build Back Docker Image"'
                    
                     dir('back') {
-                        withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io/v1/') {
+                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                              customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                                docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+                                customImage.push()
+                            }
                             } else {
                                 error "Docker build failed"
                             }
                         }
-                            
                     }
                 }
             }
             
         }
 
-        stage('Push to Docker Registry') {
-            steps {
-                script {
-                    // 도커 이미지를 레지스트리에 푸시
-                    if (customImage) {
-                        customImage.push()
-                    } else {
-                        error "Docker build failed, so not pushing to registry."
-                    }
-                }
-            }
-        }      
+        // stage('Push to Docker Registry') {
+        //     steps {
+        //         script {
+        //             // 도커 이미지를 레지스트리에 푸시
+        //             if (customImage) {
+        //                 customImage.push()
+        //             } else {
+        //                 error "Docker build failed, so not pushing to registry."
+        //             }
+        //         }
+        //     }
+        // }      
         
         stage('Run Backend') {
             steps {
