@@ -8,6 +8,17 @@ pipeline {
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
         IMAGE_NAME = 'geunbo/digle'
+        DATABASE_URL = "${Jenkins.instance.systemProperties['DATABASE_URL']}"
+        HTTPS = "${Jenkins.instance.systemProperties['HTTPS']}"
+        NAVER_CLIENT_ID = "${Jenkins.instance.systemProperties['NAVER_CLIENT_ID']}"
+        NAVER_CLIENT_SECRET = "${Jenkins.instance.systemProperties['NAVER_CLIENT_SECRET']}"
+        SMTP_PASSWORD = "${Jenkins.instance.systemProperties['SMTP_PASSWORD']}"
+        SMTP_PORT = "${Jenkins.instance.systemProperties['SMTP_PORT']}"
+        SMTP_SERVER = "${Jenkins.instance.systemProperties['SMTP_SERVER']}"
+        SMTP_USERNAME = "${Jenkins.instance.systemProperties['SMTP_USERNAME']}"
+        SSL_CRT_FILE = "${Jenkins.instance.systemProperties['SSL_CRT_FILE']}"
+        SSL_KEY_FILE = "${Jenkins.instance.systemProperties['SSL_KEY_FILE']}"
+
         
     }
     
@@ -28,7 +39,7 @@ pipeline {
                    
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                             customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", "--build-arg MY_ENV_VAR=${env.MY_ENV_VAR} .")
+                             customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", "--build-arg MY_ENV_VAR=${env.DATABASE_URL} .")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
