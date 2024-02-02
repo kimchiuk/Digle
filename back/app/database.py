@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()  # 환경 변수 로드
-
-DATABASE_URL = os.getenv("DATABASE_URL")
 print(DATABASE_URL)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 engine = create_engine(
     DATABASE_URL,
     # 커넥션 풀 설정
