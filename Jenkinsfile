@@ -54,6 +54,7 @@ pipeline {
                    
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+                            echo "DEBUG: DATABASE_URL=${env.DATABASE_URL}"
                              customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", "--build-arg MY_ENV_VAR=${env.DATABASE_URL} .")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
