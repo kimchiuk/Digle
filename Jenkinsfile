@@ -56,9 +56,7 @@ pipeline {
                 script {
                     // 도커 이미지를 레지스트리에 푸시
                     if (customImage) {
-                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                            customImage.push()
-                        }
+                         customImage.push()
                     } else {
                         error "Docker build failed, so not pushing to registry."
                     }
