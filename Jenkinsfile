@@ -43,7 +43,17 @@ pipeline {
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
-                             customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", "--build-arg DATABASE_URL=${env.DATABASE_URL} .")
+                             customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", 
+                                "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
+                                "--build-arg HTTPS=${env.HTTPS} " +
+                                "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
+                                "--build-arg NAVER_CLIENT_SECRET=${env.NAVER_CLIENT_SECRET} " +
+                                "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
+                                "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
+                                "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
+                                "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
+                                "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
+                                "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
