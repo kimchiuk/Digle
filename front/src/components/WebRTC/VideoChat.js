@@ -4,6 +4,7 @@ import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
+import UserList from './UserList/UserList';
 
 
 
@@ -237,6 +238,7 @@ const disconnectFeed = (rfid) => {
                       console.log(feeds);
                       let leaving = msg["leaving"];
                       Janus.log("Publisher left: " + leaving); //여기서 leaveing은 나간놈의 고유rfid임 
+                      
                                           
                       disconnectFeed(leaving);                   
   
@@ -412,6 +414,8 @@ const disconnectFeed = (rfid) => {
             if (event === "attached") {
               remoteFeed.rfid = msg["id"];
               remoteFeed.rfdisplay = msg["display"];
+              // let newMessage = `User ${display} joined.`;
+              // setReceiveChat(prev => prev + "\n" + newMessage);
               connectFeed(remoteFeed);
               Janus.log(
                 "Successfully attached to rffeed " +
@@ -525,27 +529,39 @@ const disconnectFeed = (rfid) => {
           if (what === "message") {
             // public message
             setReceiveChat(() => `${json["display"]} : ${json["text"]}`);
-          } else if (what === "file") {
+          }
+          else if (what === "message" && json["to"] === username) {
+            // 귓속말 메시지 처리
+            setReceiveChat(`${json["display"]} (whisper): ${json["text"]}`);
+          }
+
+          //
+          else if (what === "file") {
             let from = json["display"];
             let filename = json["text"]["filename"];
-            let chunk = json["text"]["message"];
+            let chunk = base64ToArrayBuffer(json["text"]["message"]); // Base64 디코딩
             let last = json["text"]["last"];
+          
             if (!receivedFileChunk[from]) receivedFileChunk[from] = {};
             if (!receivedFileChunk[from][filename]) {
-              receivedFileChunk[from][filename] = [];
+              receivedFileChunk[from][filename] = new Blob([], {type: "application/octet-stream"});
             }
-            receivedFileChunk[from][filename].push(chunk);
+            
+            receivedFileChunk[from][filename] = new Blob([receivedFileChunk[from][filename], chunk], {type: "application/octet-stream"});
+          
             if (last) {
+              let url = window.URL.createObjectURL(receivedFileChunk[from][filename]);
               setReceiveFile(() => {
                 return {
-                  data: receivedFileChunk[from][filename].join(""),
+                  url: url,
                   filename: filename,
                   from: from,
                 };
               });
-              delete receivedFileChunk[from][filename];
+              delete receivedFileChunk[from][filename]; 
             }
           }
+
         },
       });
     }
@@ -584,6 +600,22 @@ const disconnectFeed = (rfid) => {
     });
   };
 
+
+  function base64ToArrayBuffer(base64) {
+    try {
+        var binaryString = window.atob(base64);
+        var bytes = new Uint8Array(binaryString.length);
+        for (var i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    } catch (error) {
+        console.error('Base64 decoding failed:', error);
+        // 적절한 에러 처리 로직 추가
+    }
+}
+
+
   const transferFile = (data) => {
     let message = {
       textroom: "file",
@@ -602,10 +634,30 @@ const disconnectFeed = (rfid) => {
     });
   };
 
+
+
   const sendPrivateMessage = (data, target) => {
-    // 구현되면, target한테 1:1 data 쪽지 전송
-    console.log(target, "한테 쪽지 전송:", data);
+    let message = {
+      textroom: "message",
+      room: myroom,
+      text: data,
+      to: target, // rfid
+      transaction: Janus.randomString(12),
+      display: username,
+    };
+    sfutest.data({
+      text: JSON.stringify(message),
+      error: function (err) {
+        console.log(err);
+      },
+      success: function () {
+        console.log("Private message sent to " + target);
+      },
+    });
   };
+
+
+
 
   const handleAudioActiveClick = () => {
     let muted = sfutest.isAudioMuted();
@@ -705,7 +757,7 @@ const disconnectFeed = (rfid) => {
 
   return (
     <>
-      <div>
+      
       <div
         style={{
           width: "100%",
@@ -718,25 +770,37 @@ const disconnectFeed = (rfid) => {
             width: "50%",
           }}
         >
-          
-          <div style={{ width: "75%", float: "left", height: "50%" }}>
-            <Video
-              stream={mainStream.stream}
-              username={mainStream.username}
-              muted={true}
-            />
-          </div>
+          <div className="video-chat-container">
+      <div className="main-video-section">
+        <Video
+          stream={mainStream.stream}
+          username={mainStream.username}
+          muted={true}
+        />
+      </div>
 
-          <div style={{ width: "25%", float: "right", height: "100%" }}>
-            <Chatting
-              sendChatData={sendChatData}
-              receiveChat={receiveChat}
-              transferFile={transferFile}
-              receiveFile={receiveFile}
-            />
-          </div>
+      <div className="sidebar-section">
+        <UserList
+          feeds={feeds}
+          username={username}
+          sendPrivateMessage={sendPrivateMessage}
+        />
+        <Chatting
+          sendChatData={sendChatData}
+          receiveChat={receiveChat}
+          transferFile={transferFile}
+          receiveFile={receiveFile}
+        />
+      </div>
 
-        </div>
+      <div className="controls-section">
+        {/* 버튼 및 기타 컨트롤 */}
+      </div>
+    </div>
+
+
+
+        
       </div>
 
         
@@ -768,14 +832,14 @@ const disconnectFeed = (rfid) => {
               float: "left",
               margin: "3px",
             }}
-          >111
+          >
             {myFeed && (
               <Video
                 stream={myFeed.stream}
                 onClick={handleMainStream}
                 username={username}
                 muted={false}
-                // activeSpeaker={activeSpeaker}
+             
               />
             )}
           </div>
