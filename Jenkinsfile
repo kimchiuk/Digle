@@ -94,20 +94,20 @@ pipeline {
             
         }    
         
-        stage('Run Backend') {
-            steps {
-                dir('back') {
-                    script {
-                        sh "docker run -p 8000:8000 ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    }
-                }
-            }
-        }
+        // stage('Run Backend') {
+        //     steps {
+        //         dir('back') {
+        //             script {
+        //                 sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Run Frontend') {
             steps {
-                dir('./front') {
-                    sh 'npm start'
+                dir('front') {
+                    sh "docker run -p 3000:3000 ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
         }
