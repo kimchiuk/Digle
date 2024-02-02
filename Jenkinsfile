@@ -80,7 +80,7 @@ pipeline {
                              customImage = docker.build("${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
-                                echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                                echo "Docker build succeeded: ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
                                 docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                                     customImage.push()
                             }
