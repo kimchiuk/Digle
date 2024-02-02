@@ -1,6 +1,6 @@
 def customImage
-def jenkinsInstance = Jenkins.getInstance()
-def systemProperties = jenkinsInstance.systemProperties
+// def jenkinsInstance = Jenkins.getInstance()
+// def systemProperties = jenkinsInstance.systemProperties
 
 pipeline {
     agent any
