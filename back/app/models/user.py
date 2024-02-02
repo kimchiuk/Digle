@@ -57,18 +57,6 @@ class EmailVerification(Base):
         return datetime.utcnow() > self.created_at + timedelta(minutes=3)
 
 
-class RoomInfo(Base):
-    __tablename__ = "room_info"
-
-    id = Column(Integer, primary_key=True, index=True)
-    room_id = Column(Integer, unique=True, index=True)
-    host_id = Column(Integer, unique=True, index=True)
-    host_session = Column(String, unique=True, index=True)
-    access_token = Column(String, unique=True, index=True)
-    create_time = Column(DateTime, default=datetime.utcnow)
-    room_type = Column(String, unique=True, index=True)
-
-
 class PasswordResetVerification(Base):
     __tablename__ = "password_reset_verifications"
 

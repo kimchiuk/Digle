@@ -43,7 +43,6 @@ async def read_users_me(
     
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
-    print(user)
     # 사용자 정보를 직접 반환하거나  객체를 사용해서 반환
     if user.user_type == UserType.Standard:
         user_data = {
