@@ -1,3 +1,5 @@
+def customImage
+
 pipeline {
     agent any
 
@@ -34,7 +36,7 @@ pipeline {
                    
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                             def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                             customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
