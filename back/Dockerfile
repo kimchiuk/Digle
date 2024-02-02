@@ -9,6 +9,9 @@ COPY requirements.txt ./
 COPY .idea ./.idea
 COPY app ./app
 
+# ARG 및 ENV 설정 추가
+ARG MY_ENV_VAR
+ENV MY_ENV_VAR=$MY_ENV_VAR
 
 # 필요한 Python 패키지 설치
 RUN pip install --no-cache-dir -r requirements.txt
