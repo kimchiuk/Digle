@@ -21,14 +21,6 @@ pipeline {
             }
         }
 
-        stage('Check Docker') {
-            steps {
-                script {
-                    sh 'docker --version'
-                }
-            }
-        }
-
         stage('Build and Push the Back-end Docker Image') {
             steps {
                 script {
@@ -41,7 +33,7 @@ pipeline {
                             if (customImage != 0) {
                                 echo "Docker build succeeded: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                                 docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-                                customImage.push()
+                                    customImage.push()
                             }
                             } else {
                                 error "Docker build failed"
@@ -51,25 +43,14 @@ pipeline {
                 }
             }
             
-        }
-
-        // stage('Push to Docker Registry') {
-        //     steps {
-        //         script {
-        //             // 도커 이미지를 레지스트리에 푸시
-        //             if (customImage) {
-        //                 customImage.push()
-        //             } else {
-        //                 error "Docker build failed, so not pushing to registry."
-        //             }
-        //         }
-        //     }
-        // }      
+        }    
         
         stage('Run Backend') {
             steps {
                 dir('back') {
-                    sh 'uvicorn app.main:app --reload'
+                    script {
+                        sh 'docker run -p 8000:8000 ${IMAGE_NAME}:${env.BUILD_NUMBER}'
+                    }
                 }
             }
         }
