@@ -6,8 +6,11 @@ from datetime import datetime, timedelta
 from database import Base  # database.py에서 Base 클래스를 임포
 
 
-# 유저 타입은 Standard 혹은 Business가 정확하게 입력되어야 들어감. Enum의 역할임.
-# auth_provider도 매한가지.
+class UserType(pyEnum):
+    Standard = "Standard"
+    Business = "Business"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -18,7 +21,7 @@ class User(Base):
 
     hashed_password = Column(String)  # 실제 저장되는 비밀번호는 해시됨
 
-    user_type = Column(SQLEnum("Standard", "Business", name="user_type_enum"))
+    user_type = Column(SQLEnum(UserType, name="user_type_enum"))
 
     is_additional_info_provided = Column(Boolean, default=False)
 
