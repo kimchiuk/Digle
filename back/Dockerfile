@@ -33,5 +33,8 @@ COPY .idea /app/.idea
 COPY alembic /app/alembic
 COPY app /app/app
 
+# Python Path 설정
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
 # 애플리케이션 실행 커맨드 지정
 CMD ["uvicorn", "app.main:app", "--reload"]
