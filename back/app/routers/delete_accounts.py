@@ -35,7 +35,8 @@ async def delete_accounts(
     password: str = Form(None),
     db: Session = Depends(get_db),
 ):
-    user = get_user_by_token(request, db)
+    user = get_user_by_token(request, db, "service_access")
+    print("에러발생?")
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     if email != user.email:

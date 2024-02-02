@@ -2,16 +2,38 @@
 FROM python:3.8
 
 # 작업 디렉토리를 /app으로 설정
-WORKDIR /app
+WORKDIR .
 
 # 현재 디렉토리의 requirements.txt 파일을 컨테이너의 /app 디렉토리로 복사
 COPY requirements.txt ./
+COPY .idea ./.idea
+COPY app ./app
+
+# ARG 및 ENV 설정 추가
+ARG DATABASE_URL
+ARG HTTPS
+ARG NAVER_CLIENT_ID
+ARG NAVER_CLIENT_SECRET
+ARG SMTP_PASSWORD
+ARG SMTP_PORT
+ARG SMTP_SERVER
+ARG SMTP_USERNAME
+ARG SSL_CRT_FILE
+ARG SSL_KEY_FILE
+
+ENV DATABASE_URL=$DATABASE_URL
+ENV HTTPS=$HTTPS
+ENV NAVER_CLIENT_ID=$NAVER_CLIENT_ID
+ENV NAVER_CLIENT_SECRET=$NAVER_CLIENT_SECRET
+ENV SMTP_PASSWORD=$SMTP_PASSWORD
+ENV SMTP_PORT=$SMTP_PORT
+ENV SMTP_SERVER=$SMTP_SERVER
+ENV SMTP_USERNAME=$SMTP_USERNAME
+ENV SSL_CRT_FILE=$SSL_CRT_FILE
+ENV SSL_KEY_FILE=$SSL_KEY_FILE
 
 # 필요한 Python 패키지 설치
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 현재 디렉토리의 나머지 파일들을 컨테이너의 /app 디렉토리로 복사
-COPY . .
-
 # 애플리케이션 실행 커맨드 지정
-CMD ["python", "main.py", "deploy"]
+CMD ["python", "app/main.py", "deploy"]
