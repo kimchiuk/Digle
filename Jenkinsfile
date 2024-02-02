@@ -6,6 +6,7 @@ pipeline {
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
         IMAGE_NAME = 'digle'
+        def customImage
     }
     
     stages {
@@ -32,7 +33,7 @@ pipeline {
                     sh 'echo "Starting Build Back Docker Image"'
                    
                     dir('back') {
-                        def customImage
+                        
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                              customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
