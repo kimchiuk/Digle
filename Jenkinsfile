@@ -7,7 +7,7 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        IMAGE_NAME = 'digle'
+        IMAGE_NAME = 'geunbo/digle'
         
     }
     
@@ -35,7 +35,7 @@ pipeline {
                     sh 'echo "Starting Build Back Docker Image"'
                    
                     dir('back') {
-                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+                        withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io/v1/') {
                              customImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
                             if (customImage != 0) {
