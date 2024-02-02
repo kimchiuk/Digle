@@ -12,16 +12,27 @@ pipeline {
         IMAGE_NAME = 'geunbo/digle'
 
 
-        DATABASE_URL = "${systemProperties['DATABASE_URL']}"
-        HTTPS = "${systemProperties['HTTPS']}"
-        NAVER_CLIENT_ID = "${systemProperties['NAVER_CLIENT_ID']}"
-        NAVER_CLIENT_SECRET = "${systemProperties['NAVER_CLIENT_SECRET']}"
-        SMTP_PASSWORD = "${systemProperties['SMTP_PASSWORD']}"
-        SMTP_PORT = "${systemProperties['SMTP_PORT']}"
-        SMTP_SERVER = "${systemProperties['SMTP_SERVER']}"
-        SMTP_USERNAME = "${systemProperties['SMTP_USERNAME']}"
-        SSL_CRT_FILE = "${systemProperties['SSL_CRT_FILE']}"
-        SSL_KEY_FILE = "${systemProperties['SSL_KEY_FILE']}"
+        // DATABASE_URL = "${systemProperties['DATABASE_URL']}"
+        // HTTPS = "${systemProperties['HTTPS']}"
+        // NAVER_CLIENT_ID = "${systemProperties['NAVER_CLIENT_ID']}"
+        // NAVER_CLIENT_SECRET = "${systemProperties['NAVER_CLIENT_SECRET']}"
+        // SMTP_PASSWORD = "${systemProperties['SMTP_PASSWORD']}"
+        // SMTP_PORT = "${systemProperties['SMTP_PORT']}"
+        // SMTP_SERVER = "${systemProperties['SMTP_SERVER']}"
+        // SMTP_USERNAME = "${systemProperties['SMTP_USERNAME']}"
+        // SSL_CRT_FILE = "${systemProperties['SSL_CRT_FILE']}"
+        // SSL_KEY_FILE = "${systemProperties['SSL_KEY_FILE']}"
+
+        DATABASE_URL = "${env.DATABASE_URL}"
+        HTTPS = "${env.HTTPS}"
+        NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
+        NAVER_CLIENT_SECRET = "${env.NAVER_CLIENT_SECRET}"
+        SMTP_PASSWORD = "${env.SMTP_PASSWORD}"
+        SMTP_PORT = "${env.SMTP_PORT}"
+        SMTP_SERVER = "${env.SMTP_SERVER}"
+        SMTP_USERNAME = "${env.SMTP_USERNAME}"
+        SSL_CRT_FILE = "${env.SSL_CRT_FILE}"
+        SSL_KEY_FILE = "${env.SSL_KEY_FILE}"
 
         
     }
