@@ -1,102 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
-const Chatting = (props,{base64}) => {
+const Chatting = (props) => {
   const [chatData, setChatData] = useState([]);
-  const [inputChat, setInputChat] = useState(""); //대화창내용변경
-  const [seletecedFile, setSeletecedFile] = useState(null); //파일고르기
+  const [inputChat, setInputChat] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleChange = (e) => {
     setInputChat(e.target.value);
   };
 
-
-  //엔터키요
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      handleClick(); 
+      handleClick();
     }
   };
 
-
-  //내가 너희들에게 대화를 뿌려줄게
   const handleClick = () => {
-    props.sendChatData(inputChat);// q부모컴포넌트에게 inputChat 전송
-    setChatData((prev) => [...prev, `나 : ${inputChat}`]);  
+    props.sendChatData(inputChat);
+    setChatData((prev) => [...prev, `나 : ${inputChat}`]);
     setInputChat("");
   };
- 
 
-  //대화가 올때마다 반응하게
   useEffect(() => {
     setChatData((prev) => [...prev, props.receiveChat]);
   }, [props.receiveChat]);
 
+  const handleFileTransfer = () => {
+    if (!selectedFile) {
+      alert("파일을 선택해주세요");
+      return;
+    }
+    const file = selectedFile;
+    const chunkLength = 16384;
 
-  const chunkSize = 16384; // 청크 크기를 16KB로 설정
+    const onReadAsDataURL = (event, text) => {
+      var data = {}; // data object to transmit over data channel
+      data.filename = file.name;
+      if (event) text = event.target.result; // on first invocation
 
-const handleFileTransfer = () => {
-  if (!seletecedFile) {
-    alert("파일을 선택해주세요");
-    return;
-  }
-  const file = seletecedFile;
-  let offset=0;
-
-
-  if (file.size > 10485760) { 
-    alert("10mb미만으로만 올리쇼");
-    return;
-  }
-
-  setChatData((prev) => [...prev, `나 : "${file.name}" 파일을 전송합니다`]); // 채팅창에 메시지 추가
-
-
-  const readAndSendChunk = () => {
-    const reader = new FileReader();
-    const nextChunk = file.slice(offset, offset + chunkSize);
-    reader.onload = (e) => {
-      props.transferFile({
-        filename: file.name,
-        data: e.target.result,
-        last: offset + chunkSize >= file.size
-      });
-      offset += chunkSize;
-      if (offset < file.size) {
-        readAndSendChunk(); // 다음 청크 읽기
+      if (text.length > chunkLength) {
+        data.message = text.slice(0, chunkLength); // getting chunk using predefined chunk length
+      } else {
+        data.message = text;
+        data.last = true;
       }
+      props.transferFile(data); // use JSON.stringify for chrome!
+
+      var remainingDataURL = text.slice(data.message.length);
+      if (remainingDataURL.length)
+        setTimeout(function () {
+          onReadAsDataURL(null, remainingDataURL); // continue transmitting
+        }, 500);
     };
-    reader.readAsArrayBuffer(nextChunk);
+
+    let fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.addEventListener("load", onReadAsDataURL);
   };
-  readAndSendChunk(); // 첫 청크 읽기 시작
-};
 
-
-
-function base64ToArrayBuffer(base64) {
-  try {
-      var binaryString = window.atob(base64);
-      var bytes = new Uint8Array(binaryString.length);
-      for (var i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-      }
-      return bytes.buffer;
-  } catch (error) {
-      console.error('Base64 decoding failed:', error);
-      // 적절한 에러 처리 로직 추가
-  }
-}
-
-
-
-  ///recive용
   const createFileChat = (data, filename, from) => {
-    const arrayBuffer = base64ToArrayBuffer(data); // 이 함수는 별도로 구현 필요
-    const blob = new Blob([arrayBuffer], {type: "application/octet-stream"});
-    const url = window.URL.createObjectURL(blob);
-  
     return (
       <>
-        {from} : <a href={url} download={filename}>{filename}</a>
+        {from} :{" "}
+        <a href={data} download={filename}>
+          {filename}
+        </a>
       </>
     );
   };
@@ -108,29 +76,19 @@ function base64ToArrayBuffer(base64) {
     let from = props.receiveFile.from;
     console.log(props.receiveFile);
     setChatData((prev) => [...prev, createFileChat(data, filename, from)]);
-  }, [props.receiveFile]); //데이터나 채팅이나 오면 누구한테 온지까지 =?> chatdata에 새롭게 박아넣기
+  }, [props.receiveFile]);
 
   const handleSelectedFile = (e) => {
-    setSeletecedFile(() => e.target.files[0]);
+    setSelectedFile(() => e.target.files[0]);
   };
-/////recive용
 
-
-  //채팅
-  const renderChatData = chatData.map((c, i) => { //채팅창에 setChatData [입력된 채팅 내용] 형태로 전송 
+  const renderChatData = chatData.map((c, i) => {
     return <p key={i}> {c} </p>;
   });
 
-
   return (
     <>
-      <div
-        style={{
-          border: "1px solid",
-          overflow: "auto",
-          minHeight: "500px",
-        }}
-      >
+      <div style={{ border: "1px solid", overflow: "auto", minHeight: "500px" }}>
         {renderChatData}
       </div>
 

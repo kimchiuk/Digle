@@ -519,28 +519,17 @@ const VideoChat = () => {
           else if (what === "file") {
             let from = json["display"];
             let filename = json["text"]["filename"];
-            let chunk = base64ToArrayBuffer(json["text"]["message"]); // Base64 디코딩
+            let chunk = json["text"]["message"];
             let last = json["text"]["last"];
-
             if (!receivedFileChunk[from]) receivedFileChunk[from] = {};
             if (!receivedFileChunk[from][filename]) {
-              receivedFileChunk[from][filename] = new Blob([], {
-                type: "application/octet-stream",
-              });
+              receivedFileChunk[from][filename] = [];
             }
-
-            receivedFileChunk[from][filename] = new Blob(
-              [receivedFileChunk[from][filename], chunk],
-              { type: "application/octet-stream" }
-            );
-
+            receivedFileChunk[from][filename].push(chunk);
             if (last) {
-              let url = window.URL.createObjectURL(
-                receivedFileChunk[from][filename]
-              );
               setReceiveFile(() => {
                 return {
-                  url: url,
+                  data: receivedFileChunk[from][filename],
                   filename: filename,
                   from: from,
                 };
@@ -548,6 +537,7 @@ const VideoChat = () => {
               delete receivedFileChunk[from][filename];
             }
           }
+
         },
       });
     }
@@ -583,20 +573,6 @@ const VideoChat = () => {
       },
     });
   };
-
-  function base64ToArrayBuffer(base64) {
-    try {
-      var binaryString = window.atob(base64);
-      var bytes = new Uint8Array(binaryString.length);
-      for (var i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      return bytes.buffer;
-    } catch (error) {
-      console.error("Base64 decoding failed:", error);
-      // 적절한 에러 처리 로직 추가
-    }
-  }
 
   const transferFile = (data) => {
     let message = {
