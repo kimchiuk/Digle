@@ -94,7 +94,7 @@ async def login_for_access_token(
         )
         db.add(business_data)
         db.commit()
-        db.refresh()
+        db.refresh(business_data)
     access_token = create_access_token(internal_id, "service_access")
 
     response.set_cookie(

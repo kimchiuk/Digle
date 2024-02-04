@@ -7,7 +7,7 @@ import json, jwt
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 import uvicorn
-from routers import auth_ext, normal_auth, delete_accounts, find_password
+from routers import auth_ext, normal_auth, delete_accounts, find_password, create_room
 import models, schemas
 from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
@@ -49,6 +49,7 @@ app.include_router(delete_accounts.router)
 app.include_router(find_password.router)
 app.include_router(user_profile.router)
 # app.include_router(send_faq.router)
+app.include_router(create_room.router)
 
 def local_run():
     uvicorn.run(

@@ -30,6 +30,7 @@ import PublicRoute from "./routes/PublicRoute";
 
 // 나중에 반드시 지우셈
 import Anhs from "./components/WebRTC/hyunsung";
+import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
 function App() {
   return (
@@ -68,6 +69,8 @@ function App() {
           <Route path="/reset_password" element={<ResetPassword />} />
           <Route path="/CreateRoom" element={<CreateRoom />} />
           <Route path="/vchat" element={<VideoChat />} />
+
+          <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
         </Routes>
         <Footer />
       </BrowserRouter>
