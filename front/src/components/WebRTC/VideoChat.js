@@ -509,11 +509,14 @@ const VideoChat = () => {
           let what = json["textroom"];
           if (what === "message") {
             // public message
-            setReceiveChat(() => `${json["display"]} : ${json["text"]}`);
-          } else if (what === "message" && json["to"] === username) {
-            // 귓속말 메시지 처리
-            setReceiveChat(`${json["display"]} (whisper): ${json["text"]}`);
-          }
+            const messageObj = {
+              from: json["display"],
+              to: json["to"] || "all", // 'to' 필드가 없다면 'all'로 처리
+              text: json["text"]
+            };
+            // 메시지 객체를 상태로 설정
+            console.log(messageObj);
+            setReceiveChat(messageObj);}
 
           //
           else if (what === "file") {
@@ -599,7 +602,7 @@ const VideoChat = () => {
       text: data,
       to: target, // rfid
       transaction: Janus.randomString(12),
-      display: username,
+      display:username,
     };
     sfutest.data({
       text: JSON.stringify(message),
@@ -746,6 +749,7 @@ const VideoChat = () => {
                 receiveChat={receiveChat}
                 transferFile={transferFile}
                 receiveFile={receiveFile}
+                username={username}
               />
             </div>
 

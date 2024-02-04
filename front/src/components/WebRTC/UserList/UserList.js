@@ -7,6 +7,7 @@ const UserList = ({ feeds, sendPrivateMessage }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleUserClick = (user) => {
+    console.log(user);
     setSelectedUser(user);
     setIsModalOpen(true);
   };
@@ -15,7 +16,7 @@ const UserList = ({ feeds, sendPrivateMessage }) => {
 
   const handleModalSubmit = (message) => {
     if (selectedUser && message.trim()) {
-      sendPrivateMessage(message, selectedUser.rfid); // 여기서 `selectedUser.rfid`는 실제로 메시지를 보낼 대상의 ID를 나타냅니다.
+      sendPrivateMessage(message, selectedUser.rfdisplay); // 여기서 `selectedUser.rfid`는 실제로 메시지를 보낼 대상의 ID를 나타냅니다.
     }
     setIsModalOpen(false);
   };

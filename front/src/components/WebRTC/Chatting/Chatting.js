@@ -22,8 +22,25 @@ const Chatting = (props) => {
   };
 
   useEffect(() => {
-    setChatData((prev) => [...prev, props.receiveChat]);
+    if (props.receiveChat) {
+      const { from, text, to } = props.receiveChat;
+      console.log(from,to,text,props.username);
+      // 현재 사용자가 메시지의 수신자이거나, 메시지가 모두에게 보내진 경우에만 표시
+      if (to === "all" || to === props.username) {
+        console.log(to);
+        const messageToShow = `${from}: ${text}`;
+        setChatData(prev => [...prev, messageToShow]);
+      }
+    }
   }, [props.receiveChat]);
+
+  useEffect(() => {
+    console.log(props.receiveChat);
+  }, [props.receiveChat]);
+
+  // useEffect(() => {
+  //   setChatData((prev) => [...prev, props.receiveChat]);
+  // }, [props.receiveChat]);
 
   const handleFileTransfer = () => {
     if (!selectedFile) {
