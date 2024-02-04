@@ -703,11 +703,11 @@ const VideoChat = () => {
           float: "left",
           margin: "3px",
         }}
+        onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
       >
         <Video
           key={feed.rfid}
           stream={feed.stream}
-          onClick={handleMainStream}
           username={feed.rfdisplay}
           muted={true}
         />
@@ -785,11 +785,11 @@ const VideoChat = () => {
               float: "left",
               margin: "3px",
             }}
+            onClick={() => handleMainStream(myFeed.stream, username)}
           >
             {myFeed && (
               <Video
                 stream={myFeed.stream}
-                onClick={handleMainStream}
                 username={username}
                 muted={false}
               />
