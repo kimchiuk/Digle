@@ -8,8 +8,8 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        BACK_IMAGE_NAME = 'geunbo/digle'
-        FRONT_IMAGE_NAME = 'geunbo/digle_front'
+        BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
+        FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
 
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
