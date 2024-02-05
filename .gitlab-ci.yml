@@ -1,10 +1,16 @@
 stages:
-    - deploy
+    - sync
 
-deploy_to_github:
-    stage: deploy
+sync_to_github:
+    stage: sync
+    image: alpine/latest
+    before_script:
+        - apk update && apk add git bash
+        - git config --global user.email "cytor@naver.com"
+        - git config --global user.name "Chosamee"
+        - git remote add github https://Chosamee:${GH_TOKEN}@github.com/Chosamee/webrtc-ssafy.git || true
+        - git remote -v
     script:
-        - git remote add github https://github.com/Chosamee/webrtc-ssafy.git
         - git push github HEAD:master --force
     only:
         - master
