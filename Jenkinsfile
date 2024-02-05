@@ -107,7 +107,7 @@ pipeline {
         stage('Run Frontend') {
             steps {
                 dir('front') {
-                    sh "docker run -p 3000:3000 ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    // sh "docker run -p 3000:3000 ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
         }
