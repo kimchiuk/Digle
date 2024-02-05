@@ -74,8 +74,6 @@ def deploy_run():
         host="0.0.0.0",
         port=8000,
         log_level="debug",
-        ssl_keyfile="../key.pem",
-        ssl_certfile="../cert.pem",
         forwarded_allow_ips="*",  # 모든 프록시된 IP 주소 허용
         proxy_headers=True,  # X-Forwarded-Proto 헤더를 신뢰
     )
