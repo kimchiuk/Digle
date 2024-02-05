@@ -71,7 +71,7 @@ const TestTemp = () => {
             />
             <button
               onClick={handleJoinExam}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-[20px] py-2 px-4 rounded"
             >
               Join Exam
             </button>
@@ -80,10 +80,10 @@ const TestTemp = () => {
 
         {showExam && (
           <>
-            <iframe src={examLink} className="w-full h-screen"></iframe>
+            <iframe src={examLink} className="w-full h-screen mb-[20px]"></iframe>
             <button
               onClick={handleEndExam}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
+              className="bg-red-500 hover:bg-red-700 text-white font-bold mb-[20px] py-2 px-4 rounded mt-4"
             >
               End Exam
             </button>
