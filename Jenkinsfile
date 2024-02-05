@@ -20,8 +20,8 @@ pipeline {
         SMTP_PORT = "${env.SMTP_PORT}"
         SMTP_SERVER = "${env.SMTP_SERVER}"
         SMTP_USERNAME = "${env.SMTP_USERNAME}"
-        SSL_CRT_FILE = "${env.SSL_CRT_FILE}"
-        SSL_KEY_FILE = "${env.SSL_KEY_FILE}"
+        // SSL_CRT_FILE = "${env.SSL_CRT_FILE}"
+        // SSL_KEY_FILE = "${env.SSL_KEY_FILE}"
 
         
     }
