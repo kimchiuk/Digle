@@ -59,6 +59,7 @@ pipeline {
                                 docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                                     backendImage.push()
                             }
+                            sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
                             } else {
                                 error "Docker build failed"
                             }
