@@ -32,6 +32,9 @@ import PublicRoute from "./routes/PublicRoute";
 import Anhs from "./components/WebRTC/hyunsung";
 import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
+import TestTemp from './pages/test/test_temp'
+import TestFinish from './pages/test/test_finish'
+
 function App() {
   return (
     <div className="select-none">
@@ -71,6 +74,10 @@ function App() {
           <Route path="/vchat" element={<VideoChat />} />
 
           <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
+          <Route path="/TestTemp" element={<TestTemp />} />
+          <Route path="/test/finish" element={<TestFinish />} />
+
+
         </Routes>
         <Footer />
       </BrowserRouter>

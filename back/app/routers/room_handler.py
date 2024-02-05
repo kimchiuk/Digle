@@ -1,8 +1,15 @@
 import requests
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Response, Depends
 from pydantic import BaseModel
 import uuid
 import json
+import random
+from sqlalchemy.orm import Session
+from .invite_code_url import generate_unique_code
+from models.room import RoomInfo, RoomType
+from models.user import UserType
+from database import get_db
+from services.auth_service import get_user_by_token
 
 router = APIRouter()
 
@@ -60,7 +67,6 @@ def communicate_with_janus_join(session_client: str, room_id: int, user_id: str,
 
     response = requests.post(f"{janus_url}/{session_client}/{plugin_id}", json=janus_message)
 
-    
     if response.status_code == 200:
         return {
             "janus": "success",
@@ -94,7 +100,7 @@ def get_janus_participants(session_client: str,room_id: int):
         return {"janus": "success", "participants": participants}
     else:
         return {"janus": "error", "message": f"Failed to get participants from Janus server: {response.status_code}"}
-    
+
 
 # 방 생성 및 Janus 서버에 참여
 def create_janus_room(room_id: int):
@@ -105,20 +111,16 @@ def create_janus_room(room_id: int):
     plugin_id = attach_plugin_to_session(session_client)
     if plugin_id is None:
         return None
-    
+
     room_url = f"{janus_url}/{session_client}/{plugin_id}"
-    
-  
+
     create_data = {
         "janus": "message",
         "transaction": str(uuid.uuid4()),
         "admin_secret": admin_secret,
-        "body": {
-            "request": "create",
-            "room": room_id
-        },
+        "body": {"request": "create", "room": room_id},
     }
-    
+
     response = requests.post(room_url, json=create_data, headers=headers)
     if response.status_code == 200:
         return response.json()
@@ -137,18 +139,104 @@ async def join_room(room_id: int, user_id: str):
     return {"janus": "success", "message": "Room exists", "janus_server_response": janus_response}
 
 
+# db에 저장된 room_id 중복 검사
+def check_room_id_exists(db: Session, room_num: int) -> bool:
+    # 데이터베이스에서 room_id가 존재하는지 확인
+    return db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first() is not None
+
+
+def check_invite_code_exists(db: Session, invite_code: str) -> bool:
+    # 데이터베이스에서 invite_code가 존재하는지 확인
+    return db.query(RoomInfo).filter(RoomInfo.invite_code == invite_code).first() is not None
+
 
 # 방 생성 요청 핸들러
 @router.post("/rooms/create")
-async def create_room(room_id: int):
-    janus_response = create_janus_room(room_id)
+async def create_room(
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
+):
+
+    user = get_user_by_token(request, db, "service_access")
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found User")
+    
+    
+    while True:
+        room_num = random.randint(100000, 999999)
+        if not check_room_id_exists(db, room_num):
+            break  # 유효한 room_id를 찾았으므로 루프 탈출
+    
+    while True:
+        unique_code = generate_unique_code()
+        if not check_invite_code_exists(db, unique_code):
+            break  # 유효한 invite_code를 찾았으므로 루프 탈출
+    
+    room = RoomInfo(
+        room_num = room_num,
+        host_id = user.id,
+        host_name = user.name,
+        # room_type = "TestRoom", "Room"
+        room_type = "Room",
+        invite_code = unique_code
+    )
+
+    # db 저장
+    db.add(room)
+    db.commit()
+    db.refresh(room)
+    
+    janus_response = create_janus_room(room_id=room_num)
     if janus_response:
         return janus_response
     else:
         raise HTTPException(status_code=500, detail="Janus room creation failed")
 
 
+@router.post("/rooms/create_test_room")
+async def create_test_room(
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
+):
+    
 
+    user = get_user_by_token(request, db, "service_access")
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found User")
+    
+    while True:
+        room_num = random.randint(100000, 999999)
+        if not check_room_id_exists(db, room_num):
+            break  # 유효한 room_id를 찾았으므로 루프 탈출
+    
+    while True:
+        unique_code = generate_unique_code()
+        if not check_invite_code_exists(db, unique_code):
+            break  # 유효한 invite_code를 찾았으므로 루프 탈출
+
+    # 유저 타입 비즈니스 일 경우만
+    if user.user_type == UserType.Business:
+        room = RoomInfo(
+            host_id = user.id,
+            room_num = room_num,
+            host_name = user.name,
+            # room_type = "TestRoom", "Room"
+            room_type = "TestRoom",
+            invite_code = unique_code
+
+        )
+        db.add(room)
+        db.commit()
+        db.refresh(room)
+
+    janus_response = create_janus_room(room_id=room_num)
+    if janus_response:
+        return janus_response
+    else:
+        raise HTTPException(status_code=500, detail="Janus room creation failed")
 
 
 @router.get("/rooms/list")
@@ -173,13 +261,7 @@ async def get_available_rooms():
             plugin_id = response.json()["data"]["id"]
 
             # Videoroom 플러그인을 사용하여 방 목록 요청
-            janus_request = {
-                "janus": "message",
-                "transaction": str(uuid.uuid4()),
-                "body": {
-                    "request": "list"
-                }
-            }
+            janus_request = {"janus": "message", "transaction": str(uuid.uuid4()), "body": {"request": "list"}}
 
             response = requests.post(f"{janus_url}/{client_session}/{plugin_id}", json=janus_request, headers=headers)
 
@@ -191,8 +273,8 @@ async def get_available_rooms():
             raise HTTPException(status_code=500, detail="Failed to attach plugin to session")
     else:
         raise HTTPException(status_code=500, detail="Failed to create Janus session")
- 
- 
+
+
 @router.get("/rooms/{room_id}/participants")
 def get_room_participants(session_client: str, room_id: int):
     try:
@@ -204,7 +286,7 @@ def get_room_participants(session_client: str, room_id: int):
             "plugin": "janus.plugin.videoroom",
         }
         response = requests.post(f"{janus_url}/{session_client}", json=attach_data, headers=headers)
-        
+
         if response.status_code == 200 and response.json().get("janus") == "success":
             plugin_id = response.json()["data"]["id"]
 
@@ -215,7 +297,7 @@ def get_room_participants(session_client: str, room_id: int):
                 "body": {
                     "request": "listparticipants",
                     "room": room_id,
-                }
+                },
             }
             response = requests.post(f"{janus_url}/{session_client}/{plugin_id}", json=janus_request, headers=headers)
             print(response.json())
@@ -240,7 +322,7 @@ def get_room_participants(session_client: str, room_id: int):
         return []
 
 
-# 방없애보리기 
+# 방없애보리기
 def destroy_janus_room(session_id: str, room_id: int):
     plugin_id = attach_plugin_to_session(session_id)
     if plugin_id is None:
@@ -264,7 +346,7 @@ def destroy_janus_room(session_id: str, room_id: int):
         return {"janus": "error", "message": f"Failed to destroy Janus room: {response.status_code}"}
 
 
-#방없애보리기 라우터버젼 
+# 방없애보리기 라우터버젼
 @router.post("/rooms/{room_id}/destroy")
 async def destroy_room(room_id: int):
     session_client = create_janus_session()

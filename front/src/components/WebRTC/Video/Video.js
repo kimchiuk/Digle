@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./Video.css";
 
-const Video = ({ stream, username, muted, onClickFunction }) => {
+const Video = ({ id,stream, username, muted, onClickFunction }) => {
   const videoRef = useRef();
   const [mediaStream, setMediaStream] = useState(null);
+  console.log(id);
 
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Video = ({ stream, username, muted, onClickFunction }) => {
     <React.Fragment>
       <div className="w-full">
         <video
-          id="video"
+          id={id} // 수정: 고유한 ID 사용
           autoPlay
           playsInline
           ref={videoRef}

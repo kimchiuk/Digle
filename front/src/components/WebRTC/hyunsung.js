@@ -74,7 +74,7 @@ const VideoChat = () => {
       //   dependencies: Janus.useDefaultDependencies(),
       callback: function () {
         janus = new Janus({
-          server: servers,
+          server: "http://34.125.238.83/janus",
           success: function () {
             janus.attach({
               plugin: "janus.plugin.videoroom",

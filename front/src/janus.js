@@ -2704,12 +2704,14 @@ function Janus(gatewayCallbacks) {
         delete groups[key];
       }
     }
+    
     let answer = callbacks.jsep ? true : false;
     for (let track of tracks) {
       if (!track.type) {
         Janus.warn("Missing track type:", track);
         continue;
       }
+
       if (track.type === "data") {
         // Easy enough: create a datachannel if we don't have one already
         if (config.pc.ondatachannel) {

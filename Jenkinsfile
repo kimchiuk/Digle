@@ -1,6 +1,5 @@
-def customImage
-// def jenkinsInstance = Jenkins.getInstance()
-// def systemProperties = jenkinsInstance.systemProperties
+def backendImage
+def frontendImage
 
 pipeline {
     agent any
@@ -9,8 +8,8 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        BACK_IMAGE_NAME = 'geunbo/digle'
-        FRONT_IMAGE_NAME = 'geunbo/digle_front'
+        BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
+        FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
 
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
@@ -22,7 +21,7 @@ pipeline {
         SMTP_USERNAME = "${env.SMTP_USERNAME}"
         SSL_CRT_FILE = "${env.SSL_CRT_FILE}"
         SSL_KEY_FILE = "${env.SSL_KEY_FILE}"
-
+        DOCKER_COMPOSE_FILE = "docker-compose.yml"
         
     }
     
@@ -36,54 +35,31 @@ pipeline {
             }
         }
 
-        // stage('Build and Push the Back-end Docker Image') {
-        //     steps {
-        //         script {
-        //             sh 'echo "Starting Build Back Docker Image"'
-        //             echo "DEBUG: DATABASE_URL=${env.DATABASE_URL}"
-        //             dir('back') {
-        //                 withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
-                            
-        //                      customImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
-        //                         "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
-        //                         "--build-arg HTTPS=${env.HTTPS} " +
-        //                         "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
-        //                         "--build-arg NAVER_CLIENT_SECRET=${env.NAVER_CLIENT_SECRET} " +
-        //                         "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
-        //                         "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
-        //                         "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
-        //                         "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
-        //                         "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
-        //                         "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
-        //                     // Docker 빌드 결과 출력
-        //                     if (customImage != 0) {
-        //                         echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-        //                         docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-        //                             customImage.push()
-        //                     }
-        //                     } else {
-        //                         error "Docker build failed"
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-            
-        // }    
-        stage('Build and Push the Front-end Docker Image') {
+        stage('Build and Push the Back-end Docker Image') {
             steps {
                 script {
-                    sh 'echo "Starting Build Front Docker Image"'
-                    dir('front') {
+                    sh 'echo "Starting Build Back Docker Image"'
+                    dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
-                             customImage = docker.build("${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                             backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
+                                "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
+                                "--build-arg HTTPS=${env.HTTPS} " +
+                                "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
+                                "--build-arg NAVER_CLIENT_SECRET=${env.NAVER_CLIENT_SECRET} " +
+                                "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
+                                "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
+                                "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
+                                "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
+                                "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
+                                "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
                             // Docker 빌드 결과 출력
-                            if (customImage != 0) {
-                                echo "Docker build succeeded: ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                            if (backendImage != 0) {
+                                echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
                                 docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-                                    customImage.push()
+                                    backendImage.push()
                             }
+                            // sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
                             } else {
                                 error "Docker build failed"
                             }
@@ -93,21 +69,43 @@ pipeline {
             }
             
         }    
-        
-        // stage('Run Backend') {
+        stage('Build and Push the Front-end Docker Image') {
+            steps {
+                script {
+                    sh 'echo "Starting Build Front Docker Image"'
+                    dir('front') {
+                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+                            
+                             frontendImage = docker.build("${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                            // Docker 빌드 결과 출력
+                            if (frontendImage != 0) {
+                                echo "Docker build succeeded: ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                                docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+                                    frontendImage.push()
+                            }
+                            } else {
+                                error "Docker build failed"
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }   
+        // stage('test the backend image') {
         //     steps {
         //         dir('back') {
-        //             script {
-        //                 sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-        //             }
+        //             sh "docker pull ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+        //             sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+
         //         }
         //     }
-        // }
-
-        stage('Run Frontend') {
+        // } 
+        stage('Deploy') {
             steps {
-                dir('front') {
-                    sh "docker run -p 3000:3000 ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                script {
+                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} pull"
+                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
                 }
             }
         }
