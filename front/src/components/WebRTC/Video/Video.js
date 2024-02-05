@@ -37,8 +37,8 @@ const Video = ({ stream, username, muted, onClickFunction }) => {
   // }, [stream]);
 
   return (
-    <>
-      <div className="flex">
+    <React.Fragment>
+      <div className="w-full">
         <video
           id="video"
           autoPlay
@@ -47,11 +47,11 @@ const Video = ({ stream, username, muted, onClickFunction }) => {
           onClick={handleClicked}
           muted={muted}
           controls={onClickFunction ? false : true}
-          className="w-full"
+          className="w-full rounded-xl h-[600px]"
         />
       </div>
       <div>{username}</div>
-    </>
+    </React.Fragment>
   );
 };
 

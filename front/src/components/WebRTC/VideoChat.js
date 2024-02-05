@@ -61,7 +61,7 @@ const VideoChat = () => {
   };
 
   useEffect(() => {
-    let servers = ["http://localhost:8088/janus"];
+    let servers = ["https://custom-janus.duckdns.org/janus"];
     let opaqueId = "videoroomtest-" + Janus.randomString(12); // 개인 식별
     let janus = null;
     let subscriber_mode = false; // true면 비디오 열어줌
@@ -730,7 +730,7 @@ const VideoChat = () => {
           }}
         >
           <div className="video-chat-container">
-            <div className="main-video-section">
+            <div className="main-video-section w-[500px]">
               <Video
                 stream={mainStream.stream}
                 username={mainStream.username}

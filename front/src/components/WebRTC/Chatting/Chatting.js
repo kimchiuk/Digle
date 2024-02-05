@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import sendButton from "../../../assets/webRTC/sendButton.png";
+import chatImg from "../../../assets/webRTC/chat.png";
+import attachment from "../../../assets/webRTC/attachment.png";
 
 const Chatting = (props) => {
   const [chatData, setChatData] = useState([]);
@@ -17,19 +20,19 @@ const Chatting = (props) => {
 
   const handleClick = () => {
     props.sendChatData(inputChat);
-    setChatData((prev) => [...prev, `나 : ${inputChat}`]);
+    setChatData((prev) => [...prev, `안현성 ${inputChat}`]);
     setInputChat("");
   };
 
   useEffect(() => {
     if (props.receiveChat) {
       const { from, text, to } = props.receiveChat;
-      console.log(from,to,text,props.username);
+      console.log(from, to, text, props.username);
       // 현재 사용자가 메시지의 수신자이거나, 메시지가 모두에게 보내진 경우에만 표시
       if (to === "all" || to === props.username) {
         console.log(to);
         const messageToShow = `${from}: ${text}`;
-        setChatData(prev => [...prev, messageToShow]);
+        setChatData((prev) => [...prev, messageToShow]);
       }
     }
   }, [props.receiveChat]);
@@ -100,26 +103,68 @@ const Chatting = (props) => {
   };
 
   const renderChatData = chatData.map((c, i) => {
-    return <p key={i}> {c} </p>;
+    return (
+      <p
+        className="pl-2 pt-2 text-xs overflow-wrap[break-word] text-stone-500"
+        key={i}
+      >
+        {" "}
+        {c}{" "}
+      </p>
+    );
   });
 
+  const chatBoxRef = useRef(null);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [chatData]);
+
   return (
-    <>
-      <div style={{ border: "1px solid", overflow: "auto", minHeight: "500px" }}>
+    <div>
+      <div
+        ref={chatBoxRef}
+        className="border overflow-x-hidden overflow-y-auto min-h-[500px] max-h-[500px]"
+      >
+        <div className="sticky top-0 bg-white">
+          <div className="right-0 p-2 text-sm font-bold text-stone-400 flex items-center">
+            <img className="w-10 h-10" src={chatImg} />
+            채팅창
+          </div>
+          <hr />
+        </div>
         {renderChatData}
       </div>
 
-      <input
-        type="text"
-        value={inputChat}
-        onChange={handleChange}
-        onKeyPress={handleKeyPress}
-        style={{ border: "1px solid" }}
-      />
-      <button onClick={handleClick}>전송</button>
-      <input onChange={handleSelectedFile} type="file" />
-      <button onClick={handleFileTransfer}>파일 전송</button>
-    </>
+      <div className="mt-2 flex items-center">
+        <input
+          className="border-b-2 focus:outline-none focus:ring-1 focus:ring-gray-300 mr-3 text-xs p-2 w-11/12"
+          placeholder="채팅..."
+          type="text"
+          value={inputChat}
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
+        />
+
+        <button className="mt-1" onClick={handleClick}>
+          <img className="w-5 h-5" src={sendButton} />
+        </button>
+      </div>
+      <div className="mt-3 flex items-center">
+        <label className="flex items-center">
+          <img className="w-6 h-6" src={attachment} />
+          <input type="file" className="hidden" onChange={handleSelectedFile} />
+        </label>
+        <button
+          className="border p-1 rounded-md text-xs font-bold"
+          onClick={handleFileTransfer}
+        >
+          파일 전송
+        </button>
+      </div>
+    </div>
   );
 };
 
