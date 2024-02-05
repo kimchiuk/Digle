@@ -12,7 +12,7 @@ import models, schemas
 from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import oauth_login, room_handler, user_profile,face_handler
+from routers import oauth_login, room_handler, user_profile,face_handler,invite_code_url
 # from routers import send_faq
 
 Base.metadata.create_all(bind=engine)
@@ -50,6 +50,7 @@ app.include_router(user_profile.router)
 # app.include_router(send_faq.router)
 app.include_router(create_room.router)
 app.include_router(face_handler.router)
+app.include_router(invite_code_url.router)
 
 def local_run():
     uvicorn.run(
