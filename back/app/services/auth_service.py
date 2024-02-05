@@ -101,7 +101,7 @@ def get_user_by_token(request, db, scope):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     internal_id = verify_token(token, scope)
-    
+
     user = db.query(User).filter(User.internal_id == internal_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")

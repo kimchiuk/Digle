@@ -69,7 +69,7 @@ function Anhs() {
       callback: function () {
         ////////////////////////////////////////////////
         janus = new Janus({
-          server: "http://34.125.238.83/janus",
+          server: "https://custom-janus.duckdns.org/janus",
           success: function () {
             janus.attach({
               plugin: "janus.plugin.videoroom",
