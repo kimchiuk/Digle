@@ -5,6 +5,7 @@ import uuid
 import json
 import random
 from sqlalchemy.orm import Session
+from .invite_code_url import generate_unique_code
 from models.room import RoomInfo, RoomType
 from models.user import UserType
 from database import get_db
@@ -144,6 +145,11 @@ def check_room_id_exists(db: Session, room_num: int) -> bool:
     return db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first() is not None
 
 
+def check_invite_code_exists(db: Session, invite_code: str) -> bool:
+    # 데이터베이스에서 invite_code가 존재하는지 확인
+    return db.query(RoomInfo).filter(RoomInfo.invite_code == invite_code).first() is not None
+
+
 # 방 생성 요청 핸들러
 @router.post("/rooms/create")
 async def create_room(
@@ -161,12 +167,19 @@ async def create_room(
         room_num = random.randint(100000, 999999)
         if not check_room_id_exists(db, room_num):
             break  # 유효한 room_id를 찾았으므로 루프 탈출
+    
+    while True:
+        unique_code = generate_unique_code()
+        if not check_invite_code_exists(db, unique_code):
+            break  # 유효한 invite_code를 찾았으므로 루프 탈출
+    
     room = RoomInfo(
         room_num = room_num,
         host_id = user.id,
         host_name = user.name,
         # room_type = "TestRoom", "Room"
-        room_type = "Room"
+        room_type = "Room",
+        invite_code = unique_code
     )
 
     # db 저장
@@ -198,6 +211,11 @@ async def create_test_room(
         room_num = random.randint(100000, 999999)
         if not check_room_id_exists(db, room_num):
             break  # 유효한 room_id를 찾았으므로 루프 탈출
+    
+    while True:
+        unique_code = generate_unique_code()
+        if not check_invite_code_exists(db, unique_code):
+            break  # 유효한 invite_code를 찾았으므로 루프 탈출
 
     # 유저 타입 비즈니스 일 경우만
     if user.user_type == UserType.Business:
@@ -206,7 +224,9 @@ async def create_test_room(
             room_num = room_num,
             host_name = user.name,
             # room_type = "TestRoom", "Room"
-            room_type = "TestRoom"
+            room_type = "TestRoom",
+            invite_code = unique_code
+
         )
         db.add(room)
         db.commit()
