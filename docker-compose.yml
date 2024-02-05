@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+    backend:
+        image: ${BACK_IMAGE_NAME}:latest
+        ports:
+            - "8000:8000"
+        depends_on:
+            - frontend
+
+    frontend:
+        image: ${FRONT_IMAGE_NAME}:latest
+        ports:
+            - "3000:3000"
