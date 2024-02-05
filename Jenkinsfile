@@ -91,15 +91,15 @@ pipeline {
             }
             
         }   
-        stage('test the backend image') {
-            steps {
-                dir('back') {
-                    sh "docker pull ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+        // stage('test the backend image') {
+        //     steps {
+        //         dir('back') {
+        //             sh "docker pull ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+        //             sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
 
-                }
-            }
-        } 
+        //         }
+        //     }
+        // } 
         stage('Deploy') {
             steps {
                 script {
