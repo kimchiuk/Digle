@@ -13,12 +13,11 @@ from services.auth_service import (
     generate_random_state,
 )
 
-
-router = APIRouter(tags=["normal_auth"])
+router = APIRouter(tags=["face_handler"])
 
 
 @router.post("/faces")
-async def find_password(requeset: Request, response: Response, faces: list = Form(None)):
+async def face_caputre(requeset: Request, response: Response, faces: list = Form(None)):
     print(faces)
     for face in faces:
         if face and face.filename:

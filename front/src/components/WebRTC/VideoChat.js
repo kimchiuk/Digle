@@ -21,6 +21,7 @@ const VideoChat = () => {
   const [activeSharing, setActiveSharing] = useState(false);
   const [receiveFile, setReceiveFile] = useState(null);
   const location = useLocation();
+  const [captureFrames, setCaptureFrames] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
 
@@ -693,6 +694,50 @@ const VideoChat = () => {
   //   }
   // }, [activeSpeaker]);
 
+  const handleCaptureClick = () => {
+    // 스냅샷 캡처 트리거를 위해 상태를 업데이트합니다.
+    setCaptureFrames(true);
+  };
+
+  useEffect(() => {
+    if (captureFrames) {
+      feeds.forEach(async (feed) => {
+        console.log("시작합니다요 캡처", feed);
+        const videoElement = document.querySelector(`#video-${feed.rfid}`);
+        if (videoElement) {
+          const canvas = document.createElement("canvas");
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+          // 캔버스에서 이미지 데이터를 Base64 문자열로 변환
+          const imageData = canvas.toDataURL("image/jpeg");
+
+          // Base64 인코딩된 문자열에서 실제 이미지 데이터만 추출합니다.
+          const base64Response = await fetch(imageData);
+          const blob = await base64Response.blob();
+
+          // FormData 객체를 생성하고, 파일 데이터를 추가합니다.
+          const formData = new FormData();
+          formData.append("faces", blob, `${feed.rfdisplay}.jpeg`);
+
+          // fetch API를 사용하여 백엔드로 전송합니다.
+          fetch("https://localhost:8000/faces", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) =>
+              console.log(`Data from server for ${feed.rfid}:`, data)
+            )
+            .catch((error) => console.error("Error:", error));
+        }
+      });
+      setCaptureFrames(false); // 캡처 완료 후 상태 초기화
+    }
+  }, [captureFrames, feeds]);
+
   const renderRemoteVideos = feeds.map((feed) => {
     return (
       <div
@@ -706,7 +751,7 @@ const VideoChat = () => {
         onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
       >
         <Video
-          key={feed.rfid}
+          id={`video-${feed.rfid}`} // 고유한 ID 전달
           stream={feed.stream}
           username={feed.rfdisplay}
           muted={true}
@@ -732,10 +777,16 @@ const VideoChat = () => {
           <div className="video-chat-container">
             <div className="main-video-section">
               <Video
+                id="main-stream-video"
                 stream={mainStream.stream}
                 username={mainStream.username}
                 muted={true}
               />
+            </div>
+            <div className="controls-section">
+              <button onClick={handleCaptureClick}>
+                모든유저 캡처 및 전송
+              </button>
             </div>
 
             <div className="sidebar-section">
@@ -788,7 +839,11 @@ const VideoChat = () => {
             onClick={() => handleMainStream(myFeed.stream, username)}
           >
             {myFeed && (
-              <Video stream={myFeed.stream} username={username} muted={false} />
+              <Video
+                stream={myFeed.stream}
+                username={"내 화면"}
+                muted={false}
+              />
             )}
           </div>
           {renderRemoteVideos}
