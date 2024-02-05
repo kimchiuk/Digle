@@ -61,7 +61,7 @@ const VideoChat = () => {
   };
 
   useEffect(() => {
-    let servers = ["http://localhost:8088/janus"];
+    let servers = ["https://custom-janus.duckdns.org/janus"];
     let opaqueId = "videoroomtest-" + Janus.randomString(12); // 개인 식별
     let janus = null;
     let subscriber_mode = false; // true면 비디오 열어줌
@@ -512,11 +512,12 @@ const VideoChat = () => {
             const messageObj = {
               from: json["display"],
               to: json["to"] || "all", // 'to' 필드가 없다면 'all'로 처리
-              text: json["text"]
+              text: json["text"],
             };
             // 메시지 객체를 상태로 설정
             console.log(messageObj);
-            setReceiveChat(messageObj);}
+            setReceiveChat(messageObj);
+          }
 
           //
           else if (what === "file") {
@@ -540,7 +541,6 @@ const VideoChat = () => {
               delete receivedFileChunk[from][filename];
             }
           }
-
         },
       });
     }
@@ -602,7 +602,7 @@ const VideoChat = () => {
       text: data,
       to: target, // rfid
       transaction: Janus.randomString(12),
-      display:username,
+      display: username,
     };
     sfutest.data({
       text: JSON.stringify(message),
@@ -788,11 +788,7 @@ const VideoChat = () => {
             onClick={() => handleMainStream(myFeed.stream, username)}
           >
             {myFeed && (
-              <Video
-                stream={myFeed.stream}
-                username={username}
-                muted={false}
-              />
+              <Video stream={myFeed.stream} username={username} muted={false} />
             )}
           </div>
           {renderRemoteVideos}
