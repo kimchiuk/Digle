@@ -5,3 +5,4 @@ __pycache__/
 alembic/versions/*
 input_images/
 test_images/
+alembic.ini
