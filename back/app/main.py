@@ -50,15 +50,29 @@ app.include_router(face_handler.router)
 app.include_router(email_services.router)
 
 
+from alembic.config import Config
+from alembic import command
+
+
+# 서비스시에 없애야 할 듯. 자동 마이그레이션.
+@app.on_event("startup")
+async def startup_event():
+    # Alembic 설정 객체 생성
+    alembic_cfg = Config("alembic.ini")  # 'alembic.ini' 파일의 경로를 정확히 지정하세요.
+    # 마이그레이션 업그레이드 명령 실행
+    command.upgrade(alembic_cfg, "head")
+
+
 def local_run():
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=8000,
         log_level="debug",
         reload=True,
-        ssl_keyfile="../localhost-key.pem",
-        ssl_certfile="../localhost.pem",
+        ssl_keyfile="../../localhost-key.pem",
+        ssl_certfile="../../localhost.pem",
         forwarded_allow_ips="*",  # 모든 프록시된 IP 주소 허용
         proxy_headers=True,  # X-Forwarded-Proto 헤더를 신뢰
     )
