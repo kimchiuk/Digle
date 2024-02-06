@@ -159,6 +159,7 @@ async def create_room(
 ):
 
     user = get_user_by_token(request, db, "service_access")
+    print(user)
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     
@@ -359,3 +360,27 @@ async def destroy_room(room_id: int):
         return {"janus": "success", "message": f"Room {room_id} has been destroyed"}
     else:
         raise HTTPException(status_code=500, detail="Failed to destroy Janus room")
+
+
+
+#초대코드
+# router = APIRouter(tags=["invite_code"])
+@router.get("/join/{invite_code}")
+async def join_room_with_invite(invite_code: str, db: Session = Depends(get_db)):
+    room = db.query(RoomInfo).filter(RoomInfo.invite_code == invite_code).first()
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+
+    session_id = create_janus_session()
+    if not session_id:
+        raise HTTPException(status_code=500, detail="Failed to create Janus session")
+
+    plugin_id = attach_plugin_to_session(session_id)
+    if not plugin_id:
+        raise HTTPException(status_code=500, detail="Failed to attach plugin to session")
+    janus_response = communicate_with_janus_join(session_id, room.room_num, room.host_name, "role")
+    print(janus_response);
+    if janus_response.get("janus") != "success":
+        raise HTTPException(status_code=500, detail="Failed to join room in Janus server")
+
+    return {"message": "Successfully joined the room", "janus_response": janus_response} 

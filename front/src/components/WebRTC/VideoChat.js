@@ -802,6 +802,10 @@ const VideoChat = () => {
                 receiveFile={receiveFile}
                 username={username}
               />
+              
+            </div>
+            <div className="invite-button-container">
+            <button onClick={sendChatData}>Create Invite Code</button>
             </div>
 
             <div className="controls-section">{/* 버튼 및 기타 컨트롤 */}</div>
