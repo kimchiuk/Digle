@@ -88,7 +88,7 @@ function App() {
 
 function PageLayout({ children }) {
   const location = useLocation();
-  const noNavbarRoutes = ["/tmp"]; // 네비게이션 바를 보여주지 않을 경로 목록
+  const noNavbarRoutes = ["/tmp","/anhs"]; // 네비게이션 바를 보여주지 않을 경로 목록
 
   // 현재 경로가 noNavbarRoutes에 포함되어 있는지 확인
   const showLayout = !noNavbarRoutes.includes(location.pathname);
