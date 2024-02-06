@@ -23,3 +23,4 @@ const TextInputModal = ({ onSubmit, onClose }) => {
 };
 
 export default TextInputModal;
+

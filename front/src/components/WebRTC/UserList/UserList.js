@@ -21,6 +21,11 @@ const UserList = ({ feeds, sendPrivateMessage }) => {
     setIsModalOpen(false);
   };
 
+  // feeds가 정의되지 않았거나 빈 배열일 경우에 대한 조건 추가
+  if (!feeds || feeds.length === 0) {
+    return <p className='text-xs'>참가 인원이 없습니다.</p>;
+  }
+
   return (
     <>
       {feeds.map((feed) => (

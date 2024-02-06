@@ -1,12 +1,63 @@
 import React, { useState, useEffect, useRef } from "react";
-import sendButton from "../../../assets/webRTC/sendButton.png";
-import chatImg from "../../../assets/webRTC/chat.png";
-import attachment from "../../../assets/webRTC/attachment.png";
+import sendButton from "../../../assets/webRTC/chat/sendButton.png";
+import chatImg from "../../../assets/webRTC/chat/chat.png";
+import attachment from "../../../assets/webRTC/chat/attachment.png";
+import member from "../../../assets/webRTC/chat/member.png";
+import UserList from "../UserList/UserList";
+
+// 유저리스트 모달창
+const Modal = ({ onClose, children }) => {
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      // 모달 외부를 클릭했을 때 모달을 닫음
+      if (event.target.classList.contains('bg-gray-500')) {
+        onClose();
+      }
+    };
+
+    const handleEscKey = (event) => {
+      // ESC 키를 눌렀을 때 모달을 닫음
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    // 이벤트 리스너 등록
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', handleEscKey);
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [onClose]);
+
+  return(
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-end pr-8 bg-gray-500 bg-opacity-50">
+    <div className="bg-white w-[300px] h-[500px] p-8 rounded-xl relative overflow-auto">
+      <p className="flex justify-center font-bold text-sm ">유저 리스트</p>
+      <hr className="border-gray-500 m-2"/>
+      {children}
+    </div>
+  </div>
+  )
+};
 
 const Chatting = (props) => {
   const [chatData, setChatData] = useState([]);
   const [inputChat, setInputChat] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleChange = (e) => {
     setInputChat(e.target.value);
@@ -40,7 +91,6 @@ const Chatting = (props) => {
   useEffect(() => {
     console.log(props.receiveChat);
   }, [props.receiveChat]);
-
   // useEffect(() => {
   //   setChatData((prev) => [...prev, props.receiveChat]);
   // }, [props.receiveChat]);
@@ -163,6 +213,14 @@ const Chatting = (props) => {
         >
           파일 전송
         </button>
+        <div className="ml-auto">
+      <img className="w-5 h-5 cursor-pointer " src={member} alt="members" onClick={handleImageClick} />
+      {isModalOpen && (
+        <Modal onClose={handleCloseModal}>
+          <UserList />
+        </Modal>
+      )}
+    </div>
       </div>
     </div>
   );

@@ -1,10 +1,16 @@
 // VideoChat.js
+
 import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
+
+import micOn from "../../assets/webRTC/discord/micOn.png";
+import micOff from "../../assets/webRTC/discord/micOff.png";
+import camOn from "../../assets/webRTC/discord/camOn.png";
+import camOff from "../../assets/webRTC/discord/camOff.png";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -718,12 +724,34 @@ const VideoChat = () => {
             username={mainStream.username}
             muted={true}
           />
-        <button
-          onClick={handleSharingActiveClick}
-          className="px-2 py-1 mt-3 bg-blue-500 text-white rounded-lg text-sm"
-        >
-          {activeSharing ? "화면 공유 비활성화" : "화면 공유 활성화"}
-        </button>
+
+          <div className="flex justify-end items-center mt-3">
+            <button onClick={handleSharingActiveClick} className="mr-2 w-full">
+              {activeSharing ? (
+                <p className="px-2 py-1 bg-red-500 text-white rounded-lg text-sm">
+                  화면 공유 비활성화
+                </p>
+              ) : (
+                <p className="px-2 py-3 bg-blue-500 text-white font-bold rounded-lg text-sm">
+                  화면 공유 활성화
+                </p>
+              )}
+            </button>
+            <button onClick={handleVideoActiveClick} className="mr-2">
+              {activeVideo ? (
+                <img className="w-5 h-5" src={camOn} />
+              ) : (
+                <img className="w-5 h-5" src={camOff} />
+              )}
+            </button>
+            <button onClick={handleAudioActiveClick} className="mr-2">
+              {activeAudio ? (
+                <img className="w-5 h-5" src={micOn} />
+              ) : (
+                <img className="w-5 h-5" src={micOff} />
+              )}
+            </button>
+          </div>
         </div>
         <div className="w-full w mt-4 lg:mt-0 lg:w-[320px]  h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
           <Chatting
@@ -731,7 +759,9 @@ const VideoChat = () => {
             receiveChat={receiveChat}
             transferFile={transferFile}
             receiveFile={receiveFile}
+            feeds={feeds}
             username={username}
+            sendPrivateMessage={sendPrivateMessage}
           />
         </div>
       </div>
@@ -758,4 +788,3 @@ const VideoChat = () => {
 };
 
 export default VideoChat;
-
