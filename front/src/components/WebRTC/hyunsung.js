@@ -795,7 +795,7 @@ const VideoChat = () => {
           />
 
           <div className="flex justify-end items-center mt-3">
-            <button onClick={handleSharingActiveClick} className="mr-2 w-full">
+            <button onClick={handleSharingActiveClick} className="mr-2 w-full ">
               {activeSharing ? (
                 <p className="px-2 py-1 bg-red-500 text-white rounded-lg text-sm">
                   화면 공유 비활성화
@@ -823,10 +823,7 @@ const VideoChat = () => {
                 <img className="w-5 h-5" src={micOff} />
               )}
             </button>
-            {/* <div className="invite-button-container">
-                <button onClick={sendChatData}>Create Invite Code</button>
-                <GetInviteCode />
-              </div> */}
+              <GetInviteCode />
           </div>
         </div>
         <div className="w-full mt-4 lg:mt-0 lg:w-[320px]  h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">

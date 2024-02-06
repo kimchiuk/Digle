@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+import share from "../../../assets/webRTC/share.png"
+
 const GetInviteCode = () => {
   const API_URL = "https://localhost:8000";
   const userUrl = window.location.href;
@@ -36,7 +38,9 @@ const GetInviteCode = () => {
   };
   return (
     <>
-      <button onClick={getCode}>초대코드</button>
+      <button onClick={getCode}>
+        <img className="w-5 h-5" src={share} alt="공유 버튼" />
+      </button>
     </>
   );
 };
