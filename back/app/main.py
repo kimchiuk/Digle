@@ -53,7 +53,7 @@ app.include_router(email_services.router)
 from alembic.config import Config
 from alembic import command
 
-
+"""
 # 서비스시에 없애야 할 듯. 자동 마이그레이션.
 @app.on_event("startup")
 async def startup_event():
@@ -61,6 +61,7 @@ async def startup_event():
     alembic_cfg = Config("alembic.ini")  # 'alembic.ini' 파일의 경로를 정확히 지정하세요.
     # 마이그레이션 업그레이드 명령 실행
     command.upgrade(alembic_cfg, "head")
+"""
 
 
 def local_run():
