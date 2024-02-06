@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
-
 import axios from "axios";
 import GetInviteCode from "./Chatting/GetInviteCode";
 import hark from "hark";
@@ -661,6 +660,7 @@ const VideoChat = () => {
   const kickParticipant = (participantId) => {
     const kick = { request: "kick", room: myroom, id: participantId };
     sfutest.send({ message: kick });
+    disconnectFeed(participantId);
   };
 
   
