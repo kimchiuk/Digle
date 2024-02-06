@@ -1,4 +1,4 @@
-import img1 from '../../assets/face_recognition_crowd.jpg';
+import img1 from '../../assets/backgrounds/face_recognition_crowd.jpg';
 
 const Main2 = () => {
   return (

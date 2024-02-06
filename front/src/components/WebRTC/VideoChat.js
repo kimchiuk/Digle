@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
-
 import axios from "axios";
 import GetInviteCode from "./Chatting/GetInviteCode";
 import hark from "hark";
@@ -28,7 +27,6 @@ const VideoChat = () => {
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
   const navigate = useNavigate();
-
 
   const connectFeed = (newFeed) => {
     setFeeds((prevFeeds) => {
@@ -60,7 +58,6 @@ const VideoChat = () => {
     });
   };
 
-
   useEffect(() => {
     let servers = ["https://custom-janus.duckdns.org/janus"];
     let opaqueId = "videoroomtest-" + Janus.randomString(12); // 개인 식별
@@ -81,7 +78,7 @@ const VideoChat = () => {
               plugin: "janus.plugin.videoroom",
               opaqueId: opaqueId,
               success: function (pluginHandle) {
-                sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐  
+                sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐
                 Janus.log(
                   "Plugin attached! (" +
                     sfutest.getPlugin() +
@@ -132,7 +129,7 @@ const VideoChat = () => {
                 );
                 if (!on) {
                   alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
-                  navigate('/');
+                  navigate("/");
                 }
               },
 
@@ -553,23 +550,23 @@ const VideoChat = () => {
   useEffect(() => {
     // hark 인스턴스를 저장할 맵 초기화
     const speechEventsMap = new Map();
-  
+
     // 각 피드에 대해 hark 인스턴스 생성 및 이벤트 리스너 설정
     feeds.forEach((feed) => {
       if (!feed.stream || feed.stream.getAudioTracks().length === 0) {
         // 오디오 트랙이 없는 경우 건너뜁니다.
         return;
       }
-  
+
       const speechEvents = hark(feed.stream, {});
-      speechEvents.on('speaking', () => {
+      speechEvents.on("speaking", () => {
         handleMainStream(feed.stream, feed.rfdisplay);
       });
-  
+
       // 생성된 hark 인스턴스를 맵에 저장
       speechEventsMap.set(feed.rfid, speechEvents);
     });
-  
+
     // 컴포넌트가 언마운트될 때 리소스 정리
     return () => {
       speechEventsMap.forEach((speechEvents, rfid) => {
@@ -578,8 +575,6 @@ const VideoChat = () => {
       });
     };
   }, [feeds]); // feeds 배열이 변경될 때마다 실행
-  
-  
 
   useEffect(() => {
     console.log("메인스트림이 설정됬습니다요:", mainStream);
@@ -638,9 +633,7 @@ const VideoChat = () => {
       },
       success: function () {
         console.log("Private message sent to " + target);
-      
       },
-      
     });
   };
 
@@ -661,9 +654,8 @@ const VideoChat = () => {
   const kickParticipant = (participantId) => {
     const kick = { request: "kick", room: myroom, id: participantId };
     sfutest.send({ message: kick });
+    disconnectFeed(participantId);
   };
-
-  
 
   const handleSharingActiveClick = () => {
     if (activeSharing) {
@@ -768,11 +760,6 @@ const VideoChat = () => {
       setCaptureFrames(false); // 캡처 완료 후 상태 초기화
     }
   }, [captureFrames, feeds]);
-
-
-
-
-  
 
   const renderRemoteVideos = feeds.map((feed) => {
     return (

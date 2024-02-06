@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Mailsubmit from "assets/mailsubmit.jpg";
+import Mailsubmit from "assets//backgrounds/mailsubmit.jpg";
 
 const Solution2Submit = () => {
   return (

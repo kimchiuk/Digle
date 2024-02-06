@@ -1,13 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TestImg from '../../assets/OnlineTest.png'
+import { useCookies } from 'react-cookie';
+import axios from 'axios'; // axios 라이브러리 추가
+import TestImg from '../../assets/backgrounds/OnlineTest.png';
 
 const TestTemp = () => {
+  const [cookies] = useCookies(['isLogin']);
   const [examLink, setExamLink] = useState('');
   const [showExam, setShowExam] = useState(false);
   const [examCode, setExamCode] = useState('');
   const videoRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!cookies.isLogin) {
+      alert('로그인 해주세요.');
+      navigate('/login');
+    }
+  }, [cookies, navigate]);
 
   const fetchExamLink = () => {
     setExamLink('https://ssafy.com'); // 실제 시험 사이트 URL로 변경 필요
@@ -24,11 +34,17 @@ const TestTemp = () => {
   };
 
   const joinExamRoom = async (code) => {
-    // 방 참여 로직 (유효한 코드인지 검증 후 방에 참여)
-    // 예시: 서버에 코드 유효성 확인 요청
-    // TODO: 실제 서버로 요청하는 로직 필요
-    const isValid = code === "12345"; // 예시: 유효한 코드는 "12345"
-    return isValid;
+    try {
+      const response = await axios.get(`http://localhost:3000/join/${code}/`); // 서버 URL에 맞게 수정
+      if (response.data.janus_response.janus === "success") {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('방에 입장하는 데 실패했습니다.', error);
+      return false;
+    }
   };
 
   const handleJoinExam = async () => {
@@ -47,7 +63,7 @@ const TestTemp = () => {
     }
     setShowExam(false);
     setExamCode('');
-    navigate('/test/finish'); // '/test/finish' 페이지로 이동
+    navigate('/test/finish');
   };
 
   useEffect(() => {
@@ -58,7 +74,7 @@ const TestTemp = () => {
     <div className="container px-20 h-auto pt-16 pb-4 max-w-2xl mx-auto">
       <div className="flex flex-col items-center justify-center">
         {!showExam && (
-          <img src={TestImg} className="w-auto h-[350px] mx-auto my-[60px] "></img>
+          <img src={TestImg} className="w-auto h-[350px] mx-auto my-[60px]"></img>
         )}
         {!showExam && (
           <>

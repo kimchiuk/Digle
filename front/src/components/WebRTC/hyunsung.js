@@ -6,11 +6,16 @@ import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
 
+import axios from "axios";
+import GetInviteCode from "./Chatting/GetInviteCode";
+import hark from "hark";
+
 // V-Chat에 추가해야댐
 import micOn from "../../assets/webRTC/discord/micOn.png";
 import micOff from "../../assets/webRTC/discord/micOff.png";
 import camOn from "../../assets/webRTC/discord/camOn.png";
 import camOff from "../../assets/webRTC/discord/camOff.png";
+import capture from "../../assets/webRTC/discord/capture.png";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -23,12 +28,13 @@ const VideoChat = () => {
   const [receiveChat, setReceiveChat] = useState("");
   const [activeVideo, setActiveVideo] = useState(true);
   const [activeAudio, setActiveAudio] = useState(true);
-  const [activeSpeaker, setActiveSpeaker] = useState(false);
   const [activeSharing, setActiveSharing] = useState(false);
   const [receiveFile, setReceiveFile] = useState(null);
   const location = useLocation();
+  const [captureFrames, setCaptureFrames] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
+  const navigate = useNavigate();
 
   const connectFeed = (newFeed) => {
     setFeeds((prevFeeds) => {
@@ -39,20 +45,14 @@ const VideoChat = () => {
     });
   };
 
-  // useEffect(() => {
-  //   return () => {
-  //       setFeeds([]);
-  //   };
-  // }, []);
-
   const disconnectFeed = (rfid) => {
     setFeeds((prevFeeds) => prevFeeds.filter((feed) => feed.rfid !== rfid));
   };
 
-  // const createSpeechEvents = (stream) => {
-  //   let speechEvents = hark(stream, {});
-  //   return speechEvents;
-  // };
+  const createSpeechEvents = (stream) => {
+    let speechEvents = hark(stream, {});
+    return speechEvents;
+  };
 
   const handleMainStream = (stream, username) => {
     console.log("메인스트림변경");
@@ -80,14 +80,13 @@ const VideoChat = () => {
       //   dependencies: Janus.useDefaultDependencies(),
       callback: function () {
         janus = new Janus({
-          server: "http://34.125.238.83/janus",
+          server: servers,
           success: function () {
             janus.attach({
               plugin: "janus.plugin.videoroom",
               opaqueId: opaqueId,
               success: function (pluginHandle) {
                 sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐
-
                 Janus.log(
                   "Plugin attached! (" +
                     sfutest.getPlugin() +
@@ -137,8 +136,8 @@ const VideoChat = () => {
                     " now"
                 );
                 if (!on) {
-                  // 꺼짐 처리
-                  return;
+                  alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
+                  navigate("/");
                 }
               },
 
@@ -557,8 +556,33 @@ const VideoChat = () => {
   }, [myFeed]);
 
   useEffect(() => {
-    console.log("새로운피드 설정됬습니다요:", feeds);
-  }, [feeds]);
+    // hark 인스턴스를 저장할 맵 초기화
+    const speechEventsMap = new Map();
+
+    // 각 피드에 대해 hark 인스턴스 생성 및 이벤트 리스너 설정
+    feeds.forEach((feed) => {
+      if (!feed.stream || feed.stream.getAudioTracks().length === 0) {
+        // 오디오 트랙이 없는 경우 건너뜁니다.
+        return;
+      }
+
+      const speechEvents = hark(feed.stream, {});
+      speechEvents.on("speaking", () => {
+        handleMainStream(feed.stream, feed.rfdisplay);
+      });
+
+      // 생성된 hark 인스턴스를 맵에 저장
+      speechEventsMap.set(feed.rfid, speechEvents);
+    });
+
+    // 컴포넌트가 언마운트될 때 리소스 정리
+    return () => {
+      speechEventsMap.forEach((speechEvents, rfid) => {
+        speechEvents.removeAllListeners(); // 모든 이벤트 리스너 제거
+        speechEvents.stop(); // hark 인스턴스 정지
+      });
+    };
+  }, [feeds]); // feeds 배열이 변경될 때마다 실행
 
   useEffect(() => {
     console.log("메인스트림이 설정됬습니다요:", mainStream);
@@ -635,8 +659,9 @@ const VideoChat = () => {
     setActiveVideo(() => !sfutest.isVideoMuted());
   };
 
-  const handleSpeakerActiveClick = () => {
-    setActiveSpeaker((prev) => !prev);
+  const kickParticipant = (participantId) => {
+    const kick = { request: "kick", room: myroom, id: participantId };
+    sfutest.send({ message: kick });
   };
 
   const handleSharingActiveClick = () => {
@@ -699,6 +724,50 @@ const VideoChat = () => {
   //   }
   // }, [activeSpeaker]);
 
+  const handleCaptureClick = () => {
+    setCaptureFrames(true);
+    alert("사용자 이미지를 수집하였습니다.");
+  };
+
+  useEffect(() => {
+    if (captureFrames) {
+      feeds.forEach(async (feed) => {
+        console.log("시작합니다요 캡처", feed);
+        const videoElement = document.querySelector(`#video-${feed.rfid}`);
+        if (videoElement) {
+          const canvas = document.createElement("canvas");
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+          // 캔버스에서 이미지 데이터를 Base64 문자열로 변환
+          const imageData = canvas.toDataURL("image/jpeg");
+
+          // Base64 인코딩된 문자열에서 실제 이미지 데이터만 추출합니다.
+          const base64Response = await fetch(imageData);
+          const blob = await base64Response.blob();
+
+          // FormData 객체를 생성하고, 파일 데이터를 추가합니다.
+          const formData = new FormData();
+          formData.append("faces", blob, `${feed.rfdisplay}.jpeg`);
+
+          // fetch API를 사용하여 백엔드로 전송합니다.
+          fetch("https://localhost:8000/faces", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) =>
+              console.log(`Data from server for ${feed.rfid}:`, data)
+            )
+            .catch((error) => console.error("Error:", error));
+        }
+      });
+      setCaptureFrames(false); // 캡처 완료 후 상태 초기화
+    }
+  }, [captureFrames, feeds]);
+
   const renderRemoteVideos = feeds.map((feed) => {
     return (
       <div
@@ -726,7 +795,7 @@ const VideoChat = () => {
           />
 
           <div className="flex justify-end items-center mt-3">
-            <button onClick={handleSharingActiveClick} className="mr-2 w-full">
+            <button onClick={handleSharingActiveClick} className="mr-2 w-full ">
               {activeSharing ? (
                 <p className="px-2 py-1 bg-red-500 text-white rounded-lg text-sm">
                   화면 공유 비활성화
@@ -736,6 +805,9 @@ const VideoChat = () => {
                   화면 공유 활성화
                 </p>
               )}
+            </button>
+            <button onClick={handleCaptureClick} className="mr-2">
+              <img className="w-5 h-5" src={capture} alt="캡처" />
             </button>
             <button onClick={handleVideoActiveClick} className="mr-2">
               {activeVideo ? (
@@ -751,9 +823,10 @@ const VideoChat = () => {
                 <img className="w-5 h-5" src={micOff} />
               )}
             </button>
+              <GetInviteCode />
           </div>
         </div>
-        <div className="w-full w mt-4 lg:mt-0 lg:w-[320px]  h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
+        <div className="w-full mt-4 lg:mt-0 lg:w-[320px]  h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
           <Chatting
             sendChatData={sendChatData}
             receiveChat={receiveChat}
@@ -765,14 +838,7 @@ const VideoChat = () => {
           />
         </div>
       </div>
-      <div className="w-2/3 px-3 py-4 mt-2 flex justify-between ">
-        <UserList
-          feeds={feeds}
-          username={username}
-          sendPrivateMessage={sendPrivateMessage}
-        />
-      </div>
-      <div className="w-full overflow-x-scroll whitespace-nowrap">
+      <div className="flex justify-center w-full mt-2  whitespace-nowrap">
         <div
           className="w-500 h-500 float-left m-3"
           onClick={() => handleMainStream(myFeed.stream, username)}

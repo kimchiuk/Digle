@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Finish from "assets/Finish.png";
+import Finish from "assets/backgrounds/Finish.png";
 
 const TestFinish = () => {
   return (

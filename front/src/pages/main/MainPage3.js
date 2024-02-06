@@ -1,10 +1,10 @@
 import React from 'react';
-import logo1 from '../../assets/chat.png';
-import logo2 from '../../assets/face.png';
-import logo3 from '../../assets/monitor.png';
-import logo4 from '../../assets/megaphone.png';
-import logo5 from '../../assets/test.png';
-import logo6 from '../../assets/siren.png';
+import logo1 from '../../assets/icons/chat.png';
+import logo2 from '../../assets/icons/face.png';
+import logo3 from '../../assets/icons/monitor.png';
+import logo4 from '../../assets/icons/megaphone.png';
+import logo5 from '../../assets/icons/test.png';
+import logo6 from '../../assets/icons/siren.png';
 
 const items = [
   {
