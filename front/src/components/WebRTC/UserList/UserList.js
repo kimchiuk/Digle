@@ -49,6 +49,8 @@ const UserList = ({ feeds, sendPrivateMessage, kickParticipant }) => {
                 <TextInputModal
                     onSubmit={handleModalSubmit}
                     onClose={handleModalClose}
+                    // kickParticipant={kickParticipant}
+                    // sendPrivateMessage={sendPrivateMessage}
                 />
             )}
         </>

@@ -20,7 +20,7 @@ function TestRouter() {
       </div>
       {/* 오른쪽 페이지 */}
       <div className="w-1/2 bg-pink-100 flex items-center justify-center">
-        <Link to="/examPage" className="text-2xl text-white">
+        <Link to="/TestTemp" className="text-2xl text-white">
         <
           img 
           src={test} 
