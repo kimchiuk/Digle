@@ -33,8 +33,8 @@ import PublicRoute from "./routes/PublicRoute";
 import Anhs from "./components/WebRTC/hyunsung";
 import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
-import TestTemp from './pages/test/test_temp'
-import TestFinish from './pages/test/test_finish'
+import TestTemp from "./pages/test/test_temp";
+import TestFinish from "./pages/test/test_finish";
 
 function App() {
   return (
