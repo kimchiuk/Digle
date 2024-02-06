@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import axios from 'axios'; // axios 라이브러리 추가
-import TestImg from '../../assets/OnlineTest.png';
+import TestImg from '../../assets/backgrounds/OnlineTest.png';
 
 const TestTemp = () => {
   const [cookies] = useCookies(['isLogin']);
@@ -35,7 +35,7 @@ const TestTemp = () => {
 
   const joinExamRoom = async (code) => {
     try {
-      const response = await axios.get(`http://localhost:3000/join/${code}`); // 서버 URL에 맞게 수정
+      const response = await axios.get(`http://localhost:3000/join/${code}/`); // 서버 URL에 맞게 수정
       if (response.data.janus_response.janus === "success") {
         return true;
       } else {
