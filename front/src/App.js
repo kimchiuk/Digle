@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
 import Main from "./pages/main/MainPage";
 import Signup from "pages/accounts/signup/Signup";
@@ -21,7 +21,7 @@ import FindPassword from "./pages/accounts/FindPassword";
 import ResetPassword from "./pages/accounts/ResetPassword";
 import LoginCallback from "./components/auth_login/LoginCallback";
 import Logout from "./pages/accounts/Logout";
-import InviteUrl from './components/WebRTC/InviteUrl';
+import InviteUrl from "./components/WebRTC/InviteUrl";
 
 // 쿠키 지우기 성공 시 사용할 수 있는 로직
 // 다른 방향으로 구현해보자.
@@ -35,6 +35,8 @@ import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
 import TestTemp from "./pages/test/test_temp";
 import TestFinish from "./pages/test/test_finish";
+
+//
 
 function App() {
   return (
@@ -83,8 +85,29 @@ function App() {
 
         </Routes>
         <Footer />
+        <PageLayout>
+          <Routes>
+            <Route />
+          </Routes>
+        </PageLayout>
       </BrowserRouter>
       {/* </AuthProvider> */}
+    </div>
+  );
+}
+
+function PageLayout({ children }) {
+  const location = useLocation();
+  const noNavbarRoutes = ["/login", "/signup"]; // 네비게이션 바를 보여주지 않을 경로 목록
+
+  // 현재 경로가 noNavbarRoutes에 포함되어 있는지 확인
+  const showLayout = !noNavbarRoutes.includes(location.pathname);
+
+  return (
+    <div className="select-none">
+      {showLayout && <Navbar />}
+      {children}
+      {showLayout && <Footer />}
     </div>
   );
 }

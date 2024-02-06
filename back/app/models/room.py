@@ -27,7 +27,4 @@ class RoomInfo(Base):
 
 # 방장을 위한 관계 정의 (User 모델과의 외래 키 관계 필요)
     host_id = Column(Integer, ForeignKey('users.id'))
-    host = relationship("User", back_populates="hosted_rooms")
-
-    # 참가자들을 위한 다대다 관계 정의
-    participants = relationship("User", secondary=room_participants, back_populates="participated_rooms")
+    

@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, T
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from database import Base  # database.py에서 Base 클래스를 임포
-from .room import room_participants
+
 
 class UserType(pyEnum):
     Standard = "Standard"
@@ -35,12 +35,6 @@ class User(Base):
 
     business_user = relationship("BusinessUser", back_populates="user", uselist=False)
 
-    # 사용자가 방장인 방들
-    hosted_rooms = relationship("RoomInfo", back_populates="host")
-
-    # 사용자가 참가자인 방들
-    participated_rooms = relationship("RoomInfo", secondary=room_participants, back_populates="participants")
-
 
 class BusinessUser(Base):
     __tablename__ = "business_users"
@@ -70,7 +64,7 @@ class PasswordResetVerification(Base):
     __tablename__ = "password_reset_verifications"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     verification_code = Column(String, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_verified = Column(Boolean, default=False)  # 인증 여부

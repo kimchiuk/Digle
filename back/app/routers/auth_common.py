@@ -1,25 +1,12 @@
 import os
 from dotenv import load_dotenv
-from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response
+from fastapi import APIRouter, Form, HTTPException, Response, Request, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from models.user import User
-from services.auth_service import get_user_by_token, hash_password, verify_password
-from schemas.user_schema import UserLogin
-from routers import oauth_login, room_handler
-from schemas.user_schema import UserCreate
-from schemas.user_schema import UserCreate, UserLogin
-from database import get_db
-from models.user import BusinessUser, EmailVerification, User
-from services.auth_service import (
-    create_access_token,
-    generate_internal_id,
-    hash_password,
-    verify_password,
-)
-from jose import jwt
 
-router = APIRouter(tags=["delete_accounts"])
+from services.auth_service import get_user_by_token, verify_password
+
+router = APIRouter(tags=["auth_ext"])
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -27,7 +14,31 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 
-@router.post("/delete_account")
+@router.post("/logout")
+async def logout(response: Response):
+    # 쿠키를 만료시키거나 빈 값으로 설정
+    response.delete_cookie(
+        key="__Host-access_token",
+        httponly=True,
+        secure=True,
+        samesite="None",
+        # domain = 'aimipp.vercel.app',
+        path="/",  # 전체 경로에서 사용
+    )
+    return {"message": "User logged out"}
+
+
+@router.post("/verifyToken")
+async def verifyToken(request: Request, db: Session = Depends(get_db)):
+    user = get_user_by_token(request, db, "service_access")
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    if not user.is_additional_info_provided:
+        return {"message": "Token is valid", "action": "Additional_info_needed"}
+    return {"message": "Token is valid"}
+
+
+@router.post("/delete_account", tags=["Delete Account"])
 async def delete_accounts(
     request: Request,
     response: Response,
