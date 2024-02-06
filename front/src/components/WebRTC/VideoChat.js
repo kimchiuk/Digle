@@ -5,6 +5,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
+import axios from "axios";
+import GetInviteCode from "./Chatting/GetInviteCode";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -802,10 +804,10 @@ const VideoChat = () => {
                 receiveFile={receiveFile}
                 username={username}
               />
-              
             </div>
             <div className="invite-button-container">
-            <button onClick={sendChatData}>Create Invite Code</button>
+              <button onClick={sendChatData}>Create Invite Code</button>
+              <GetInviteCode />
             </div>
 
             <div className="controls-section">{/* 버튼 및 기타 컨트롤 */}</div>

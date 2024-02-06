@@ -1,5 +1,5 @@
 import requests
-from fastapi import APIRouter, HTTPException, Request, Response, Depends
+from fastapi import APIRouter, HTTPException, Request, Response, Depends, Form
 from pydantic import BaseModel
 import uuid
 import json
@@ -381,6 +381,17 @@ async def join_room_with_invite(invite_code: str, db: Session = Depends(get_db))
         raise HTTPException(status_code=500, detail="Failed to join room in Janus server")
 
     return {"message": "Successfully joined the room", "janus_response": janus_response}
+
+
+# db에 있는 초대코드 프론트엔드로 보내기
+@router.get("/get_invite_code/{room_num}")
+def get_invite_code( room_num: int, db: Session = Depends(get_db)):
+    room_info = db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first()
+    
+    if room_info is None:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
+    return {'invite_code': room_info.invite_code}
 
 
 @router.get("/create-room-url/{room_id}")
