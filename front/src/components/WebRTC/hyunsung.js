@@ -712,12 +712,18 @@ const VideoChat = () => {
   return (
     <div className="pl-3 pr-3">
       <div className="pt-14 flex flex-col lg:flex-row">
-        <div className="w-full  lg:w-3/4 lg:h-3/4 px-3 py-4 ">
+        <div className="w-full lg:w-3/4 px-3 py-4 ">
           <Video
             stream={mainStream.stream}
             username={mainStream.username}
             muted={true}
           />
+        <button
+          onClick={handleSharingActiveClick}
+          className="px-2 py-1 mt-3 bg-blue-500 text-white rounded-lg text-sm"
+        >
+          {activeSharing ? "화면 공유 비활성화" : "화면 공유 활성화"}
+        </button>
         </div>
         <div className="w-full w mt-4 lg:mt-0 lg:w-[320px]  h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
           <Chatting
@@ -730,12 +736,6 @@ const VideoChat = () => {
         </div>
       </div>
       <div className="w-2/3 px-3 py-4 mt-2 flex justify-between ">
-        <button
-          onClick={handleSharingActiveClick}
-          className="px-2 py-1 bg-blue-500 text-white rounded-lg text-sm"
-        >
-          {activeSharing ? "화면 공유 비활성화" : "화면 공유 활성화"}
-        </button>
         <UserList
           feeds={feeds}
           username={username}
@@ -759,21 +759,3 @@ const VideoChat = () => {
 
 export default VideoChat;
 
-// {/* 나가기 버튼 */}
-// {/* <button
-//   onClick={leaveRoom}
-//   className="px-2 py-1 bg-red-500 text-white rounded-lg text-sm"
-// >
-//   나가기
-// </button> */}
-
-// {/* 타 유저 Video */}
-// {/* <Video
-//     stream={myFeed.stream}
-//     onClick={handleMainStream}
-//     username={user_id}
-//     muted={false}
-//     activeSpeaker={activeSpeaker}
-//     clas
-//     sName="absolute inset-0 w-full h-full object-cover"
-//   /> */}
