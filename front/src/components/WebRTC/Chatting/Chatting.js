@@ -27,15 +27,21 @@ const Chatting = (props) => {
   useEffect(() => {
     if (props.receiveChat) {
       const { from, text, to } = props.receiveChat;
-      console.log(from, to, text, props.username);
       // 현재 사용자가 메시지의 수신자이거나, 메시지가 모두에게 보내진 경우에만 표시
       if (to === "all" || to === props.username) {
-        console.log(to);
-        const messageToShow = `${from}: ${text}`;
+        let messageToShow;
+        if (to === "all") {
+          // 모두에게 보낸 메시지
+          messageToShow = `${from}: ${text}`;
+        } else {
+          // 귓속말
+          messageToShow = `귓속말 (${from} -> ${to}): ${text}`;
+        }
         setChatData((prev) => [...prev, messageToShow]);
       }
     }
-  }, [props.receiveChat]);
+  }, [props.receiveChat, props.username]);
+  
 
   useEffect(() => {
     console.log(props.receiveChat);
@@ -129,10 +135,10 @@ const Chatting = (props) => {
     <div>
       <div
         ref={chatBoxRef}
-        className="bg-slate-50 border overflow-x-hidden overflow-y-auto min-h-[500px] max-h-[500px]"
+        className="border overflow-x-hidden overflow-y-auto min-h-[500px] max-h-[500px]"
       >
-        <div className="sticky top-0">
-          <div className="bg-pink-50 right-0 p-2 text-sm font-bold text-stone-400 flex items-center">
+        <div className="sticky top-0 bg-white">
+          <div className="right-0 p-2 text-sm font-bold text-stone-400 flex items-center">
             <img className="w-10 h-10" src={chatImg} />
             채팅창
           </div>
@@ -143,7 +149,7 @@ const Chatting = (props) => {
 
       <div className="mt-2 flex items-center">
         <input
-          className="border-b-2 focus:outline-none focus:ring-1 focus:ring-gray-200 mr-3 text-xs p-2 w-11/12"
+          className="border-b-2 focus:outline-none focus:ring-1 focus:ring-gray-300 mr-3 text-xs p-2 w-11/12"
           placeholder="채팅..."
           type="text"
           value={inputChat}
@@ -156,7 +162,7 @@ const Chatting = (props) => {
         </button>
       </div>
       <div className="mt-3 flex items-center">
-        <label className="flex items-center cursor-pointer">
+        <label className="flex items-center">
           <img className="w-6 h-6" src={attachment} />
           <input type="file" className="hidden" onChange={handleSelectedFile} />
         </label>
