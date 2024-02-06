@@ -1,12 +1,63 @@
 import React, { useState, useEffect, useRef } from "react";
-import sendButton from "../../../assets/webRTC/sendButton.png";
-import chatImg from "../../../assets/webRTC/chat.png";
-import attachment from "../../../assets/webRTC/attachment.png";
+import sendButton from "../../../assets/webRTC/chat/sendButton.png";
+import chatImg from "../../../assets/webRTC/chat/chat.png";
+import attachment from "../../../assets/webRTC/chat/attachment.png";
+import member from "../../../assets/webRTC/chat/member.png";
+import UserList from "../UserList/UserList";
+
+// 유저리스트 모달창
+const Modal = ({ onClose, children }) => {
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      // 모달 외부를 클릭했을 때 모달을 닫음
+      if (event.target.classList.contains('bg-gray-500')) {
+        onClose();
+      }
+    };
+
+    const handleEscKey = (event) => {
+      // ESC 키를 눌렀을 때 모달을 닫음
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    // 이벤트 리스너 등록
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', handleEscKey);
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [onClose]);
+
+  return(
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-end pr-8 bg-gray-500 bg-opacity-50">
+    <div className="bg-white w-[300px] h-[500px] p-8 rounded-xl relative overflow-auto">
+      <p className="flex justify-center font-bold text-sm ">유저 리스트</p>
+      <hr className="border-gray-500 m-2"/>
+      {children}
+    </div>
+  </div>
+  )
+};
 
 const Chatting = (props) => {
   const [chatData, setChatData] = useState([]);
   const [inputChat, setInputChat] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleChange = (e) => {
     setInputChat(e.target.value);
@@ -27,20 +78,25 @@ const Chatting = (props) => {
   useEffect(() => {
     if (props.receiveChat) {
       const { from, text, to } = props.receiveChat;
-      console.log(from, to, text, props.username);
       // 현재 사용자가 메시지의 수신자이거나, 메시지가 모두에게 보내진 경우에만 표시
       if (to === "all" || to === props.username) {
-        console.log(to);
-        const messageToShow = `${from}: ${text}`;
+        let messageToShow;
+        if (to === "all") {
+          // 모두에게 보낸 메시지
+          messageToShow = `${from}: ${text}`;
+        } else {
+          // 귓속말
+          messageToShow = `귓속말 (${from} -> ${to}): ${text}`;
+        }
         setChatData((prev) => [...prev, messageToShow]);
       }
     }
-  }, [props.receiveChat]);
+  }, [props.receiveChat, props.username]);
+  
 
   useEffect(() => {
     console.log(props.receiveChat);
   }, [props.receiveChat]);
-
   // useEffect(() => {
   //   setChatData((prev) => [...prev, props.receiveChat]);
   // }, [props.receiveChat]);
@@ -52,6 +108,9 @@ const Chatting = (props) => {
     }
     const file = selectedFile;
     const chunkLength = 16384;
+    
+    const fileTransferMessage = `[${file.name}] 전송하였습니다.`;
+    setChatData((prev) => [...prev, `${fileTransferMessage}`]);
 
     const onReadAsDataURL = (event, text) => {
       var data = {}; // data object to transmit over data channel
@@ -126,10 +185,10 @@ const Chatting = (props) => {
     <div>
       <div
         ref={chatBoxRef}
-        className="bg-slate-50 border overflow-x-hidden overflow-y-auto min-h-[500px] max-h-[500px]"
+        className="border overflow-x-hidden overflow-y-auto min-h-[500px] max-h-[500px]"
       >
-        <div className="sticky top-0">
-          <div className="bg-pink-50 right-0 p-2 text-sm font-bold text-stone-400 flex items-center">
+        <div className="sticky top-0 bg-white">
+          <div className="right-0 p-2 text-sm font-bold text-stone-400 flex items-center">
             <img className="w-10 h-10" src={chatImg} />
             채팅창
           </div>
@@ -140,7 +199,7 @@ const Chatting = (props) => {
 
       <div className="mt-2 flex items-center">
         <input
-          className="border-b-2 focus:outline-none focus:ring-1 focus:ring-gray-200 mr-3 text-xs p-2 w-11/12"
+          className="border-b-2 focus:outline-none focus:ring-1 focus:ring-gray-300 mr-3 text-xs p-2 w-11/12"
           placeholder="채팅..."
           type="text"
           value={inputChat}
@@ -153,7 +212,7 @@ const Chatting = (props) => {
         </button>
       </div>
       <div className="mt-3 flex items-center">
-        <label className="flex items-center cursor-pointer">
+        <label className="flex items-center">
           <img className="w-6 h-6" src={attachment} />
           <input type="file" className="hidden" onChange={handleSelectedFile} />
         </label>
@@ -163,6 +222,14 @@ const Chatting = (props) => {
         >
           파일 전송
         </button>
+        <div className="ml-auto">
+      <img className="w-5 h-5 cursor-pointer " src={member} alt="members" onClick={handleImageClick} />
+      {isModalOpen && (
+        <Modal onClose={handleCloseModal}>
+          <UserList />
+        </Modal>
+      )}
+    </div>
       </div>
     </div>
   );

@@ -5,8 +5,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
+
 import axios from "axios";
 import GetInviteCode from "./Chatting/GetInviteCode";
+import hark from "hark";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -19,13 +21,14 @@ const VideoChat = () => {
   const [receiveChat, setReceiveChat] = useState("");
   const [activeVideo, setActiveVideo] = useState(true);
   const [activeAudio, setActiveAudio] = useState(true);
-  const [activeSpeaker, setActiveSpeaker] = useState(false);
   const [activeSharing, setActiveSharing] = useState(false);
   const [receiveFile, setReceiveFile] = useState(null);
   const location = useLocation();
   const [captureFrames, setCaptureFrames] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
+  const navigate = useNavigate();
+
 
   const connectFeed = (newFeed) => {
     setFeeds((prevFeeds) => {
@@ -36,20 +39,14 @@ const VideoChat = () => {
     });
   };
 
-  // useEffect(() => {
-  //   return () => {
-  //       setFeeds([]);
-  //   };
-  // }, []);
-
   const disconnectFeed = (rfid) => {
     setFeeds((prevFeeds) => prevFeeds.filter((feed) => feed.rfid !== rfid));
   };
 
-  // const createSpeechEvents = (stream) => {
-  //   let speechEvents = hark(stream, {});
-  //   return speechEvents;
-  // };
+  const createSpeechEvents = (stream) => {
+    let speechEvents = hark(stream, {});
+    return speechEvents;
+  };
 
   const handleMainStream = (stream, username) => {
     console.log("메인스트림변경");
@@ -62,6 +59,7 @@ const VideoChat = () => {
       };
     });
   };
+
 
   useEffect(() => {
     let servers = ["https://custom-janus.duckdns.org/janus"];
@@ -83,8 +81,7 @@ const VideoChat = () => {
               plugin: "janus.plugin.videoroom",
               opaqueId: opaqueId,
               success: function (pluginHandle) {
-                sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐
-
+                sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐  
                 Janus.log(
                   "Plugin attached! (" +
                     sfutest.getPlugin() +
@@ -134,8 +131,8 @@ const VideoChat = () => {
                     " now"
                 );
                 if (!on) {
-                  // 꺼짐 처리
-                  return;
+                  alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
+                  navigate('/');
                 }
               },
 
@@ -554,8 +551,35 @@ const VideoChat = () => {
   }, [myFeed]);
 
   useEffect(() => {
-    console.log("새로운피드 설정됬습니다요:", feeds);
-  }, [feeds]);
+    // hark 인스턴스를 저장할 맵 초기화
+    const speechEventsMap = new Map();
+  
+    // 각 피드에 대해 hark 인스턴스 생성 및 이벤트 리스너 설정
+    feeds.forEach((feed) => {
+      if (!feed.stream || feed.stream.getAudioTracks().length === 0) {
+        // 오디오 트랙이 없는 경우 건너뜁니다.
+        return;
+      }
+  
+      const speechEvents = hark(feed.stream, {});
+      speechEvents.on('speaking', () => {
+        handleMainStream(feed.stream, feed.rfdisplay);
+      });
+  
+      // 생성된 hark 인스턴스를 맵에 저장
+      speechEventsMap.set(feed.rfid, speechEvents);
+    });
+  
+    // 컴포넌트가 언마운트될 때 리소스 정리
+    return () => {
+      speechEventsMap.forEach((speechEvents, rfid) => {
+        speechEvents.removeAllListeners(); // 모든 이벤트 리스너 제거
+        speechEvents.stop(); // hark 인스턴스 정지
+      });
+    };
+  }, [feeds]); // feeds 배열이 변경될 때마다 실행
+  
+  
 
   useEffect(() => {
     console.log("메인스트림이 설정됬습니다요:", mainStream);
@@ -614,7 +638,9 @@ const VideoChat = () => {
       },
       success: function () {
         console.log("Private message sent to " + target);
+      
       },
+      
     });
   };
 
@@ -632,9 +658,12 @@ const VideoChat = () => {
     setActiveVideo(() => !sfutest.isVideoMuted());
   };
 
-  const handleSpeakerActiveClick = () => {
-    setActiveSpeaker((prev) => !prev);
+  const kickParticipant = (participantId) => {
+    const kick = { request: "kick", room: myroom, id: participantId };
+    sfutest.send({ message: kick });
   };
+
+  
 
   const handleSharingActiveClick = () => {
     if (activeSharing) {
@@ -697,8 +726,8 @@ const VideoChat = () => {
   // }, [activeSpeaker]);
 
   const handleCaptureClick = () => {
-    // 스냅샷 캡처 트리거를 위해 상태를 업데이트합니다.
     setCaptureFrames(true);
+    alert("사용자 이미지를 수집하였습니다.");
   };
 
   useEffect(() => {
@@ -739,6 +768,11 @@ const VideoChat = () => {
       setCaptureFrames(false); // 캡처 완료 후 상태 초기화
     }
   }, [captureFrames, feeds]);
+
+
+
+
+  
 
   const renderRemoteVideos = feeds.map((feed) => {
     return (
@@ -796,6 +830,7 @@ const VideoChat = () => {
                 feeds={feeds}
                 username={username}
                 sendPrivateMessage={sendPrivateMessage}
+                kickParticipant={kickParticipant}
               />
               <Chatting
                 sendChatData={sendChatData}
@@ -820,9 +855,6 @@ const VideoChat = () => {
           </button>
           <button onClick={handleVideoActiveClick}>
             {activeVideo ? "비디오 끄기" : "비디오 켜기"}
-          </button>
-          <button onClick={handleSpeakerActiveClick}>
-            {activeSpeaker ? "화자 추적 비활성화" : "화자 추적 활성화"}
           </button>
           <button onClick={handleSharingActiveClick}>
             {activeSharing ? "화면 공유 비활성화" : "화면 공유 활성화"}
