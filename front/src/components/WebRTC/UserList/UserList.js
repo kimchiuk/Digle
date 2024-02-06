@@ -21,12 +21,17 @@ const UserList = ({ feeds, sendPrivateMessage, kickParticipant }) => {
 
     const handleModalClose = () => setIsModalOpen(false);
 
-    const handleModalSubmit = (message) => {
-        if (selectedUser && message.trim()) {
-            sendPrivateMessage(message, selectedUser.rfdisplay);
-        }
-        setIsModalOpen(false);
-    };
+  const handleModalSubmit = (message) => {
+    if (selectedUser && message.trim()) {
+      sendPrivateMessage(message, selectedUser.rfdisplay); // 여기서 `selectedUser.rfid`는 실제로 메시지를 보낼 대상의 ID를 나타냅니다.
+    }
+    setIsModalOpen(false);
+  };
+
+  // feeds가 정의되지 않았거나 빈 배열일 경우에 대한 조건 추가
+  if (!feeds || feeds.length === 0) {
+    return <p className='text-xs'>참가 인원이 없습니다.</p>;
+  }
 
     return (
         <>
