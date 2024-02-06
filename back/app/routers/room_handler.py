@@ -387,7 +387,7 @@ async def join_room_with_invite(invite_code: str, db: Session = Depends(get_db))
 @router.get("/get_invite_code/{room_num}")
 def get_invite_code( room_num: int, db: Session = Depends(get_db)):
     room_info = db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first()
-    
+    print(room_info)
     if room_info is None:
         raise HTTPException(status_code=404, detail="Room not found")
     
