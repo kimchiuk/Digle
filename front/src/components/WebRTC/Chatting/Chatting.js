@@ -52,6 +52,9 @@ const Chatting = (props) => {
     }
     const file = selectedFile;
     const chunkLength = 16384;
+    
+    const fileTransferMessage = `[${file.name}] 전송하였습니다.`;
+    setChatData((prev) => [...prev, `${fileTransferMessage}`]);
 
     const onReadAsDataURL = (event, text) => {
       var data = {}; // data object to transmit over data channel

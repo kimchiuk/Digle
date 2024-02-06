@@ -78,7 +78,7 @@ function App() {
           <Route path="/TestTemp" element={<TestTemp />} />
           <Route path="/test/finish" element={<TestFinish />} />
 
-          <Route path="/join/:inviteCode" element={<InviteUrl />} />
+          <Route path="/:inviteCode" element={<InviteUrl />} />
 
 
         </Routes>
