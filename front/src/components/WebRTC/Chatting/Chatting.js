@@ -239,10 +239,14 @@ const Chatting = (props) => {
         <div className="ml-auto">
       <img className="w-5 h-5 cursor-pointer " src={member} alt="members" onClick={handleImageClick} />
       {isModalOpen && (
-        <Modal onClose={handleCloseModal}>
-          <UserList />
-        </Modal>
-      )}
+  <Modal onClose={handleCloseModal}>
+    <UserList
+      feeds={props.feeds}
+      sendPrivateMessage={props.sendPrivateMessage}
+      kickParticipant={props.kickParticipant}
+    />
+  </Modal>
+)}
     </div>
       </div>
     </div>

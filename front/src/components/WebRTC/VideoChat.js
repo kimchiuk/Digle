@@ -825,6 +825,10 @@ const VideoChat = () => {
                 transferFile={transferFile}
                 receiveFile={receiveFile}
                 username={username}
+                feeds={feeds}
+                sendPrivateMessage={sendPrivateMessage}
+                kickParticipant={kickParticipant}
+
               />
             </div>
             <div className="invite-button-container">
