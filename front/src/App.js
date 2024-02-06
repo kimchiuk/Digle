@@ -82,6 +82,7 @@ function App() {
 
             <Route path="/:inviteCode" element={<InviteUrl />} />
           </Routes>
+          <Footer />
         </PageLayout>
       </BrowserRouter>
       {/* </AuthProvider> */}
