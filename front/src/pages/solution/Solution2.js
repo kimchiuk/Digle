@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCookies } from 'react-cookie'; // react-cookie 라이브러리에서 useCookies 불러오기
 
 const Solution2 = () => {
+  const [cookies] = useCookies(['isLogin']); // isLogin 쿠키 사용
   const [email, setEmail] = useState('');
   const [questionTitle, setQuestionTitle] = useState('');
   const [questionContent, setQuestionContent] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const API_URL = 'https://localhost:8000';
 
@@ -23,6 +25,14 @@ const Solution2 = () => {
 
   // 스피너 애니메이션 정의
   const spinAnimation = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
+
+  useEffect(() => {
+    // 로그인 상태 확인
+    if (!cookies.isLogin) {
+      alert('로그인 해주세요.');
+      navigate('/login'); // 로그인 페이지로 이동
+    }
+  }, [cookies, navigate]); // 의존성 배열에 cookies 추가
 
   const handleSubmit = async (e) => {
     e.preventDefault();

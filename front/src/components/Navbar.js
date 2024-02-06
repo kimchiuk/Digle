@@ -4,11 +4,11 @@ import { useCookies } from "react-cookie";
 
 const Navbar = () => {
   const [cookies] = useCookies(["isLogin"]);
+  const [isLoggedIn, setIsLoggedIn] = useState(cookies.isLogin);
 
   const [isProductDropdownOpen, setProductDropdownOpen] = useState(false);
   const [isSolutionDropdownOpen, setSolutionDropdownOpen] = useState(false);
 
-  // Refs for the dropdown containers
   const productDropdownRef = useRef(null);
   const solutionDropdownRef = useRef(null);
 
@@ -22,7 +22,6 @@ const Navbar = () => {
     setProductDropdownOpen(false);
   };
 
-  // Close dropdown when clicking outside
   const handleClickOutside = (event) => {
     if (
       productDropdownRef.current &&
@@ -41,16 +40,18 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // Attach event listener when the component mounts
     document.addEventListener("mousedown", handleClickOutside);
-    // Detach event listener when the component unmounts
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []); // Empty dependency array ensures that effect runs only once on mount
+  }, []);
+
+  useEffect(() => {
+    setIsLoggedIn(cookies.isLogin);
+  }, [cookies.isLogin]);
 
   return (
-    <nav className={`flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md`}>
+    <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
       <div className="flex items-center">
         <div className="mr-4">
           <Link to="/" className="text-xl font-semibold hover:text-black">
@@ -149,7 +150,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="mr-4 whitespace-nowrap">
-        {cookies.isLogin ? (
+        {isLoggedIn ? (
           <>
             <Link
               to="/logout"

@@ -35,6 +35,7 @@ import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
 import TestTemp from "./pages/test/test_temp";
 import TestFinish from "./pages/test/test_finish";
+// import TestvideoTemp from "components/WebRTC/TestvideoTemp";
 
 function App() {
   return (
@@ -75,8 +76,10 @@ function App() {
           <Route path="/vchat" element={<VideoChat />} />
 
           <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
+
           <Route path="/TestTemp" element={<TestTemp />} />
           <Route path="/test/finish" element={<TestFinish />} />
+          {/* <Route path="/test/video" element={<TestvideoTemp />} /> */}
 
           <Route path="/join/:inviteCode" element={<InviteUrl />} />
 
