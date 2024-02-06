@@ -786,7 +786,7 @@ const VideoChat = () => {
 
   return (
     <div className="pl-3 pr-3">
-      <div className="pt-14 flex flex-col lg:flex-row">
+      <div className="pt- flex flex-col lg:flex-row">
         <div className="w-full lg:w-3/4 px-3 py-4 ">
           <Video
             stream={mainStream.stream}
@@ -811,16 +811,16 @@ const VideoChat = () => {
             </button>
             <button onClick={handleVideoActiveClick} className="mr-2">
               {activeVideo ? (
-                <img className="w-5 h-5" src={camOn} />
+                <img className="w-5 h-5" src={camOn} alt="카메라 켜기" />
               ) : (
-                <img className="w-5 h-5" src={camOff} />
+                <img className="w-5 h-5" src={camOff} alt="카메라 끄기" />
               )}
             </button>
             <button onClick={handleAudioActiveClick} className="mr-2">
               {activeAudio ? (
-                <img className="w-5 h-5" src={micOn} />
+                <img className="w-5 h-5" src={micOn} alt="마이크 켜기"/>
               ) : (
-                <img className="w-5 h-5" src={micOff} />
+                <img className="w-5 h-5" src={micOff} alt="마이크 끄기"/>
               )}
             </button>
               <GetInviteCode />
