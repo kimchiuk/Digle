@@ -35,7 +35,7 @@ import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
 import TestTemp from "./pages/test/test_temp";
 import TestFinish from "./pages/test/test_finish";
-// import TestvideoTemp from "components/WebRTC/TestvideoTemp";
+import TemPage from "TemPage";
 
 //
 
@@ -44,54 +44,45 @@ function App() {
     <div className="select-none">
       {/* <AuthProvider> */}
       <BrowserRouter>
-        <Navbar />
-
-        <Routes>
-          {/* 이부분 반드시 삭제하셈 */}
-          <Route path="/anhs" element={<Anhs />} />
-
-          <Route path="/" element={<Main />} />
-          <Route path="/test_router" element={<TestRouter />} />
-
-          {/* <Route element={<PublicRoute />}> */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signup/detail" element={<SignupDetail />} />
-          {/* </Route> */}
-          <Route path="/solution/1/" element={<Solution1 />} />
-          <Route path="/solution/2/" element={<Solution2 />} />
-          <Route path="/solution/2/submit" element={<Solution2Submit />} />
-
-          {/* <Route element={<PrivateRoute />}> */}
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/logout" element={<Logout />} />
-          {/* </Route> */}
-
-          <Route path="/login/callback" element={<LoginCallback />} />
-          <Route path="/google_login" element={<GoogleLoginButton />} />
-          <Route path="/naver_login" element={<NaverLoginButton />} />
-          <Route path="/kakao_login" element={<KakaoLoginButton />} />
-
-          <Route path="/find_password" element={<FindPassword />} />
-          <Route path="/reset_password" element={<ResetPassword />} />
-          <Route path="/CreateRoom" element={<CreateRoom />} />
-          <Route path="/vchat" element={<VideoChat />} />
-
-          <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
-
-          <Route path="/TestTemp" element={<TestTemp />} />
-          <Route path="/test/finish" element={<TestFinish />} />
-          {/* <Route path="/test/video" element={<TestvideoTemp />} /> */}
-
-          <Route path="/:inviteCode" element={<InviteUrl />} />
-
-
-        </Routes>
-        <Footer />
         <PageLayout>
           <Routes>
-            <Route />
+            {/* 이부분 반드시 삭제하셈 */}
+            <Route path="/anhs" element={<Anhs />} />
+
+            <Route path="/" element={<Main />} />
+            <Route path="/test_router" element={<TestRouter />} />
+
+            {/* <Route element={<PublicRoute />}> */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup/detail" element={<SignupDetail />} />
+            {/* </Route> */}
+            <Route path="/solution/1/" element={<Solution1 />} />
+            <Route path="/solution/2/" element={<Solution2 />} />
+            <Route path="/solution/2/submit" element={<Solution2Submit />} />
+
+            {/* <Route element={<PrivateRoute />}> */}
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<Logout />} />
+            {/* </Route> */}
+
+            <Route path="/login/callback" element={<LoginCallback />} />
+            <Route path="/google_login" element={<GoogleLoginButton />} />
+            <Route path="/naver_login" element={<NaverLoginButton />} />
+            <Route path="/kakao_login" element={<KakaoLoginButton />} />
+
+            <Route path="/find_password" element={<FindPassword />} />
+            <Route path="/reset_password" element={<ResetPassword />} />
+            <Route path="/CreateRoom" element={<CreateRoom />} />
+            <Route path="/vchat" element={<VideoChat />} />
+
+            <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
+            <Route path="/TestTemp" element={<TestTemp />} />
+            <Route path="/test/finish" element={<TestFinish />} />
+
+            <Route path="/:inviteCode" element={<InviteUrl />} />
           </Routes>
+          <Footer />
         </PageLayout>
       </BrowserRouter>
       {/* </AuthProvider> */}
@@ -101,7 +92,7 @@ function App() {
 
 function PageLayout({ children }) {
   const location = useLocation();
-  const noNavbarRoutes = ["/login", "/signup"]; // 네비게이션 바를 보여주지 않을 경로 목록
+  const noNavbarRoutes = ["/tmp"]; // 네비게이션 바를 보여주지 않을 경로 목록
 
   // 현재 경로가 noNavbarRoutes에 포함되어 있는지 확인
   const showLayout = !noNavbarRoutes.includes(location.pathname);
