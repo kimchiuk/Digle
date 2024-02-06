@@ -220,7 +220,9 @@ const Profile = () => {
                 />
               </div>
             </form>
-            <DeleteAccount />
+            <div className="flex-1 flex justify-end items-start">
+              <DeleteAccount />
+            </div>
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ function CreateRoom() {
           },
         }
       );
+      console.log(createResponse.data.plugindata.data.videoroom);
       // 방 만들기가 성공적으로 이루어진 경우에만 VideoChat.js로 이동
       if (createResponse.data.plugindata.data.videoroom=="created") {
         alert("방이 생성되었습니다")
