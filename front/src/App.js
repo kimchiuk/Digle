@@ -83,7 +83,9 @@ function App() {
           <Route path="/test/finish" element={<TestFinish />} />
           {/* <Route path="/test/video" element={<TestvideoTemp />} /> */}
 
-          <Route path="/join/:inviteCode" element={<InviteUrl />} />
+          <Route path="/:inviteCode" element={<InviteUrl />} />
+
+
         </Routes>
         <Footer />
         <PageLayout>
