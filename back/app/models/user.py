@@ -4,7 +4,6 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, T
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from database import Base  # database.py에서 Base 클래스를 임포
-from .room import room_participants
 
 
 class UserType(pyEnum):
