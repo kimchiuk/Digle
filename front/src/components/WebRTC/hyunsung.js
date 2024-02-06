@@ -1,5 +1,4 @@
 // VideoChat.js
-
 import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -7,6 +6,7 @@ import Video from "./Video/Video";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
 
+// V-Chat에 추가해야댐
 import micOn from "../../assets/webRTC/discord/micOn.png";
 import micOff from "../../assets/webRTC/discord/micOff.png";
 import camOn from "../../assets/webRTC/discord/camOn.png";
