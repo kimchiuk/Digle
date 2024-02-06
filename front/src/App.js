@@ -21,6 +21,7 @@ import FindPassword from "./pages/accounts/FindPassword";
 import ResetPassword from "./pages/accounts/ResetPassword";
 import LoginCallback from "./components/auth_login/LoginCallback";
 import Logout from "./pages/accounts/Logout";
+import InviteUrl from './components/WebRTC/InviteUrl';
 
 // 쿠키 지우기 성공 시 사용할 수 있는 로직
 // 다른 방향으로 구현해보자.
@@ -76,6 +77,8 @@ function App() {
           <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
           <Route path="/TestTemp" element={<TestTemp />} />
           <Route path="/test/finish" element={<TestFinish />} />
+
+          <Route path="/join/:inviteCode" element={<InviteUrl />} />
 
 
         </Routes>
