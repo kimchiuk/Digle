@@ -80,9 +80,9 @@ function App() {
             <Route path="/TestTemp" element={<TestTemp />} />
             <Route path="/test/finish" element={<TestFinish />} />
 
-            <Route path="/join/:inviteCode" element={<InviteUrl />} />
-            <Route path="/tmp" element={<TemPage />} />
+            <Route path="/:inviteCode" element={<InviteUrl />} />
           </Routes>
+          <Footer />
         </PageLayout>
       </BrowserRouter>
       {/* </AuthProvider> */}
