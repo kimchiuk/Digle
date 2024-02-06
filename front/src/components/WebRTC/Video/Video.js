@@ -38,8 +38,8 @@ const Video = ({ id,stream, username, muted, onClickFunction }) => {
   // }, [stream]);
 
   return (
-    <>
-      <div className="flex">
+    <React.Fragment>
+      <div className="w-full">
         <video
           id={id} // 수정: 고유한 ID 사용
           autoPlay
@@ -48,11 +48,11 @@ const Video = ({ id,stream, username, muted, onClickFunction }) => {
           onClick={handleClicked}
           muted={muted}
           controls={onClickFunction ? false : true}
-          className="w-full"
+          className="w-full rounded-xl h-[600px]"
         />
       </div>
       <div>{username}</div>
-    </>
+    </React.Fragment>
   );
 };
 

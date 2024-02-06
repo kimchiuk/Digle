@@ -86,7 +86,7 @@ const Navbar = () => {
           >
             <div className="py-2">
               <Link
-                to="/examPage"
+                to="/TestTemp"
                 className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >

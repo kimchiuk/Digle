@@ -22,6 +22,7 @@ from services.auth_service import (
     verify_password,
 )
 from jose import jwt
+import base64
 
 router = APIRouter(tags=["user_profile"])
 
@@ -45,14 +46,16 @@ async def read_users_me(
         raise HTTPException(status_code=404, detail="Not found User")
     # 사용자 정보를 직접 반환하거나  객체를 사용해서 반환
     if user.user_type == UserType.Standard:
-        user_data = {
-            "email" : user.email,
-            "name" : user.name,
-            "profile_picture_url" : user.profile_picture_url,
-            
-            "user_type" : user.user_type,
-            "auth_provider" : user.auth_provider
-        }
+        file_location = user.profile_picture_url
+        with open(file_location, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+            user_data = {
+                "email" : user.email,
+                "name" : user.name,
+                "profile_picture_url" : encoded_image,
+                "user_type" : user.user_type,
+                "auth_provider" : user.auth_provider
+            }
         return user_data
     
     elif user.user_type == UserType.Business:
