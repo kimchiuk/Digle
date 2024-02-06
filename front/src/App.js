@@ -35,9 +35,6 @@ import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
 import TestTemp from "./pages/test/test_temp";
 import TestFinish from "./pages/test/test_finish";
-import TemPage from "TemPage";
-
-//
 
 function App() {
   return (
@@ -82,7 +79,6 @@ function App() {
 
             <Route path="/:inviteCode" element={<InviteUrl />} />
           </Routes>
-          <Footer />
         </PageLayout>
       </BrowserRouter>
       {/* </AuthProvider> */}
