@@ -60,13 +60,14 @@ class EmailVerification(Base):
         return datetime.utcnow() > self.created_at + timedelta(minutes=3)
 
 
-class RoomInfo(Base):
-    __tablename__ = "room_info"
+class PasswordResetVerification(Base):
+    __tablename__ = "password_reset_verifications"
 
-    id = Column(Integer, primary_key=True, index=True) #index 1.2.3.4.5.//..고유값 
-    room_id = Column(Integer, unique=True, index=True)  # 1234 //방번호
-    host_id = Column(Integer, unique=True, index=True) # 지금 생략llllllllll
-    host_session = Column(String, unique=True, index=True) #null
-    access_token = Column(String, unique=True, index=True) #pin =비밀번호
-    create_time = Column(DateTime, default=datetime.utcnow) #조인눌럿을때 생성되는 
-    room_type = Column(String, unique=True, index=True)  # 2디코방 
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    verification_code = Column(String, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    is_verified = Column(Boolean, default=False)  # 인증 여부
+
+    def is_expired(self):
+        return datetime.utcnow() > self.created_at + timedelta(minutes=3)
