@@ -7,14 +7,13 @@ import json, jwt
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 import uvicorn
-from routers import auth_ext, normal_auth, delete_accounts, find_password, create_room
+from routers import auth_common, email_services, normal_login, oauth_login, room_handler, user_profile, face_handler
+
+from routers import find_password
 import models, schemas
 from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import oauth_login, room_handler, user_profile, face_handler, invite_code_url
-
-from routers import send_faq
 
 Base.metadata.create_all(bind=engine)
 
@@ -42,16 +41,13 @@ app.add_middleware(
 )
 
 app.include_router(oauth_login.router)
-app.include_router(normal_auth.router)
+app.include_router(normal_login.router)
 app.include_router(room_handler.router)
-app.include_router(auth_ext.router)
-app.include_router(delete_accounts.router)
+app.include_router(auth_common.router)
 app.include_router(find_password.router)
 app.include_router(user_profile.router)
-app.include_router(send_faq.router)
-app.include_router(create_room.router)
 app.include_router(face_handler.router)
-app.include_router(invite_code_url.router)
+app.include_router(email_services.router)
 
 
 def local_run():
