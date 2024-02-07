@@ -17,7 +17,9 @@ from services.auth_service import (
 router = APIRouter(prefix="/oauth_login", tags=["oauth_login"])
 load_dotenv()
 
-REDIRECT_BASE_URI = "https://localhost:3000"
+REDIRECT_BASE_URI = "https://i10d107.p.ssafy.io"
+
+# REDIRECT_BASE_URI = "https://localhost:3000"
 
 
 def user_db_login(auth_provider, auth_provider_id, user_info, db, response):

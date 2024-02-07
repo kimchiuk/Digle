@@ -1,4 +1,5 @@
 from fastapi import UploadFile
+from fastapi.responses import StreamingResponse
 from google.cloud import storage
 import os
 
@@ -25,3 +26,13 @@ def upload_to_gcs(file: UploadFile, file_path: str):
 
     # 임시 파일 삭제
     os.remove(temp_file)
+
+
+def get_image_stream(file_path: str):
+    # Google Cloud Storage에서 이미지 스트리밍
+    storage_client = storage.Client()
+    bucket = storage_client.bucket("ssafy-bucket")
+    blob = bucket.blob(file_path)
+    stream = blob.download_as_stream()
+
+    return StreamingResponse(stream, media_type="image/jpeg")
