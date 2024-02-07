@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import axios from "axios";
+
+const API_URL = "https://localhost:8000"; // API의 기본 URL
 
 const Navbar = () => {
   const [cookies] = useCookies(["isLogin"]);
@@ -41,41 +44,22 @@ const Navbar = () => {
     setSolutionDropdownOpen(false);
   };
 
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch('/api/get_user_name_and_type', {
-        method: 'GET',
-        credentials: 'include', // 쿠키를 포함시키기 위함
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      setUserName(data.user_name);
-      setUserType(data.user_type);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   useEffect(() => {
     setIsLoggedIn(cookies.isLogin);
+
     if (cookies.isLogin) {
-      fetchUserData();
+      axios
+        .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
+        .then((res) => {
+          setUserName(res.data.user_name);
+          setUserType(res.data.user_type);
+        })
+        .catch((err) => {
+          console.error("Error fetching user data:", err);
+        });
     }
   }, [cookies.isLogin]);
+
 
   return (
     <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
@@ -177,7 +161,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="mr-4 whitespace-nowrap">
-        {isLoggedIn && userType === "company" && (
+        {isLoggedIn && userType === "Business" && (
           <Link
             to="/test"
             className="px-4 py-2 mr-4 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
@@ -187,9 +171,6 @@ const Navbar = () => {
         )}
         {isLoggedIn ? (
           <>
-            <span className="px-4 py-2 rounded font-medium text-gray-700">
-              {userName && `${userName} (${userType})`}
-            </span>
             <Link
               to="/logout"
               className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
