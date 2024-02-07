@@ -9,12 +9,6 @@ class RoomType(pyEnum):
     Room = "Room"
 
 
-# 참가자 연결 테이블 정의
-room_participants = Table('room_participants', Base.metadata,
-    Column('room_id', Integer, ForeignKey('room_info.id'), primary_key=True),
-    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True)
-)
-
 class RoomInfo(Base):
     __tablename__ = "room_info"
 
