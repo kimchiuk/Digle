@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import axios from "axios";
+
+const API_URL = "https://localhost:8000"; // API의 기본 URL
 
 const Navbar = () => {
   const [cookies] = useCookies(["isLogin"]);
   const [isLoggedIn, setIsLoggedIn] = useState(cookies.isLogin);
+  const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState(""); // 'individual' 또는 'company'
 
   const [isProductDropdownOpen, setProductDropdownOpen] = useState(false);
   const [isSolutionDropdownOpen, setSolutionDropdownOpen] = useState(false);
@@ -40,15 +45,21 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
     setIsLoggedIn(cookies.isLogin);
+
+    if (cookies.isLogin) {
+      axios
+        .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
+        .then((res) => {
+          setUserName(res.data.user_name);
+          setUserType(res.data.user_type);
+        })
+        .catch((err) => {
+          console.error("Error fetching user data:", err);
+        });
+    }
   }, [cookies.isLogin]);
+
 
   return (
     <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
@@ -63,8 +74,8 @@ const Navbar = () => {
             onClick={toggleProductDropdown}
             type="button"
             className={`inline-flex items-center px-4 py-2 font-medium ${isProductDropdownOpen
-                ? "text-black bg-gray-100"
-                : "text-gray-700 hover:text-black hover:bg-gray-100"
+              ? "text-black bg-gray-100"
+              : "text-gray-700 hover:text-black hover:bg-gray-100"
               }`}
             id="product-dropdown"
             aria-expanded={isProductDropdownOpen}
@@ -108,8 +119,8 @@ const Navbar = () => {
             onClick={toggleSolutionDropdown}
             type="button"
             className={`inline-flex items-center px-4 py-2 font-medium ${isSolutionDropdownOpen
-                ? "text-black bg-gray-100"
-                : "text-gray-700 hover:text-black hover:bg-gray-100"
+              ? "text-black bg-gray-100"
+              : "text-gray-700 hover:text-black hover:bg-gray-100"
               }`}
             id="solution-dropdown"
             aria-expanded={isSolutionDropdownOpen}
@@ -150,6 +161,14 @@ const Navbar = () => {
         </div>
       </div>
       <div className="mr-4 whitespace-nowrap">
+        {isLoggedIn && userType === "Business" && (
+          <Link
+            to="/test"
+            className="px-4 py-2 mr-4 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
+          >
+            [TEST]
+          </Link>
+        )}
         {isLoggedIn ? (
           <>
             <Link

@@ -48,9 +48,14 @@ const DaumPost = ({
         />
         {isOpen && (
           <div onClick={() => setIsOpen(false)}>
-            <Modal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
-              <DaumPostcode onComplete={completeHandler} height="100%" />
+            <Modal isOpen={isOpen} ariaHideApp={false}>
+              <div className="fixed inset-0 flex justify-center items-start pt-10">
+                <div className="bg-white p-4 rounded-lg shadow-lg" style={{ width: '500px', height: '600px' }}>
+                  <DaumPostcode onComplete={completeHandler} style={{ width: '100%', height: '100%' }} />
+                </div>
+              </div>
             </Modal>
+
           </div>
         )}
         <br />
