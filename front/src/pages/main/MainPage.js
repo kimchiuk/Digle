@@ -37,7 +37,7 @@ const Main = () => {
             {/* 텍스트 내용 유지 */}
           </div>
           <div className="absolute bottom-10 right-4 text-md font-bold text-white opacity-70">
-            <Link to={userType === "Business" ? "/test_chatting_page" : "/test"} className="flex items-center">
+            <Link to={userType === "Business" ? "/test_chatting_page" : "/TestTemp"} className="flex items-center">
               <img className="w-5 h-5 mr-2" src={test} alt="테스트 바로가기" />
               <p> 테스트 바로가기 </p>
             </Link>

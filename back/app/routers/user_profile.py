@@ -44,15 +44,15 @@ async def read_users_me(
     if user.user_type == UserType.Standard:
 
         file_location = user.profile_picture_url
-        with open(file_location, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
-            user_data = {
-                "email": user.email,
-                "name": user.name,
-                "profile_picture_url": encoded_image,
-                "user_type": user.user_type,
-                "auth_provider": user.auth_provider,
-            }
+        # with open(file_location, "rb") as image_file:
+        #     encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        user_data = {
+            "email": user.email,
+            "name": user.name,
+            # "profile_picture_url": encoded_image,
+            "user_type": user.user_type,
+            "auth_provider": user.auth_provider,
+        }
         return user_data
 
     elif user.user_type == UserType.Business:
@@ -98,7 +98,8 @@ async def update_user_profile(
                 file_object.write(profile_img.file.read())
             """
             file_path = f"profiles/{user.internal_id}"
-            background_tasks.add_task(upload_to_gcs, profile_img, file_path)
+            # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
+            await upload_to_gcs(profile_img, file_path)
 
         user.name = name
         user.profile_picture_url = file_location
