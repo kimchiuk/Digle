@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import GetInviteCode from "components/WebRTC/Chatting/GetInviteCode";
+import CaptureButton from "components/WebRTC/capture/CaptureButton";
 
 const TestChattingPage = () => {
   const videos = 30; // 유저 화면의 개수
   const videoBox = 1;
-
+  const [captureFrames, setCaptureFrames] = useState(false);
+  const [feeds, setFeeds] = useState([]); //다른사람의 화면배열 (rfid,rfdisplay)
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isUserListModalOpen, setIsUserListModalOpen] = useState(false);
   // 채팅창 모달 열기
@@ -28,6 +30,7 @@ const TestChattingPage = () => {
   const closeUserListModal = () => {
     setIsUserListModalOpen(false);
   };
+
   return (
     <>
       <div className="h-full w-full relative">
@@ -35,7 +38,6 @@ const TestChattingPage = () => {
           <div className="border-2 w-20 h-20">로고</div>
           <div className="border-2 w-40 h-20 flex">
             <div className="border-2 w-20 h-full"></div>
-            <div className="border-2 w-20 h-full">화면 캡쳐</div>
           </div>
         </div>
         <div className="border-2 h-[700px] px-20 overflow-auto flex flex-wrap">
@@ -44,7 +46,7 @@ const TestChattingPage = () => {
           ))}
         </div>
         <div className="border-2 h-20 flex justify-between">
-          <div className="border-2 w-40 h-full flex relative">
+          <div className="border-2 w-60 h-full flex relative">
             <div className="border-2 w-20 h-full relative">
               <div className="w-20 h-full" onClick={openChatModal}>
                 채팅창 모달
@@ -61,6 +63,13 @@ const TestChattingPage = () => {
             </div>
             <div className="border-2 w-20 flex justify-center items-center">
               <GetInviteCode />
+            </div>
+            <div className="border-2 w-20 h-full flex justify-center items-center">
+              <CaptureButton
+                feeds={feeds}
+                captureFrames={captureFrames}
+                setCaptureFrames={setCaptureFrames}
+              />
             </div>
           </div>
           <div className="border-2 w-20 h-full relative">

@@ -150,6 +150,21 @@ def check_invite_code_exists(db: Session, invite_code: str) -> bool:
     # 데이터베이스에서 invite_code가 존재하는지 확인
     return db.query(RoomInfo).filter(RoomInfo.invite_code == invite_code).first() is not None
 
+@router.get("/get_user_name_and_type")
+async def get_user_name_and_type(
+    request: Request, 
+    db: Session = Depends(get_db)
+):
+    user = get_user_by_token(request, db, "service_access")
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found User")
+    data = { 
+        "user_name": user.name,
+        "user_type": user.user_type
+        }
+    return data
+
 
 # 방 생성 요청 핸들러
 @router.post("/rooms/create")
@@ -158,7 +173,6 @@ async def create_room(
     response: Response,
     db: Session = Depends(get_db),
 ):
-
     user = get_user_by_token(request, db, "service_access")
     print(user)
     if not user:
@@ -201,7 +215,6 @@ async def create_test_room(
     response: Response,
     db: Session = Depends(get_db),
 ):
-
     user = get_user_by_token(request, db, "service_access")
 
     if not user:

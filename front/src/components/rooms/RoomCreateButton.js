@@ -1,24 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const RoomCreateButton = () => {
+const RoomCreateButton = ({ userName }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [roomTitle, setRoomTitle] = useState("");
-
+  const navigate = useNavigate();
   const API_URL = "https://localhost:8000";
 
   const createRoom = (event) => {
     event.preventDefault();
 
-    const formData = new FormData();
-    formData.append("room_title", roomTitle);
-    formData.append("room_type", "Room");
     axios
-      .post(`${API_URL}/create_room_request`, formData, {
+      .post(`${API_URL}/rooms/create`, null, {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(response);
+        const newRoomId = response.data.plugindata.data.room;
+        alert("방이 생성되었습니다");
+        // 경로 수정
+        navigate(`/anhs?roomId=${newRoomId}&userId=${userName}&role=publisher`);
       })
       .catch((error) => {
         console.log(error);
@@ -33,10 +33,6 @@ const RoomCreateButton = () => {
     if (event.target.id === "modalBackdrop") {
       setIsModalOpen(false);
     }
-  };
-
-  const handleTitleChange = (event) => {
-    setRoomTitle(event.target.value);
   };
 
   return (
@@ -54,19 +50,13 @@ const RoomCreateButton = () => {
           onClick={handleModalClose}
         >
           <div className="bg-white p-5 rounded-md text-center">
-            <input
-              type="text"
-              placeholder="방 제목을 입력하세요"
-              value={roomTitle}
-              onChange={handleTitleChange}
-              className="text-center p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            />
             <button
               onClick={createRoom}
               className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
               방 생성
             </button>
+            A
           </div>
         </div>
       )}

@@ -28,11 +28,11 @@ function CreateRoom() {
           { withCredentials: true }
         )
         .then((response) => {
-          console.log(response.data.plugindata.data.room);
+          console.log("room_id : ", response.data.plugindata.data.room);
           const newRoomId = response.data.plugindata.data.room;
           setRoomId(newRoomId);
           alert("방이 생성되었습니다");
-          navigate(`/vchat?roomId=${newRoomId}&userId=user123&role=publisher`);
+          navigate(`/anhs?roomId=${newRoomId}&userId=user123&role=publisher`);
         })
         .catch((err) => {
           console.log(err);

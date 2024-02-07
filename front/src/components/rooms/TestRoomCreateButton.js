@@ -1,27 +1,31 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const TestRoomCreateButton = () => {
+const TestRoomCreateButton = ({ userName, userType }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [roomTitle, setRoomTitle] = useState("");
-
+  const navigate = useNavigate();
   const API_URL = "https://localhost:8000";
+
   const createTestRoom = (event) => {
     event.preventDefault();
-
-    const formData = new FormData();
-    formData.append("room_title", roomTitle);
-    formData.append("room_type", "TestRoom");
-    axios
-      .post(`${API_URL}/create_testroom_request`, formData, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (userType === "Business") {
+      axios
+        .post(`${API_URL}/room/create_testroom_request`, null, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          console.log(response);
+          const newRoomId = response.data.plugindata.data.room;
+          alert("방이 생성되었습니다");
+          navigate(
+            `/test_chatting_page?roomId=${newRoomId}&userId=${userName}&role=publisher`
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleModalOpen = () => {
@@ -32,10 +36,6 @@ const TestRoomCreateButton = () => {
     if (event.target.id === "modalBackdrop") {
       setIsModalOpen(false);
     }
-  };
-
-  const handleTitleChange = (event) => {
-    setRoomTitle(event.target.value);
   };
 
   return (
@@ -53,13 +53,6 @@ const TestRoomCreateButton = () => {
           onClick={handleModalClose}
         >
           <div className="bg-white p-5 rounded-md text-center">
-            <input
-              type="text"
-              placeholder="방 제목을 입력하세요"
-              value={roomTitle}
-              onChange={handleTitleChange}
-              className="text-center p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            />
             <button
               onClick={createTestRoom}
               className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
