@@ -9,53 +9,52 @@ import UserList from "../UserList/UserList";
 const Modal = ({ onClose, children }) => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    
+
     const handleOutsideClick = (event) => {
       // 모달 외부를 클릭했을 때 모달을 닫음
-      if (event.target.classList.contains('bg-gray-500')) {
-        document.body.style.overflow = 'visible';
+      if (event.target.classList.contains("bg-gray-500")) {
+        document.body.style.overflow = "visible";
         onClose();
       }
     };
 
-
     const handleEscKey = (event) => {
       // ESC 키를 눌렀을 때 모달을 닫음
-      if (event.key === 'Escape') {
-        document.body.style.overflow = 'visible';
+      if (event.key === "Escape") {
+        document.body.style.overflow = "visible";
         onClose();
       }
     };
 
     const handleScroll = (event) => {
       // 모달창 내부에 해당하는 요소인 경우에만 스크롤 이벤트를 처리
-      if (event.target.classList.contains('modal-content')) {
+      if (event.target.classList.contains("modal-content")) {
         event.stopPropagation();
       }
     };
 
     // 이벤트 리스너 등록
-    document.addEventListener('mousedown', handleOutsideClick);
-    document.addEventListener('keydown', handleEscKey);
-    document.addEventListener('wheel', handleScroll, { passive: false });
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscKey);
+    document.addEventListener("wheel", handleScroll, { passive: false });
 
     // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-      document.removeEventListener('keydown', handleEscKey);
-      document.removeEventListener('wheel', handleScroll);
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscKey);
+      document.removeEventListener("wheel", handleScroll);
     };
   }, [onClose]);
 
-  return(
-  <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-end pr-8 bg-gray-500 bg-opacity-50">
-    <div className="bg-white w-[300px] h-[500px] p-8 rounded-xl relative overflow-auto">
-      <p className="flex justify-center font-bold text-sm ">유저 리스트</p>
-      <hr className="border-gray-500 m-2"/>
-      {children}
+  return (
+    <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-end pr-8 bg-gray-500 bg-opacity-50">
+      <div className="bg-white w-[300px] h-[500px] p-8 rounded-xl relative overflow-auto">
+        <p className="flex justify-center font-bold text-sm ">유저 리스트</p>
+        <hr className="border-gray-500 m-2" />
+        {children}
+      </div>
     </div>
-  </div>
-  )
+  );
 };
 
 const Chatting = (props) => {
@@ -106,7 +105,6 @@ const Chatting = (props) => {
       }
     }
   }, [props.receiveChat, props.username]);
-  
 
   useEffect(() => {
     console.log(props.receiveChat);
@@ -122,7 +120,7 @@ const Chatting = (props) => {
     }
     const file = selectedFile;
     const chunkLength = 16384;
-    
+
     const fileTransferMessage = `[${file.name}] 전송하였습니다.`;
     setChatData((prev) => [...prev, `${fileTransferMessage}`]);
 
@@ -237,17 +235,22 @@ const Chatting = (props) => {
           파일 전송
         </button>
         <div className="ml-auto">
-      <img className="w-5 h-5 cursor-pointer " src={member} alt="members" onClick={handleImageClick} />
-      {isModalOpen && (
-  <Modal onClose={handleCloseModal}>
-    <UserList
-      feeds={props.feeds}
-      sendPrivateMessage={props.sendPrivateMessage}
-      kickParticipant={props.kickParticipant}
-    />
-  </Modal>
-)}
-    </div>
+          <img
+            className="w-5 h-5 cursor-pointer "
+            src={member}
+            alt="members"
+            onClick={handleImageClick}
+          />
+          {isModalOpen && (
+            <Modal onClose={handleCloseModal}>
+              <UserList
+                feeds={props.feeds}
+                sendPrivateMessage={props.sendPrivateMessage}
+                kickParticipant={props.kickParticipant}
+              />
+            </Modal>
+          )}
+        </div>
       </div>
     </div>
   );

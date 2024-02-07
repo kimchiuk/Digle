@@ -767,6 +767,25 @@ const TestChattingPage = () => {
     setChatData((prev) => [...prev, `${username} ${inputChat}`]);
     setInputChat("");
   };
+
+  useEffect(() => {
+    if (receiveChat) {
+      const { from, text, to } = receiveChat;
+      // 현재 사용자가 메시지의 수신자이거나, 메시지가 모두에게 보내진 경우에만 표시
+      if (to === "all" || to === username) {
+        let messageToShow;
+        if (to === "all") {
+          // 모두에게 보낸 메시지
+          messageToShow = `${from}: ${text}`;
+        } else {
+          // 귓속말
+          messageToShow = `귓속말 (${from} -> ${to}): ${text}`;
+        }
+        setChatData((prev) => [...prev, messageToShow]);
+      }
+    }
+  }, [receiveChat, username]);
+
   const renderChatData = chatData.map((c, i) => {
     return (
       <p
