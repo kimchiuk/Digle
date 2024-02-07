@@ -18,7 +18,7 @@ import camOff from "../../assets/webRTC/discord/camOff.png";
 import capture from "../../assets/webRTC/discord/capture.png";
 
 let sfutest = null;
-let username = "username-" + Janus.randomString(5); // 임시 유저네임
+// let username = "username-" + Janus.randomString(5); // 임시 유저네임
 let receivedFileChunk = {};
 
 const VideoChat = () => {
@@ -35,6 +35,7 @@ const VideoChat = () => {
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
   const navigate = useNavigate();
+  const username=queryParams.get("userId");
 
   const connectFeed = (newFeed) => {
     setFeeds((prevFeeds) => {
