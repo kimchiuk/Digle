@@ -120,6 +120,7 @@ def create_janus_room(room_id: int):
         "transaction": str(uuid.uuid4()),
         "admin_secret": admin_secret,
         "body": {"request": "create", "room": room_id},
+        "publishers": 100,
     }
 
     response = requests.post(room_url, json=create_data, headers=headers)

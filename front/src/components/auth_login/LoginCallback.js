@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { handleOauthLogin } from "../../api/authService";
 
 const LoginCallback = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleAuthentication = async () => {
@@ -16,6 +17,7 @@ const LoginCallback = () => {
         try {
           // 백엔드로 인증 코드 전송 및 처리
           await handleOauthLogin(provider, code, stateValue);
+          navigate("/");
         } catch (error) {
           console.error("Authentication error:", error);
           // 오류 처리 로직
