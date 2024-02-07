@@ -98,7 +98,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Starting Build Ai-model Docker Image"'
-                    dir('front') {
+                    dir('back/app/ai_models') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
                              frontendImage = docker.build("${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}")
