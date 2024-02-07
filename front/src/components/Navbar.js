@@ -5,6 +5,8 @@ import { useCookies } from "react-cookie";
 const Navbar = () => {
   const [cookies] = useCookies(["isLogin"]);
   const [isLoggedIn, setIsLoggedIn] = useState(cookies.isLogin);
+  const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState(""); // 'individual' 또는 'company'
 
   const [isProductDropdownOpen, setProductDropdownOpen] = useState(false);
   const [isSolutionDropdownOpen, setSolutionDropdownOpen] = useState(false);
@@ -39,6 +41,28 @@ const Navbar = () => {
     setSolutionDropdownOpen(false);
   };
 
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch('/api/get_user_name_and_type', {
+        method: 'GET',
+        credentials: 'include', // 쿠키를 포함시키기 위함
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setUserName(data.user_name);
+      setUserType(data.user_type);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -48,6 +72,9 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsLoggedIn(cookies.isLogin);
+    if (cookies.isLogin) {
+      fetchUserData();
+    }
   }, [cookies.isLogin]);
 
   return (
@@ -63,8 +90,8 @@ const Navbar = () => {
             onClick={toggleProductDropdown}
             type="button"
             className={`inline-flex items-center px-4 py-2 font-medium ${isProductDropdownOpen
-                ? "text-black bg-gray-100"
-                : "text-gray-700 hover:text-black hover:bg-gray-100"
+              ? "text-black bg-gray-100"
+              : "text-gray-700 hover:text-black hover:bg-gray-100"
               }`}
             id="product-dropdown"
             aria-expanded={isProductDropdownOpen}
@@ -108,8 +135,8 @@ const Navbar = () => {
             onClick={toggleSolutionDropdown}
             type="button"
             className={`inline-flex items-center px-4 py-2 font-medium ${isSolutionDropdownOpen
-                ? "text-black bg-gray-100"
-                : "text-gray-700 hover:text-black hover:bg-gray-100"
+              ? "text-black bg-gray-100"
+              : "text-gray-700 hover:text-black hover:bg-gray-100"
               }`}
             id="solution-dropdown"
             aria-expanded={isSolutionDropdownOpen}
@@ -150,8 +177,19 @@ const Navbar = () => {
         </div>
       </div>
       <div className="mr-4 whitespace-nowrap">
+        {isLoggedIn && userType === "company" && (
+          <Link
+            to="/test"
+            className="px-4 py-2 mr-4 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
+          >
+            [TEST]
+          </Link>
+        )}
         {isLoggedIn ? (
           <>
+            <span className="px-4 py-2 rounded font-medium text-gray-700">
+              {userName && `${userName} (${userType})`}
+            </span>
             <Link
               to="/logout"
               className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
