@@ -101,9 +101,9 @@ pipeline {
                     dir('back/app/ai_models/face') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
-                             frontendImage = docker.build("${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                             modelImage = docker.build("${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}")
                             // Docker 빌드 결과 출력
-                            if (frontendImage != 0) {
+                            if (modelImage != 0) {
                                 echo "Docker build succeeded: ${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}"
                                 docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                                     modelImage.push()
