@@ -119,11 +119,12 @@ def create_janus_room(room_id: int):
         "janus": "message",
         "transaction": str(uuid.uuid4()),
         "admin_secret": admin_secret,
-        "body": {"request": "create", "room": room_id},
-        "publishers": 100,
+        "body": {"request": "create", "room": room_id,"publishers": 100,},
+        
     }
 
     response = requests.post(room_url, json=create_data, headers=headers)
+    print(response.json())
     if response.status_code == 200:
         return response.json()
     else:
