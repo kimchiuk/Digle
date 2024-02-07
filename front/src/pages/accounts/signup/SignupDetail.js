@@ -30,6 +30,11 @@ const SignupDetail = () => {
   const [emailCodeMsg, setEmailCodeMsg] = useState("");
 
   const [emailCheck, setEmailCheck] = useState(false);
+
+  const [timer, setTimer] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [isVerified, setIsVerified] = useState(false);
+
   const handleCheckEmail = async (e) => {
     e.preventDefault();
     // 폼 데이터에 담아서 전송
@@ -50,10 +55,11 @@ const SignupDetail = () => {
       console.log(response);
 
       if (response.data) {
-        // setEmailMessage("이미 가입된 이메일입니다.");
-        // setEmailMessage("사용 가능한 이메일입니다.");
         setIsCheckEmail(true);
         setEmailCodeOk(false);
+
+        startTimer();
+
       } else {
         setEmailMessage("이미 가입된 이메일입니다.");
         setEmailCodeOk(true);
@@ -66,13 +72,25 @@ const SignupDetail = () => {
     setEmailCheck(false);
   };
 
-  // const handleEmailVerification = async () => {
-  //   await handleCheckEmail();
-  // };
-
   const emailCodeHandler = (e) => {
     const currentCode = e.target.value;
     setEmailCode(currentCode);
+  };
+  
+  
+  const startTimer = () => {
+    setTimeLeft(180);
+    setTimer(
+      setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000)
+    );
+  };
+
+  const resetTimer = () => {
+    clearInterval(timer);
+    setTimer(null);
+    setTimeLeft(null);
   };
 
   // 코드 인증 과정
@@ -84,20 +102,32 @@ const SignupDetail = () => {
     formData.append("code", emailCode);
     try {
       const response = await axios.post(`${API_URL}/verify_email`, formData);
-      if (response.status === 200) {
-        console.log(response);
+
+      setIsVerified(true);
+
+      if (!(response.data.error === "Invalid or expired verification code")) {
+        console.log("인증 성공", response);
         setEmailCodeOk(true);
         alert("인증되었습니다.");
       } else {
         setEmailCodeOk(false);
+        alert("인증에 실패하였습니다.")
+        console.log("에러 발생: ",response)
       }
     } catch (error) {
       console.log("에러 내용", error);
+      setIsVerified(false);
     }
   };
-  // const handleCodeVerification = async () => {
-  //   await handleCheckCode();
-  // };
+
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      resetTimer();
+      setIsVerified(false);
+      alert("인증 시간이 만료되었습니다. 다시 시도해주세요.");
+    }
+  }, [timeLeft, timer]);
 
   const emailHandler = (e) => {
     const currentEmail = e.target.value;
@@ -121,7 +151,7 @@ const SignupDetail = () => {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
     if (!passwordRegExp.test(currentPassword)) {
       setPasswordMsg(
-        "대문자+소문자+숫자+특수문자 조합으로 8자리 이상 입력해주세요!"
+        "대 · 소문자, 숫자 및 특수문자를 조합하여 8자 이상 입력하세요."
       );
       setIsPwd(false);
     } else {
@@ -210,11 +240,20 @@ const SignupDetail = () => {
   const onSubmitButton = async (e) => {
     e.preventDefault();
 
+    if (!name || !email || !password) {
+      alert("이름, 이메일, 비밀번호는 필수 입력 항목입니다.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("name", name);
     formData.append("password", password);
     if (isCompany) {
+      if (!companyName || !companyEmail || !zipCode || !roadAddress || !detailAddress) {
+        alert("회사 이름, 회사 이메일, 우편번호, 도로명 주소, 상세주소는 필수 입력 항목입니다.");
+        return;
+      }
       const companyAddress = `${roadAddress} (${zipCode}) ${detailAddress}`;
       // 기업 회원을 선택했을 때
       formData.append("user_type", "Business");
@@ -252,6 +291,18 @@ const SignupDetail = () => {
             <div className="text-xl font-bold mb-2">회원가입</div>
             <hr className="mb-2" />
             <div className="flex flex-col">
+              <div className="flex flex-col my-2">
+                <label className="mb-1" htmlFor="name">
+                  이름
+                </label>
+                <input
+                  className="border-b-2 py-1 px-2"
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={nameHandler}
+                />
+              </div>
               <div className="flex justify-between my-2">
                 <label className="mt-1" htmlFor="email">
                   이메일
@@ -273,20 +324,34 @@ const SignupDetail = () => {
               />
               <div
                 className={
-                  !isEmail ? "text-sm text-red-500" : "text-sm text-green-500"
+                  !isEmail
+                    ? "text-xs text-red-500 mt-1"
+                    : "text-xs mt-1 text-green-500"
                 }
               >
                 {emailMessage}
                 <div>
                   {isCheckEmail && (
-                    <div>
+                    <div className="flex items-center">
                       <input
-                        className="border-b-2 py-1 px-2"
+                        className="border-b-2 py-1 px-2 mt-2 text-black"
                         type="text"
                         value={emailCode}
                         onChange={emailCodeHandler}
                       />
-                      <button onClick={handleCheckCode}>인증</button>
+
+                      <button onClick={handleCheckCode} className="ml-2">
+                        인증
+                      </button>
+                      {timeLeft && (
+                        <div className="text-black ml-2 ">
+                          {Math.floor(timeLeft / 60)}:
+                          {timeLeft % 60 < 10
+                            ? `0${timeLeft % 60}`
+                            : timeLeft % 60}
+                        </div>
+                      )}
+
                       <div>{emailCodeMsg}</div>
                     </div>
                   )}
@@ -298,27 +363,29 @@ const SignupDetail = () => {
                 비밀번호
               </label>
               <input
-                className="border-b-2 py-1 px-2"
+                className="border-b-2 py-1 px-2 text-sm"
                 type="password"
                 id="password"
                 value={password}
                 onChange={passwordHandler}
-                placeholder="8~25자이내 대문자+소문자+특수문자+숫자의 조합"
+                // placeholder="8~25자이내 대문자+소문자+특수문자+숫자의 조합"
               />
               <div
                 className={
-                  !isPwd ? "text-sm text-red-500" : "text-sm text-green-500"
+                  !isPwd
+                    ? "text-xs text-red-500 mt-1"
+                    : "text-xs mt-1 text-green-500"
                 }
               >
                 {passwordMsg}
               </div>
             </div>
-            <div className="flex flex-col my-2">
+            <div className="flex flex-col my-2 ">
               <label className="mb-1" htmlFor="confirmPwd">
                 비밀번호 확인
               </label>
               <input
-                className="border-b-2 py-1 px-2"
+                className="border-b-2 py-1 px-2 text-sm"
                 type="password"
                 id="confirmPwd"
                 value={confirmPassword}
@@ -328,25 +395,14 @@ const SignupDetail = () => {
               <div
                 className={
                   !isConfirmPwd
-                    ? "text-sm text-red-500"
-                    : "text-sm text-green-500"
+                    ? "text-xs mt-1 text-red-500"
+                    : "text-xs mt-1 text-green-500"
                 }
               >
                 {confirmPasswordMsg}
               </div>
             </div>
-            <div className="flex flex-col my-2">
-              <label className="mb-1" htmlFor="name">
-                이름
-              </label>
-              <input
-                className="border-b-2 py-1 px-2"
-                type="text"
-                id="name"
-                value={name}
-                onChange={nameHandler}
-              />
-            </div>
+
             <SelectSignup
               isCompany={isCompany}
               onButtonClick={handleButtonClick}
@@ -368,7 +424,7 @@ const SignupDetail = () => {
               readImage={readImage}
             />
             <input
-              className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full "
+              className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer mt-2 w-full mb-5"
               type="submit"
               value="회원가입 완료하기"
             />

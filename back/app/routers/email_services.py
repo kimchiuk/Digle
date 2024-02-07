@@ -49,7 +49,7 @@ async def request_verify_email(
 
     try:
         subject = "Your Verification Code"
-        body = f"Your verification code {verification_code}"  # 실제 시나리오에서는 동적으로 생성해야 합니다.
+        body = f"인증 코드입니다. 3분 이내에 인증을 완료해주세요. \n\n {verification_code}"  # 실제 시나리오에서는 동적으로 생성해야 합니다.
         send_email(email, subject, body)
         return {"message": "Verification email sent"}
     except Exception as e:

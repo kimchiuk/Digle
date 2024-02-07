@@ -17,8 +17,8 @@ const BusinessSignup = ({
 }) => {
   return (
     <>
-      <div className="">
-        <div className="flex flex-col">
+      <div>
+        <div className="flex flex-col mb-1">
           <input
             value={companyName}
             onChange={companyNameHandler}
@@ -27,7 +27,7 @@ const BusinessSignup = ({
             type="text"
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col mb-1">
           <input
             value={companyEmail}
             onChange={companyEmailHandler}
@@ -36,7 +36,7 @@ const BusinessSignup = ({
             type="text"
           />
         </div>
-        <div className="pt-2">
+        <div className="pt-2 mb-1">
           <DaumPost
             company={enrollCompany}
             setcompany={setEnrollCompany}

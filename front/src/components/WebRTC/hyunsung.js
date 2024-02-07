@@ -826,7 +826,7 @@ const VideoChat = () => {
               <GetInviteCode />
           </div>
         </div>
-        <div className="w-full mt-4 lg:mt-0 lg:w-[320px]  h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
+        <div className="w-full mt-4 lg:mt-0 lg:w-[320px] h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
           <Chatting
             sendChatData={sendChatData}
             receiveChat={receiveChat}
