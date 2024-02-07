@@ -11,11 +11,7 @@ const TestRoomCreateButton = ({ userName, userType }) => {
     event.preventDefault();
     if (userType === "Business") {
       axios
-<<<<<<< HEAD
         .post(`${API_URL}/room/create_testroom`, null, {
-=======
-        .post(`${API_URL}/rooms/create_test_room`, null, {
->>>>>>> 56952993be60db384c6b62531cb35ac8dc267b6f
           withCredentials: true,
         })
         .then((response) => {
