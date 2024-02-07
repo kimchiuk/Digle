@@ -72,13 +72,12 @@ function App() {
             <Route path="/create_room" element={<CreateRoom />} />
             <Route path="/vchat" element={<VideoChat />} />
 
-            <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />
             <Route path="/TestTemp" element={<TestTemp />} />
             <Route path="/test/finish" element={<TestFinish />} />
 
             <Route path="/:inviteCode" element={<InviteUrl />} />
             <Route path="/test_chatting_page" element={<TestChattingPage />} />
-            <Route path="/test_room_create" element={<CreateRoomTmp/>}/>
+            <Route path="/create_test_room" element={<CreateRoomTmp />} />
           </Routes>
         </PageLayout>
       </BrowserRouter>

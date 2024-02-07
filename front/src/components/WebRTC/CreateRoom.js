@@ -67,7 +67,11 @@ function CreateRoom() {
         className="form-control w-full"
         placeholder="room_id"
       /> */}
-          <button className="text-white" onClick={handleJoinRoom} disabled={isLoading}>
+          <button
+            className="text-white"
+            onClick={handleJoinRoom}
+            disabled={isLoading}
+          >
             {isLoading ? "로딩 중" : "방 만들고 입장"}
           </button>
         </div>

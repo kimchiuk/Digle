@@ -13,7 +13,7 @@ from models.user import PasswordResetVerification
 
 from dotenv import load_dotenv
 
-from services.auth_service import hash_password
+from services.auth_service import hash_password, check_password
 
 load_dotenv()
 SMTP_SERVER = os.getenv("SMTP_SERVER")
@@ -120,3 +120,21 @@ async def reset_password(
     db.refresh(user)    # 변경된 내용을 데이터베이스에서 다시 읽어옴
 
     return {"message": "Password reset successful."}
+
+
+# 입력받은 비밀번호와 DB에 저장된 비밀번호와 비교
+@router.post("/change_password")
+async def change_password(
+    email: str = Form(...),
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    # DB에서 사용자 이메일로 검색
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if check_password(password, user.hashed_password) == False:
+        raise HTTPException(status_code=404, detail="No match password")
+
+    return {"message": "Authentication successful. Please reset your password."}

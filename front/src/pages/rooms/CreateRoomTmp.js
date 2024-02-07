@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import MainImg from "../../assets/main.png";
 import RoomCreateButton from "components/rooms/RoomCreateButton";
 import TestRoomCreateButton from "components/rooms/TestRoomCreateButton";
 import axios from "axios";
@@ -8,6 +10,8 @@ const CreateRoomTmp = () => {
   const [userName, setUserName] = useState();
   const [userType, setUserType] = useState();
   const API_URL = "https://localhost:8000";
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -25,11 +29,45 @@ const CreateRoomTmp = () => {
         console.log(err);
       });
   }, []);
+
+  const handleJoinRoom = async () => {
+    setIsLoading(true);
+    if (userType === "Business") {
+      axios
+        .post(`${API_URL}/room/create_testroom`, null, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          console.log(response);
+          const newRoomId = response.data.plugindata.data.room;
+          alert("방이 생성되었습니다");
+          navigate(
+            `/test_chatting_page?roomId=${newRoomId}&userId=${userName}&role=publisher`
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("일반 회원은 test 방을 생성할 수 없습니다.");
+    }
+    setIsLoading(false);
+  };
   return (
     <>
-      <div className="pt-20">
-        <RoomCreateButton userName={userName} />
-        <TestRoomCreateButton userName={userName} userType={userType} />
+      <div className="flex items-center justify-center min-h-screen bg-gray-200">
+        <img className="absolute w-full h-full object-cover" src={MainImg} />
+        <div className="relative p-8 bg-black bg-opacity-70 rounded shadow-md max-w-sm w-full">
+          <div className="flex flex-col space-y-6">
+            <button
+              className="text-white"
+              onClick={handleJoinRoom}
+              disabled={isLoading}
+            >
+              {isLoading ? "로딩 중" : "방 만들고 입장"}
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );
