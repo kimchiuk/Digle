@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./Video.css";
 
-const Video = ({ id,stream, username, muted, onClickFunction }) => {
+const Video = ({ id, stream, username, muted, onClickFunction }) => {
   const videoRef = useRef();
   const [mediaStream, setMediaStream] = useState(null);
   console.log(id);
-
 
   useEffect(() => {
     if (stream instanceof MediaStream) {
@@ -18,13 +17,9 @@ const Video = ({ id,stream, username, muted, onClickFunction }) => {
     }
   }, [stream]);
 
-
-
-  useEffect(()=>{
+  useEffect(() => {
     videoRef.current.srcObject = mediaStream;
-  },[mediaStream]);
-
-  
+  }, [mediaStream]);
 
   const handleClicked = (e) => {
     e.preventDefault();
@@ -48,7 +43,7 @@ const Video = ({ id,stream, username, muted, onClickFunction }) => {
           onClick={handleClicked}
           muted={muted}
           controls={onClickFunction ? false : true}
-          className="w-full rounded-xl h-[600px]"
+          className="w-full rounded-xl "
         />
       </div>
       <div>{username}</div>

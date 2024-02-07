@@ -828,7 +828,6 @@ const VideoChat = () => {
                 feeds={feeds}
                 sendPrivateMessage={sendPrivateMessage}
                 kickParticipant={kickParticipant}
-
               />
             </div>
             <div className="invite-button-container">

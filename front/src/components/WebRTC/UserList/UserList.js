@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import TextInputModal from '../Chatting/TextInputModal';
+import React, { useState } from "react";
+import TextInputModal from "../Chatting/TextInputModal";
 
 const UserList = ({ feeds, sendPrivateMessage, kickParticipant }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-    // 사용자 클릭 핸들러
-    const handleUserClick = (user) => {
-        console.log(user);
-        setSelectedUser(user);
-        setIsModalOpen(true);
-    };
+  // 사용자 클릭 핸들러
+  const handleUserClick = (user) => {
+    console.log(user);
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
 
-    // 강퇴 버튼 클릭 핸들러
-    const handleKickClick = (user, e) => {
-        e.stopPropagation(); // 클릭 이벤트 전파 중지
-        alert(`${user.rfdisplay} 강퇴됩니다.`);
-        kickParticipant(user.rfid); // 강퇴 함수 호출
-    };
+  // 강퇴 버튼 클릭 핸들러
+  const handleKickClick = (user, e) => {
+    e.stopPropagation(); // 클릭 이벤트 전파 중지
+    alert(`${user.rfdisplay} 강퇴됩니다.`);
+    kickParticipant(user.rfid); // 강퇴 함수 호출
+  };
 
-    const handleModalClose = () => setIsModalOpen(false);
+  const handleModalClose = () => setIsModalOpen(false);
 
   const handleModalSubmit = (message) => {
     if (selectedUser && message.trim()) {
@@ -30,31 +30,41 @@ const UserList = ({ feeds, sendPrivateMessage, kickParticipant }) => {
 
   // feeds가 정의되지 않았거나 빈 배열일 경우에 대한 조건 추가
   if (!feeds || feeds.length === 0) {
-    return <p className='text-xs'>참가 인원이 없습니다.</p>;
+    return <p className="text-xs">참가 인원이 없습니다.</p>;
   }
 
-    return (
-        <>
-            {feeds.map((user) => (
-                <div key={user.rfid} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '5px' }}>
-                    <span onClick={() => handleUserClick(user)}>
-                        {user.rfdisplay}
-                    </span>
-                    <button onClick={(e) => handleKickClick(user, e)} style={{ marginLeft: '10px' }}>
-                        강퇴
-                    </button>
-                </div>
-            ))}
-            {isModalOpen && (
-                <TextInputModal
-                    onSubmit={handleModalSubmit}
-                    onClose={handleModalClose}
-                    // kickParticipant={kickParticipant}
-                    // sendPrivateMessage={sendPrivateMessage}
-                />
-            )}
-        </>
-    );
+  return (
+    <>
+      {feeds.map((user) => (
+        <div
+          key={user.rfid}
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            margin: "5px",
+          }}
+        >
+          <span onClick={() => handleUserClick(user)}>{user.rfdisplay}</span>
+          <button
+            onClick={(e) => handleKickClick(user, e)}
+            style={{ marginLeft: "10px" }}
+          >
+            강퇴
+          </button>
+        </div>
+      ))}
+      {isModalOpen && (
+        <TextInputModal
+          onSubmit={handleModalSubmit}
+          onClose={handleModalClose}
+          // kickParticipant={kickParticipant}
+          // sendPrivateMessage={sendPrivateMessage}
+        />
+      )}
+    </>
+  );
 };
 
 export default UserList;

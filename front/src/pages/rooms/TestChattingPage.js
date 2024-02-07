@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Janus } from "janus";
 
@@ -9,6 +9,9 @@ import Chatting from "components/WebRTC/Chatting/Chatting";
 import UserList from "components/WebRTC/UserList/UserList";
 import GetInviteCode from "components/WebRTC/Chatting/GetInviteCode";
 import CaptureButton from "components/WebRTC/capture/CaptureButton";
+
+import chatImg from "../../assets/webRTC/chat/chat.png";
+import sendButton from "../../assets/webRTC/chat/sendButton.png";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -707,12 +710,7 @@ const TestChattingPage = () => {
     return (
       <div
         key={feed.rfid}
-        style={{
-          width: "500px",
-          height: "500px",
-          float: "left",
-          margin: "3px",
-        }}
+        className="w-[350px] h-[300px] float-left m-[3px]"
         onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
       >
         <Video
@@ -746,12 +744,45 @@ const TestChattingPage = () => {
   const closeUserListModal = () => {
     setIsUserListModalOpen(false);
   };
+  const [chatData, setChatData] = useState([]);
+  const [inputChat, setInputChat] = useState("");
+  const chatBoxRef = useRef(null);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [chatData]);
+  const handleChange = (e) => {
+    setInputChat(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleClick();
+    }
+  };
+  const handleClick = () => {
+    sendChatData(inputChat);
+    setChatData((prev) => [...prev, `${username} ${inputChat}`]);
+    setInputChat("");
+  };
+  const renderChatData = chatData.map((c, i) => {
+    return (
+      <p
+        className="pl-2 pt-2 text-xs overflow-wrap[break-word] text-stone-500"
+        key={i}
+      >
+        {c}
+      </p>
+    );
+  });
 
   return (
     <>
       <div className="h-full w-full relative">
         <div className="border-2 h-20 flex justify-between">
-          <div className="border-2 w-20 h-20">로고</div>
+          <div className="border-2 w-20 h-20 ">로고</div>
           <div className="border-2 w-40 h-20 flex">
             <div className="border-2 w-20 h-full"></div>
           </div>
@@ -762,15 +793,42 @@ const TestChattingPage = () => {
         <div className="border-2 h-20 flex justify-between">
           <div className="border-2 w-60 h-full flex relative">
             <div className="border-2 w-20 h-full relative">
-              <div className="w-20 h-full" onClick={openChatModal}>
+              <div className="w-20 h-full " onClick={openChatModal}>
                 채팅창 모달
               </div>
               {/* 채팅창 모달 */}
               {isChatModalOpen && (
                 <div className="absolute bottom-full mb-2 left-0 w-80 h-96 bg-white p-2 rounded border-2">
-                  <div className="flex justify-between">
-                    <div>채팅 모달 내용</div>
-                    <button onClick={closeChatModal}>X</button>
+                  <div className="flex justify-between"></div>
+                  <div className="border-2">
+                    <div
+                      ref={chatBoxRef}
+                      className="border overflow-x-hidden overflow-y-auto min-h-[300px] max-h-[500px]"
+                    >
+                      <div className="sticky top-0 bg-white">
+                        <div className="right-0 p-2 text-sm font-bold text-stone-400 flex items-center justify-between">
+                          <img className="w-10 h-10" src={chatImg} />
+                          채팅창
+                          <button onClick={closeChatModal}>X</button>
+                        </div>
+                        <hr />
+                      </div>
+                      {renderChatData}
+                    </div>
+                    <div className="mt-2 flex items-center">
+                      <input
+                        className="border-b-2 focus:outline-none focus:ring-1 focus:ring-gray-300 mr-3 text-xs p-2 w-11/12"
+                        placeholder="채팅..."
+                        type="text"
+                        value={inputChat}
+                        onChange={handleChange}
+                        onKeyPress={handleKeyPress}
+                      />
+
+                      <button className="mt-1" onClick={handleClick}>
+                        <img className="w-5 h-5" src={sendButton} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -787,15 +845,24 @@ const TestChattingPage = () => {
             </div>
           </div>
           <div className="border-2 w-20 h-full relative">
-            <div className="w-full" onClick={openUserListModal}>
+            <div className="w-full " onClick={openUserListModal}>
               유저 리스트
             </div>
+
             {/* 유저 리스트 모달 */}
             {isUserListModalOpen && (
               <div className="absolute bottom-full mb-2 right-0 translate-x-[-80%] left-0 w-60 h-96 bg-white p-2 rounded border-2">
                 <div className="flex justify-between">
-                  <div>유저 리스트 모달 내용</div>
+                  <div>참가 유저 리스트</div>
                   <button onClick={closeUserListModal}>X</button>
+                </div>
+                <div className="mt-4">
+                  <UserList
+                    feeds={feeds}
+                    username={username}
+                    sendPrivateMessage={sendPrivateMessage}
+                    kickParticipant={kickParticipant}
+                  />
                 </div>
               </div>
             )}
