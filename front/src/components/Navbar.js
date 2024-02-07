@@ -94,7 +94,7 @@ const Navbar = () => {
                 Test
               </Link>
               <Link
-                to="/anhs"
+                to="/create_room"
                 className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
