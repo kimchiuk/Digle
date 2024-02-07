@@ -6,10 +6,11 @@ import json
 import os
 import smtplib
 import uuid
-from fastapi import APIRouter, Form, HTTPException, Request, Depends, Response, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Form, HTTPException, Request, Depends, Response, UploadFile
 from fastapi.responses import JSONResponse
 import httpx
 from sqlalchemy.orm import Session
+from services.utils import upload_to_gcs
 
 from schemas.user_schema import UserCreate, UserLogin
 from database import get_db
@@ -32,6 +33,7 @@ router = APIRouter(tags=["normal_auth"])
 async def login_for_access_token(
     response: Response,
     request: Request,
+    background_tasks: BackgroundTasks,
     email: str = Form(None),
     name: str = Form(None),
     password: str = Form(None),
@@ -61,13 +63,17 @@ async def login_for_access_token(
 
     if email_duplicate:
         raise HTTPException(status_code=409, detail="Invalid or expired token")
+
+    internal_id = generate_internal_id()
+
     if profile_img and profile_img.filename:
-        # 파일 저장 또는 처리
+        """파일 저장 또는 처리
         file_location = f"C:/files/{profile_img.filename}"
         with open(file_location, "wb+") as file_object:
             file_object.write(profile_img.file.read())
-
-    internal_id = generate_internal_id()
+        """
+        file_path = f"profiles/{internal_id}"
+        background_tasks.add_task(upload_to_gcs, profile_img, file_path)
     while db.query(User).filter(User.internal_id == internal_id).first():
         internal_id = generate_internal_id()
 

@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from database import Base  # database.py에서 Base 클래스를 임포
 
+
 class RoomType(pyEnum):
     TestRoom = "TestRoom"
     Room = "Room"
@@ -20,4 +21,4 @@ class RoomInfo(Base):
     invite_code = Column(String, index=True)
 
     # 방장을 위한 관계 정의 (User 모델과의 외래 키 관계 필요)
-    host_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
+    host_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
