@@ -25,6 +25,5 @@ class RoomInfo(Base):
     room_type = Column(SQLEnum(RoomType, name="room_type_enum"))
     invite_code = Column(String, index=True)
 
-# 방장을 위한 관계 정의 (User 모델과의 외래 키 관계 필요)
-    host_id = Column(Integer, ForeignKey('users.id'))
-    
+    # 방장을 위한 관계 정의 (User 모델과의 외래 키 관계 필요)
+    host_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
