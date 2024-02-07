@@ -16,7 +16,6 @@ import NaverLoginButton from "components/auth_login/NaverLoginButton";
 import KakaoLoginButton from "components/auth_login/KakaoLoginButton";
 import CreateRoom from "./components/WebRTC/CreateRoom";
 import VideoChat from "./components/WebRTC/VideoChat";
-import TestRouter from "./pages/test/TestRouter";
 import FindPassword from "./pages/accounts/FindPassword";
 import ResetPassword from "./pages/accounts/ResetPassword";
 import LoginCallback from "./components/auth_login/LoginCallback";
@@ -48,7 +47,6 @@ function App() {
             <Route path="/anhs" element={<Anhs />} />
 
             <Route path="/" element={<Main />} />
-            <Route path="/test_router" element={<TestRouter />} />
 
             {/* <Route element={<PublicRoute />}> */}
             <Route path="/login" element={<Login />} />
@@ -71,7 +69,7 @@ function App() {
 
             <Route path="/find_password" element={<FindPassword />} />
             <Route path="/reset_password" element={<ResetPassword />} />
-            <Route path="/CreateRoom" element={<CreateRoom />} />
+            <Route path="/create_room" element={<CreateRoom />} />
             <Route path="/vchat" element={<VideoChat />} />
 
             <Route path="/CreateRoomTmp" element={<CreateRoomTmp />} />

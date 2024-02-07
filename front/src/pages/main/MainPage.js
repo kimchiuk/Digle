@@ -17,8 +17,11 @@ const Main = () => {
         </div>
         <div className="absolute bottom-32 right-20 text-white bg-black opacity-70">
           {/* 새로운 페이지 만들어서 링크 */}
-          <Link to="test_router">
-            <p className="text-2x1 font-bold"> 화상채팅 및 테스트 바로가기 </p>
+          <Link to="create_room">
+            <p className="text-2x1 font-bold"> 화상채팅 바로가기 </p>
+          </Link>
+          <Link to="create_room">
+            <p className="text-2x1 font-bold"> 테스트 바로가기 </p>
           </Link>
         </div>
       </div>

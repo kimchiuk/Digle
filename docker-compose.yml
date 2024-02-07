@@ -1,27 +1,11 @@
-version: "3"
-
 services:
     backend:
         image: ${BACK_IMAGE_NAME}:${BUILD_NUMBER}
-        networks:
-            - digle-network
-
+        ports:
+            - "8000:8000"
+        depends_on:
+            - frontend
     frontend:
         image: ${FRONT_IMAGE_NAME}:${BUILD_NUMBER}
-        networks:
-            - digle-network
-    nginx:
-        image: nginx:latest
         ports:
-            - "80:80"
-        volumes:
-            - ./jenkins-data/workspace/S10P12D107/nginx/default.conf:/etc/nginx/conf.d/default.conf
-        depends_on:
-            - backend
-            - frontend
-        networks:
-            - digle-network
-
-networks:
-    digle-network:
-        driver: bridge
+            - "3000:3000"
