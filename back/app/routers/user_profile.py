@@ -99,7 +99,7 @@ async def update_user_profile(
             """
             file_path = f"profiles/{user.internal_id}"
             # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-            await upload_to_gcs(profile_img, file_path)
+            upload_to_gcs(profile_img, file_path)
 
         user.name = name
         user.profile_picture_url = file_location
