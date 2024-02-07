@@ -1,5 +1,6 @@
 def backendImage
 def frontendImage
+def modelImage
 
 pipeline {
     agent any
@@ -10,6 +11,7 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
         BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
         FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
+        MODEL_IMAGE_NAME = "${env.MODEL_IMAGE_NAME}"
 
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
@@ -91,16 +93,31 @@ pipeline {
                 }
             }
             
-        }   
-        // stage('test the backend image') {
-        //     steps {
-        //         dir('back') {
-        //             sh "docker pull ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-        //             sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-
-        //         }
-        //     }
-        // } 
+        }
+        stage('Build and Push the Ai-model Image') {
+            steps {
+                script {
+                    sh 'echo "Starting Build Ai-model Docker Image"'
+                    dir('back/app/ai_models/face') {
+                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+                            
+                             modelImage = docker.build("${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                            // Docker 빌드 결과 출력
+                            if (modelImage != 0) {
+                                echo "Docker build succeeded: ${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                                docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+                                    modelImage.push()
+                            }
+                            } else {
+                                error "Docker build failed"
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }     
+    
         stage('Deploy') {
             steps {
                 script {

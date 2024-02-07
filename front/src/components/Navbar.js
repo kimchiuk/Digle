@@ -43,6 +43,7 @@ const Navbar = () => {
     setProductDropdownOpen(false);
     setSolutionDropdownOpen(false);
   };
+  
 
   useEffect(() => {
     setIsLoggedIn(cookies.isLogin);

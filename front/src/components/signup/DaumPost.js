@@ -27,7 +27,7 @@ const DaumPost = ({
   return (
     <>
       <div>
-        <div className="flex justify-between">
+        <div className="flex justify-between mb-1">
           <div>
             <input
               className="border-b-2 pt-2"
@@ -41,7 +41,7 @@ const DaumPost = ({
           </button>
         </div>
         <input
-          className="border-b-2 pt-2 w-full"
+          className="border-b-2 pt-2 w-full mb-1"
           value={roadAddress}
           readOnly
           placeholder="도로명 주소"
@@ -49,13 +49,12 @@ const DaumPost = ({
         {isOpen && (
           <div onClick={() => setIsOpen(false)}>
             <Modal isOpen={isOpen} ariaHideApp={false}>
-              <div className="fixed inset-0 flex justify-center items-start pt-10">
-                <div className="bg-white p-4 rounded-lg shadow-lg" style={{ width: '500px', height: '600px' }}>
-                  <DaumPostcode onComplete={completeHandler} style={{ width: '100%', height: '100%' }} />
+              <div className="fixed inset-0 flex items-center justify-center">
+                <div className="p-4 rounded-lg shadow-lg w-[500px] h-[400px] flex items-center justify-center">
+                  <DaumPostcode onComplete={completeHandler} className="" />
                 </div>
               </div>
             </Modal>
-
           </div>
         )}
         <br />

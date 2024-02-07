@@ -40,6 +40,7 @@ def user_db_login(auth_provider, auth_provider_id, user_info, db, response):
             auth_provider=auth_provider,
             is_additional_info_provided=False,
             auth_provider_id=auth_provider_id,
+            user_type="Standard",
         )
         db.add(user)
         db.commit()

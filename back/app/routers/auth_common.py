@@ -38,7 +38,7 @@ async def verifyToken(request: Request, db: Session = Depends(get_db)):
     return {"message": "Token is valid"}
 
 
-@router.post("/delete_account", tags=["Delete Account"])
+@router.post("/delete_account")
 async def delete_accounts(
     request: Request,
     response: Response,

@@ -85,7 +85,7 @@ const Chatting = (props) => {
 
   const handleClick = () => {
     props.sendChatData(inputChat);
-    setChatData((prev) => [...prev, `안현성 ${inputChat}`]);
+    setChatData((prev) => [...prev, `[나] ${props.username}: ${inputChat}`]);
     setInputChat("");
   };
 

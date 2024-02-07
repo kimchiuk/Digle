@@ -132,12 +132,12 @@ const Login = () => {
             <span className="text-white">OR</span>
             <hr className="w-28 bg-white h-0.5 border-none" />
           </div>
-          <div className="flex justify-center space-x-10 bg-white mx-6 p-4 rounded-full">
-            <GoogleLoginButton />
-            <KakaoLoginButton />
-            <NaverLoginButton />
-          </div>
         </form>
+        <div className="flex justify-center space-x-10 bg-white mx-6 p-4 rounded-full">
+          <GoogleLoginButton />
+          <KakaoLoginButton />
+          <NaverLoginButton />
+        </div>
       </div>
     </div>
   );

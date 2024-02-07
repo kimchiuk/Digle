@@ -10,7 +10,6 @@ import GetInviteCode from "./Chatting/GetInviteCode";
 import hark from "hark";
 
 let sfutest = null;
-let username = "username-" + Janus.randomString(5); // 임시 유저네임
 let receivedFileChunk = {};
 
 const VideoChat = () => {
@@ -26,6 +25,8 @@ const VideoChat = () => {
   const [captureFrames, setCaptureFrames] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
+  const username=queryParams.get("userId");
+
   const navigate = useNavigate();
 
   const connectFeed = (newFeed) => {

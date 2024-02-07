@@ -28,7 +28,7 @@ const Signup = () => {
   return (
     <div className="center">
       <div className="w-96 mx-auto pt-20 text-left">
-        <div className="p-2">회원가입</div>
+        <div className="p-2 text-2xl font-bold">회원가입</div>
         <div className="p-2">이용 약관 정책</div>
         <div className="m-2 p-2 h-60 border-2">내용</div>
 
@@ -59,7 +59,7 @@ const Signup = () => {
         <div className="flex justify-end">
           <button
             to="detail"
-            className="block p-2 text-right mt-4 bg-sky-500 rounded-lg hover:bg-sky-700 text-white"
+            className="block p-2 text-right mt-4 bg-sky-500 rounded-lg hover:bg-sky-700 text-white mb-3"
             onClick={nextBtnClick}
           >
             다음으로

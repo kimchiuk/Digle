@@ -78,6 +78,7 @@ function App() {
 
             <Route path="/:inviteCode" element={<InviteUrl />} />
             <Route path="/test_chatting_page" element={<TestChattingPage />} />
+            <Route path="/test_room_create" element={<CreateRoomTmp/>}/>
           </Routes>
         </PageLayout>
       </BrowserRouter>
