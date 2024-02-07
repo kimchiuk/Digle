@@ -33,7 +33,7 @@ const CreateRoomTmp = () => {
   const handleJoinRoom = async () => {
     setIsLoading(true);
     if (userType === "Business") {
-      axios
+      await axios
         .post(`${API_URL}/room/create_testroom`, null, {
           withCredentials: true,
         })
