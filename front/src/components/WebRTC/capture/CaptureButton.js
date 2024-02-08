@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+import camera from "../../../assets/webRTC/chat/camera.png";
+
 const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
   const API_URL = process.env.REACT_APP_API_BASE_URL;
   const handleCaptureClick = () => {
@@ -48,7 +50,9 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
 
   return (
     <>
-      <button onClick={handleCaptureClick}>모든유저 캡처 및 전송</button>{" "}
+      <button onClick={handleCaptureClick}>
+        <img src={camera} alt="" className="w-10 h-10" />
+      </button>
     </>
   );
 };

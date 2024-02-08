@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Janus } from "janus";
-
+import axios from "axios";
 import hark from "hark";
 
 import Video from "components/WebRTC/Video/Video";
@@ -12,6 +12,10 @@ import CaptureButton from "components/WebRTC/capture/CaptureButton";
 
 import chatImg from "../../assets/webRTC/chat/chat.png";
 import sendButton from "../../assets/webRTC/chat/sendButton.png";
+import messageImg from "../../assets/webRTC/chat/MessageImg.png";
+import members from "../../assets/webRTC/chat/member.png";
+import logo2 from "../../assets/Logo2.png";
+import deleteButton from "../../assets/webRTC/chat/delete-button.png";
 
 let sfutest = null;
 let username = "username-" + Janus.randomString(5); // 임시 유저네임
@@ -710,7 +714,7 @@ const TestChattingPage = () => {
     return (
       <div
         key={feed.rfid}
-        className="w-[350px] h-[300px] float-left m-[3px]"
+        className="w-[300px] h-[225px] float-left m-[3px]"
         onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
       >
         <Video
@@ -797,23 +801,65 @@ const TestChattingPage = () => {
     );
   });
 
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
+  const [rooms, setRooms] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/rooms/list`)
+      .then((response) => {
+        const fetchedRooms = response.data.plugindata.data.list;
+        setRooms(fetchedRooms);
+        // 초기화 시 모든 방에 대해 참여자 목록을 숨김 상태로 설정
+        let initialShowState = {};
+        fetchedRooms.forEach((room) => {
+          initialShowState[room.room] = false;
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching rooms: ", error);
+      });
+  }, []);
+
+  const handleDeleteRoom = (room_id) => {
+    axios
+      .post(`${API_URL}/rooms/${room_id}/destroy`)
+      .then(() => {
+        const updatedRooms = rooms.filter((room) => room.room !== room_id);
+        setRooms(updatedRooms);
+      })
+      .catch((error) => {
+        console.error("Error deleting room: ", error);
+      });
+  };
+
   return (
     <>
       <div className="h-full w-full relative">
         <div className="border-2 h-20 flex justify-between">
-          <div className="border-2 w-20 h-20 ">로고</div>
-          <div className="border-2 w-40 h-20 flex">
-            <div className="border-2 w-20 h-full"></div>
+          <div className="border-2 w-32 h-20 flex justify-center items-center">
+            <img src={logo2} alt="Digle" className="" />
+          </div>
+          <div className="border-2 w-40 h-20 flex justify-center items-center">
+            <img
+              src={deleteButton}
+              alt="deleteButton"
+              className="w-[40px] "
+              onClick={handleDeleteRoom}
+            />
           </div>
         </div>
-        <div className="border-2 h-[700px] px-20 overflow-auto flex flex-wrap">
+        <div className="border-2 h-[700px] px-20 overflow-auto flex flex-wrap justify-center">
           {renderRemoteVideos}
         </div>
         <div className="border-2 h-20 flex justify-between">
           <div className="border-2 w-60 h-full flex relative">
             <div className="border-2 w-20 h-full relative">
-              <div className="w-20 h-full " onClick={openChatModal}>
-                채팅창 모달
+              <div
+                className="w-20 h-full flex justify-center items-center"
+                onClick={openChatModal}
+              >
+                <img src={messageImg} alt="" className="w-10 h-10" />
               </div>
               {/* 채팅창 모달 */}
               {isChatModalOpen && (
@@ -863,9 +909,12 @@ const TestChattingPage = () => {
               />
             </div>
           </div>
-          <div className="border-2 w-20 h-full relative">
-            <div className="w-full " onClick={openUserListModal}>
-              유저 리스트
+          <div className="border-2 w-20 h-full relative items-center flex">
+            <div
+              className="w-full flex  justify-center"
+              onClick={openUserListModal}
+            >
+              <img src={members} alt="" className="w-10 h-10" />{" "}
             </div>
 
             {/* 유저 리스트 모달 */}
