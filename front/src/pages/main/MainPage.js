@@ -37,7 +37,12 @@ const Main = () => {
           alt="Background"
         />
         <div className="absolute inset-y-0 right-0 flex items-center justify-center w-full md:w-1/2 lg:w-1/3 px-4 md:px-8 lg:px-2 bg-black bg-opacity-70">
-          <div className="text-center">{/* 텍스트 내용 유지 */}</div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-white">
+              온라인 시험 신분증 검사,
+            </p>
+            <p className="text-xl text-white">AI로 간편하게 비교하세요</p>
+          </div>
           <div className="absolute bottom-10 right-4 text-md font-bold text-white opacity-70">
             <Link
               to={userType === "Business" ? "/create_test_room" : "/TestTemp"}

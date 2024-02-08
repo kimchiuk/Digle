@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./Video.css";
 
-const Video = ({ id, stream, username, muted, onClickFunction }) => {
+const Video = ({ id, stream, username, muted, onClickFunction, className }) => {
   const videoRef = useRef();
   const [mediaStream, setMediaStream] = useState(null);
   console.log(id);
@@ -34,7 +34,6 @@ const Video = ({ id, stream, username, muted, onClickFunction }) => {
 
   return (
     <React.Fragment>
-      <div className="w-full">
         <video
           id={id} // 수정: 고유한 ID 사용
           autoPlay
@@ -43,9 +42,8 @@ const Video = ({ id, stream, username, muted, onClickFunction }) => {
           onClick={handleClicked}
           muted={muted}
           controls={onClickFunction ? false : true}
-          className="w-full rounded-xl "
+          className={className}
         />
-      </div>
       <div>{username}</div>
     </React.Fragment>
   );
