@@ -9,7 +9,6 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        GCP_SERVICE_ACCOUNT_JSON = credentials('GCP_SERVICE_ACCOUNT_JSON')
         BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
         FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
         MODEL_IMAGE_NAME = "${env.MODEL_IMAGE_NAME}"
@@ -17,6 +16,7 @@ pipeline {
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
 
+        GCP_SERVICE_ACCOUNT_JSON = "${GCP_SERVICE_ACCOUNT_JSON}"
         GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
         GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
         NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
@@ -53,9 +53,7 @@ pipeline {
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
 
-                            // GCP 인증키를 환경변수로설정
-                            withCredentials([file(credentialsId: 'GCP_SERVICE_ACCOUNT_JSON', variable: 'GCP_SERVICE_ACCOUNT_JSON')]) {
-                                backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
+                            backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
                                     "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
                                     "--build-arg HTTPS=${env.HTTPS} " +
                                     "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
@@ -69,8 +67,6 @@ pipeline {
                                     "--build-arg GCP_SERVICE_ACCOUNT_JSON=${env.GCP_SERVICE_ACCOUNT_JSON} .")
                                 // Docker 빌드 결과 출력
                                 if (backendImage != 0) {
-                                    docker run -e GCP_SERVICE_ACCOUNT_JSON='{"type": "service_account", ...}' ${BACK_IMAGE_NAME}
-
                                     echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
                                     docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                                         backendImage.push()
@@ -79,8 +75,6 @@ pipeline {
                                 } else {
                                     error "Docker build failed"
                                 }
-                            
-                            }
                              
                         }
                     }
