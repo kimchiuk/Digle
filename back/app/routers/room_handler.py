@@ -290,7 +290,8 @@ async def get_available_rooms():
 
 
 @router.get("/rooms/{room_id}/participants")
-def get_room_participants(session_client: str, room_id: int):
+def get_room_participants(room_id: int):
+    session_client = create_janus_session()
     try:
         # 세션에 Videoroom 플러그인을 attach
         attach_data = {
@@ -336,43 +337,46 @@ def get_room_participants(session_client: str, room_id: int):
         return []
 
 
-# 방없애보리기
-def destroy_janus_room(session_id: str, room_id: int):
-    plugin_id = attach_plugin_to_session(session_id)
-    if plugin_id is None:
-        return {"janus": "error", "message": "Failed to attach plugin to session"}
+# 방 삭제 요청 처리 함수 (Janus와 데이터베이스에서 모두 삭제)
+@router.post("/rooms/{room_num}/destroy")
+async def destroy_room(room_num: int, db: Session = Depends(get_db)):
+    session_id = create_janus_session()
+    if not session_id:
+        raise HTTPException(status_code=500, detail="Failed to create Janus session")
 
+    plugin_id = attach_plugin_to_session(session_id)
+    if not plugin_id:
+        raise HTTPException(status_code=500, detail="Failed to attach plugin to session")
+
+    # Janus에서 방 삭제 요청
     janus_message = {
         "janus": "message",
         "transaction": str(uuid.uuid4()),
         "admin_secret": admin_secret,
         "body": {
             "request": "destroy",
-            "room": room_id,
+            "room": room_num,
         },
     }
-
-    response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_message)
-
-    if response.status_code == 200:
-        return response.json()
+    response = requests.post(f"{janus_url}/{session_id}/{plugin_id}", json=janus_message, headers=headers)
+    if response.status_code == 200 and response.json().get("janus") == "success":
+        # 데이터베이스에서 방 정보 삭제
+        if delete_room_by_room_num(db, room_num):
+            return {"message": f"Room {room_num} has been successfully deleted."}
+        else:
+            raise HTTPException(status_code=404, detail="Room not found in the database.")
     else:
-        return {"janus": "error", "message": f"Failed to destroy Janus room: {response.status_code}"}
-
-
-# 방없애보리기 라우터버젼
-@router.post("/rooms/{room_id}/destroy")
-async def destroy_room(room_id: int):
-    session_client = create_janus_session()
-    if session_client is None:
-        raise HTTPException(status_code=500, detail="Failed to create Janus session for room destroy")
-
-    janus_response = destroy_janus_room(session_client, room_id)
-
-    if janus_response["janus"] == "success":
-        return {"janus": "success", "message": f"Room {room_id} has been destroyed"}
-    else:
-        raise HTTPException(status_code=500, detail="Failed to destroy Janus room")
+        raise HTTPException(status_code=500, detail=f"Failed to destroy Janus room: {response.status_code}")
+    
+    
+#방없애기 db버젼    
+def delete_room_by_room_num(db: Session, room_num: int):
+    room_info = db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first()
+    if room_info:
+        db.delete(room_info)
+        db.commit()
+        return True
+    return False
 
 
 # 초대코드

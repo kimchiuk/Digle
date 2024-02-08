@@ -9,14 +9,23 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
+        GCP_SERVICE_ACCOUNT_JSON = credentials('GCP_SERVICE_ACCOUNT_JSON')
         BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
         FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
         MODEL_IMAGE_NAME = "${env.MODEL_IMAGE_NAME}"
 
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
+
+        GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
+        GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
         NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
         NAVER_CLIENT_SECRET = "${env.NAVER_CLIENT_SECRET}"
+        KAKAO_CLIENT_ID = "${env.KAKAO_CLIENT_ID}"
+        KAKAO_CLIENT_SECRET = "${env.KAKAO_CLIENT_SECRET}"
+
+        SECRET_KEY = "${env.SECRET_KEY}"
+        SESSION_SECRET_KEY = "${env.SESSION_SECRET_KEY}"
         SMTP_PASSWORD = "${env.SMTP_PASSWORD}"
         SMTP_PORT = "${env.SMTP_PORT}"
         SMTP_SERVER = "${env.SMTP_SERVER}"
@@ -43,28 +52,36 @@ pipeline {
                     sh 'echo "Starting Build Back Docker Image"'
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+
+                            // GCP 인증키를 환경변수로설정
+                            withCredentials([file(credentialsId: 'GCP_SERVICE_ACCOUNT_JSON', variable: 'GCP_SERVICE_ACCOUNT_JSON')]) {
+                                backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
+                                    "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
+                                    "--build-arg HTTPS=${env.HTTPS} " +
+                                    "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
+                                    "--build-arg NAVER_CLIENT_SECRET=${env.NAVER_CLIENT_SECRET} " +
+                                    "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
+                                    "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
+                                    "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
+                                    "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
+                                    "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
+                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} " +
+                                    "--build-arg GCP_SERVICE_ACCOUNT_JSON=${env.GCP_SERVICE_ACCOUNT_JSON} .")
+                                // Docker 빌드 결과 출력
+                                if (backendImage != 0) {
+                                    docker run -e GCP_SERVICE_ACCOUNT_JSON='{"type": "service_account", ...}' ${BACK_IMAGE_NAME}
+
+                                    echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                                    docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+                                        backendImage.push()
+                                }
+                                // sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                                } else {
+                                    error "Docker build failed"
+                                }
                             
-                             backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
-                                "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
-                                "--build-arg HTTPS=${env.HTTPS} " +
-                                "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
-                                "--build-arg NAVER_CLIENT_SECRET=${env.NAVER_CLIENT_SECRET} " +
-                                "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
-                                "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
-                                "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
-                                "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
-                                "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
-                                "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
-                            // Docker 빌드 결과 출력
-                            if (backendImage != 0) {
-                                echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                                docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-                                    backendImage.push()
                             }
-                            // sh "docker run -p 8000:8000 ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                            } else {
-                                error "Docker build failed"
-                            }
+                             
                         }
                     }
                 }
