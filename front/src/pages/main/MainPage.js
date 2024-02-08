@@ -8,7 +8,7 @@ import MainImg from "../../assets/main.png";
 import video from "../../assets/webRTC/video.png";
 import test from "../../assets/webRTC/test.png";
 
-const API_URL = "https://localhost:8000"; // 서버 API 주소
+const API_URL = process.env.REACT_APP_API_BASE_URL; // 서버 API 주소
 
 const Main = () => {
   const [cookies] = useCookies(["isLogin"]);
@@ -45,7 +45,7 @@ const Main = () => {
           </div>
           <div className="absolute bottom-10 right-4 text-md font-bold text-white opacity-70">
             <Link
-              to={userType === "Business" ? "/test_chatting_page" : "/TestTemp"}
+              to={userType === "Business" ? "/create_test_room" : "/TestTemp"}
               className="flex items-center"
             >
               <img className="w-5 h-5 mr-2" src={test} alt="테스트 바로가기" />

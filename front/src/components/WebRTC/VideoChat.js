@@ -25,8 +25,8 @@ const VideoChat = () => {
   const [captureFrames, setCaptureFrames] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
-  const username=queryParams.get("userId");
-
+  const username = queryParams.get("userId");
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
 
   const connectFeed = (newFeed) => {
@@ -747,7 +747,7 @@ const VideoChat = () => {
           formData.append("faces", blob, `${feed.rfdisplay}.jpeg`);
 
           // fetch API를 사용하여 백엔드로 전송합니다.
-          fetch("https://localhost:8000/faces", {
+          fetch(`${API_URL}/faces`, {
             method: "POST",
             body: formData,
           })

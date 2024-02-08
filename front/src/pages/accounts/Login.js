@@ -19,7 +19,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     // 저장된 쿠키값이 있으면 checkbox를 True 설정 및 UserId에 값 할당

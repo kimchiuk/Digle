@@ -5,7 +5,7 @@ import axios from "axios";
 const TestRoomCreateButton = ({ userName, userType }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   const createTestRoom = (event) => {
     event.preventDefault();

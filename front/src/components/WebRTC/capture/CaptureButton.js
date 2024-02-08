@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
   const handleCaptureClick = () => {
     setCaptureFrames(true);
     alert("사용자 이미지를 수집하였습니다.");
@@ -30,7 +31,7 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
           formData.append("faces", blob, `${feed.rfdisplay}.jpeg`);
 
           // fetch API를 사용하여 백엔드로 전송합니다.
-          fetch("https://localhost:8000/faces", {
+          fetch(`${API_URL}/faces`, {
             method: "POST",
             body: formData,
           })

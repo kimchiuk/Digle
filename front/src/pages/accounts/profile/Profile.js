@@ -4,6 +4,7 @@ import DeleteAccount from "../DeleteAccount";
 import ImageUpload from "../../../components/ImageUpload";
 import axios from "axios";
 import DaumPost from "components/signup/DaumPost";
+import PasswordChangeModal from "components/profile/PasswordChangeModal ";
 
 const Profile = () => {
   const [email, setEmail] = useState("");
@@ -41,7 +42,7 @@ const Profile = () => {
   // 업데이트 버튼 ??
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     // useContext token 추가하기
@@ -116,6 +117,17 @@ const Profile = () => {
     }
   };
 
+  // 비밀번호 변경 모달
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <div className="pt-20 text-xl font-bold mb-2 ml-8">회원정보 수정</div>
@@ -148,13 +160,7 @@ const Profile = () => {
                   value={email}
                 />
               </div>
-              <div className="pt-4 flex flex-col">
-                <input
-                  className="border-2 w-40 h-10"
-                  type="button"
-                  value="비밀번호 변경"
-                />
-              </div>
+
               <div className="pt-2 flex flex-col">
                 <label className="" htmlFor="name">
                   이름
@@ -220,6 +226,23 @@ const Profile = () => {
                 />
               </div>
             </form>
+            <div className="pt-4 flex flex-col">
+              {!isModalOpen && (
+                <input
+                  className="border-2 w-40 h-10"
+                  type="button"
+                  value="비밀번호 변경"
+                  onClick={openModal}
+                />
+              )}
+              {isModalOpen && (
+                <PasswordChangeModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  email={email}
+                />
+              )}
+            </div>
             <div className="flex-1 flex justify-end items-start">
               <DeleteAccount />
             </div>

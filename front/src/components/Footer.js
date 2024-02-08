@@ -27,7 +27,7 @@ const Footer = () => {
         <p className="text-white text-sm text-center sm:text-left mb-2">
           © {new Date().getFullYear()} Digle —
           <a
-            href="https://localhost:3000/"
+            href="/"
             rel="noopener noreferrer"
             className="text-white ml-1"
             target="_blank"

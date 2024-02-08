@@ -106,3 +106,15 @@ def get_user_by_token(request, db, scope):
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     return user
+
+def check_password(input_password, stored_hash) -> bool:
+    """
+    사용자가 입력한 비밀번호와 저장된 해시 값을 비교합니다.
+
+    :param input_password: 사용자가 입력한 비밀번호 (평문)
+    :param stored_hash: 데이터베이스에 저장된 비밀번호의 해시 값
+    :return: 비밀번호가 일치하면 True, 그렇지 않으면 False를 반환합니다.
+    """
+    # 사용자가 입력한 비밀번호를 같은 방식으로 해시합니다.
+    # 그런 다음, 저장된 해시 값과 비교합니다.
+    return bcrypt.checkpw(input_password.encode("utf-8"), stored_hash.encode("utf-8"))
