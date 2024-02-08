@@ -83,6 +83,7 @@ def deploy_run():
         log_level="debug",
         forwarded_allow_ips="*",  # 모든 프록시된 IP 주소 허용
         proxy_headers=True,  # X-Forwarded-Proto 헤더를 신뢰
+        root_path="/api",
     )
 
 

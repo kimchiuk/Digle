@@ -9,6 +9,7 @@ from google.oauth2 import service_account
 # .env 파일에서 환경 변수 로드
 load_dotenv()
 
+"""
 # .env 파일에서 서비스 계정 JSON을 가져옴
 service_account_info = json.loads(os.getenv("GCP_SERVICE_ACCOUNT_JSON"))
 
@@ -17,12 +18,12 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 
 # 인증 정보를 사용하여 Storage 클라이언트 생성
 storage_client = storage.Client(credentials=credentials)
-
+"""
 # 환경 변수에서 서비스 계정 키 파일 경로 가져오기
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\google_service_key.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "../google_service_key.json"
 
 # GCP Storage 클라이언트 초기화
-# storage_client = storage.Client()
+storage_client = storage.Client()
 
 
 def upload_to_gcs(file: UploadFile, file_path: str):
