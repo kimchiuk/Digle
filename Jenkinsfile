@@ -65,7 +65,7 @@ pipeline {
                                     "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
                                     "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
                                     "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
-                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} ." +
+                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} " +
                                     "--build-arg GCP_SERVICE_ACCOUNT_JSON=${env.GCP_SERVICE_ACCOUNT_JSON} .")
                                 // Docker 빌드 결과 출력
                                 if (backendImage != 0) {
