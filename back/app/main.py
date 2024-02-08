@@ -19,10 +19,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 ##혹시나 삭제해야 하는 부분
-origins = [
-    "https://localhost",
-    "https://localhost:3000",  # React 개발 서버의 기본 포트
-]
+origins = ["https://localhost", "https://localhost:3000", "https://i10d107.p.ssafy.io"]  # React 개발 서버의 기본 포트
 
 app.add_middleware(
     CORSMiddleware,
@@ -65,7 +62,6 @@ async def startup_event():
 
 
 def local_run():
-
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
