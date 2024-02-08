@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,26 +7,35 @@ import MainImg from "../../assets/main.png";
 function CreateRoom() {
   const [room_id, setRoomId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userName, setUserName] = useState(""); // State for storing user name
+  const [userType, setUserType] = useState(""); // State for storing user type
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_BASE_URL;
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
+      .then((res) => {
+        console.log(res);
+        setUserName(res.data.user_name); 
+        setUserType(res.data.user_type); 
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []); 
+
   const handleJoinRoom = async () => {
     setIsLoading(true);
     try {
-      // 방 만들기 API 호출
-      const createResponse = await axios
-        .post(`${API_URL}/rooms/create`, null, {
-          withCredentials: true,
-        })
-        .then((response) => {
-          console.log("room_id : ", response.data.plugindata.data.room);
-          const newRoomId = response.data.plugindata.data.room;
-          setRoomId(newRoomId);
-          alert("방이 생성되었습니다");
-          navigate(`/anhs?roomId=${newRoomId}&userId=user123&role=publisher`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      const response = await axios.post(`${API_URL}/rooms/create`, null, {
+        withCredentials: true,
+      });
+      console.log("room_id : ", response.data.plugindata.data.room);
+      const newRoomId = response.data.plugindata.data.room;
+      setRoomId(newRoomId);
+      alert("방이 생성되었습니다");
+      navigate(`/anhs?roomId=${newRoomId}&userId=${userName}&role=publisher`);
     } catch (error) {
       console.error("방 만들기 오류:", error);
     }
@@ -35,7 +44,7 @@ function CreateRoom() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
-      <img className="absolute w-full h-full object-cover" src={MainImg} />
+      <img className="absolute w-full h-full object-cover" src={MainImg} alt="Main background" />
       <div className="relative p-8 bg-black bg-opacity-70 rounded shadow-md max-w-sm w-full">
         <div className="flex flex-col space-y-6">
           <button

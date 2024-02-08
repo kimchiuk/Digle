@@ -9,6 +9,7 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
+        GCP_SERVICE_ACCOUNT_JSON = credentials('GCP_SERVICE_ACCOUNT_JSON')
         BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
         FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
         MODEL_IMAGE_NAME = "${env.MODEL_IMAGE_NAME}"
@@ -16,7 +17,7 @@ pipeline {
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
 
-        GCP_SERVICE_ACCOUNT_JSON = "${GCP_SERVICE_ACCOUNT_JSON}"
+        
         GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
         GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
         NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
@@ -53,7 +54,11 @@ pipeline {
                     dir('back') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
 
-                            backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
+                            withCredentials([file(credentialsId: 'GCP_SERVICE_ACCOUNT_JSON', variable: 'GCP_SERVICE_ACCOUNT_JSON')]) {
+                                sh 'chmod 644 /home/ubuntu/jenkins-data/workspace/S10P12D107/back'
+                                sh 'sudo cp $GCP_SERVICE_ACCOUNT_JSON ./google_service_key.json'
+                                
+                                backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
                                     "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
                                     "--build-arg HTTPS=${env.HTTPS} " +
                                     "--build-arg NAVER_CLIENT_ID=${env.NAVER_CLIENT_ID} " +
@@ -63,8 +68,10 @@ pipeline {
                                     "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
                                     "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
                                     "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
-                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} " +
-                                    "--build-arg GCP_SERVICE_ACCOUNT_JSON=${env.GCP_SERVICE_ACCOUNT_JSON} .")
+                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
+                                
+                                sh 'sudo rm -f ./google_service_key.json'
+
                                 // Docker 빌드 결과 출력
                                 if (backendImage != 0) {
                                     echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
@@ -75,6 +82,9 @@ pipeline {
                                 } else {
                                     error "Docker build failed"
                                 }
+                                
+                            }
+                            
                              
                         }
                     }
