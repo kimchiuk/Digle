@@ -8,6 +8,7 @@ WORKDIR .
 COPY requirements.txt ./
 COPY .idea ./.idea
 COPY app ./app
+COPY gcp_service_account.json .
 
 # ARG 및 ENV 설정 추가
 ARG DATABASE_URL
