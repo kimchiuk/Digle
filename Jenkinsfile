@@ -15,8 +15,16 @@ pipeline {
 
         DATABASE_URL = "${env.DATABASE_URL}"
         HTTPS = "${env.HTTPS}"
+
+        GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
+        GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
         NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
         NAVER_CLIENT_SECRET = "${env.NAVER_CLIENT_SECRET}"
+        KAKAO_CLIENT_ID = "${env.KAKAO_CLIENT_ID}"
+        KAKAO_CLIENT_SECRET = "${env.KAKAO_CLIENT_SECRET}"
+
+        SECRET_KEY = "${env.SECRET_KEY}"
+        SESSION_SECRET_KEY = "${env.SESSION_SECRET_KEY}"
         SMTP_PASSWORD = "${env.SMTP_PASSWORD}"
         SMTP_PORT = "${env.SMTP_PORT}"
         SMTP_SERVER = "${env.SMTP_SERVER}"
