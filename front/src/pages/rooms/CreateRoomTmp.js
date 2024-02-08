@@ -35,7 +35,7 @@ const CreateRoomTmp = () => {
     setIsLoading(true);
     if (userType === "Business") {
       await axios
-        .post(`${API_URL}/rooms/create_test_room`, {
+        .post(`${API_URL}/rooms/create_test_room`, null, {
           withCredentials: true,
         })
         .then((response) => {
