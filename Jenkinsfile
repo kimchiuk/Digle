@@ -55,6 +55,7 @@ pipeline {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
 
                             withCredentials([file(credentialsId: 'GCP_SERVICE_ACCOUNT_JSON', variable: 'GCP_SERVICE_ACCOUNT_JSON')]) {
+                                sh 'chmod 644 /home/ubuntu/jenkins-data/workspace/S10P12D107/back'
                                 sh 'sudo cp $GCP_SERVICE_ACCOUNT_JSON ./google_service_key.json'
                                 
                                 backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
