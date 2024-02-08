@@ -69,6 +69,8 @@ pipeline {
                                     "--build-arg GCP_SERVICE_ACCOUNT_JSON=${env.GCP_SERVICE_ACCOUNT_JSON} .")
                                 // Docker 빌드 결과 출력
                                 if (backendImage != 0) {
+                                    docker run -e GCP_SERVICE_ACCOUNT_JSON='{"type": "service_account", ...}' ${BACK_IMAGE_NAME}
+
                                     echo "Docker build succeeded: ${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}"
                                     docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                                         backendImage.push()
