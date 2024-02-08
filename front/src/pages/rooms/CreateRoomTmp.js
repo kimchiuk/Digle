@@ -9,7 +9,7 @@ import axios from "axios";
 const CreateRoomTmp = () => {
   const [userName, setUserName] = useState();
   const [userType, setUserType] = useState();
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,11 +30,12 @@ const CreateRoomTmp = () => {
       });
   }, []);
 
-  const handleJoinRoom = async () => {
+  const handleJoinRoom = async (e) => {
+    e.preventDefault();
     setIsLoading(true);
     if (userType === "Business") {
       await axios
-        .post(`${API_URL}/room/create_testroom`, null, {
+        .post(`${API_URL}/rooms/create_test_room`, {
           withCredentials: true,
         })
         .then((response) => {

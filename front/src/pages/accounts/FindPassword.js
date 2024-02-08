@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import MainImg from "../../assets/main.png"
+import MainImg from "../../assets/main.png";
 import { useCookies } from "react-cookie";
 
 const FindPassword = () => {
@@ -14,11 +14,9 @@ const FindPassword = () => {
   const [timer, setTimer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies([
-    "email"
-  ]); // Coockies 이름임
-  
-  const API_URL = "https://localhost:8000";
+  const [cookies, setCookie] = useCookies(["email"]); // Coockies 이름임
+
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -38,9 +36,9 @@ const FindPassword = () => {
 
   const verifyEmail = async () => {
     const formData = new FormData();
-    formData.append('name', username);
-    formData.append('email', email)
-    
+    formData.append("name", username);
+    formData.append("email", email);
+
     try {
       const response = await axios.post(`${API_URL}/find_password`, formData);
       setIsVerified(true);
@@ -65,9 +63,8 @@ const FindPassword = () => {
   };
 
   const onClickErrorCode = () => {
-    setError("")
-  }
-
+    setError("");
+  };
 
   const resetTimer = () => {
     clearInterval(timer);
@@ -77,13 +74,13 @@ const FindPassword = () => {
 
   const verifyCode = async () => {
     const formData = new FormData();
-    formData.append('email', email)
-    formData.append('auth_code', verificationCode);
+    formData.append("email", email);
+    formData.append("auth_code", verificationCode);
     try {
       await axios.post(`${API_URL}/verify_password_reset`, formData);
-      setCookie("email", email)
+      setCookie("email", email);
       navigate(`/reset_password`);
-      console.log("인증이 확인 되었습니다!")
+      console.log("인증이 확인 되었습니다!");
     } catch (err) {
       setError(err.response?.data?.message || "인증번호가 올바르지 않습니다.");
     }
@@ -94,7 +91,7 @@ const FindPassword = () => {
       resetTimer();
       setIsVerified(false);
       setError("");
-      alert("인증 시간이 만료되었습니다. 다시 시도해주세요.")
+      alert("인증 시간이 만료되었습니다. 다시 시도해주세요.");
     }
   }, [timeLeft, timer]);
 
@@ -129,9 +126,9 @@ const FindPassword = () => {
           </div>
           {!isVerified ? (
             <button
-            onClick={verifyEmail}
-            className={`w-full focus:outline-none text-white bg-yellow-600 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-md px-5 py-2.5 mt-4 dark:focus:ring-yellow-900`}
-          >
+              onClick={verifyEmail}
+              className={`w-full focus:outline-none text-white bg-yellow-600 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-md px-5 py-2.5 mt-4 dark:focus:ring-yellow-900`}
+            >
               인증번호 전송
             </button>
           ) : (

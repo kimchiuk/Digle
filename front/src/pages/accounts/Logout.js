@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 
 const Logout = () => {
   const navigate = useNavigate();
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   // 두 번째 콤마는 setCookie 함수를 건너뛰기 위한 것(구조 분해 할당)
   const [cookies, setCookie, removeCookie] = useCookies(["isLogin"]);

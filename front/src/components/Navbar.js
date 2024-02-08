@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 
-const API_URL = "https://localhost:8000"; // API의 기본 URL
+const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Navbar = () => {
   const [cookies] = useCookies(["isLogin"]);

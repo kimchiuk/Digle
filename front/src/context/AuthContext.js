@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     axios

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 
-import share from "../../../assets/webRTC/share.png"
+import share from "../../../assets/webRTC/share.png";
 
 const GetInviteCode = () => {
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
   const userUrl = window.location.href;
   const urlObj = new URL(userUrl);
   const params = new URLSearchParams(urlObj.search);

@@ -10,7 +10,7 @@ const DeleteAccount = () => {
   const modalRef = useRef(); // 모달 창 참조
 
   const navigate = useNavigate();
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
   const [cookies, , removeCookie] = useCookies(["isLogin"]);
 
   useEffect(() => {

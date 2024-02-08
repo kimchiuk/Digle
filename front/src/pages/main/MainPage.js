@@ -8,7 +8,7 @@ import MainImg from "../../assets/main.png";
 import video from "../../assets/webRTC/video.png";
 import test from "../../assets/webRTC/test.png";
 
-const API_URL = "https://localhost:8000"; // 서버 API 주소
+const API_URL = process.env.REACT_APP_API_BASE_URL; // 서버 API 주소
 
 const Main = () => {
   const [cookies] = useCookies(["isLogin"]);
