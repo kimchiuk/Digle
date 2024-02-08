@@ -6,3 +6,4 @@ alembic/versions/*
 input_images/
 test_images/
 alembic.ini
+google_service_key.json
