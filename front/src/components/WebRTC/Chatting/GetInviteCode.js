@@ -39,7 +39,7 @@ const GetInviteCode = () => {
   return (
     <>
       <button onClick={getCode}>
-        <img className="w-5 h-5" src={share} alt="공유 버튼" />
+        <img className="min-w-5 h-5" src={share} alt="공유 버튼" />
       </button>
     </>
   );
