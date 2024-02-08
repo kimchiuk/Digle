@@ -30,7 +30,6 @@ const Logout = () => {
 
         // 로그아웃이 성공하면 쿠키에서 사용자 정보를 지웁니다.
         removeCookie("isLogin", { path: "/", domain: "localhost" });
-        response.set_cookie("__Host-access_token", "", expires=0)
         navigate("/");
       } catch (error) {
         console.error("에러 발생: ", error);
