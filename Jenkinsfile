@@ -19,7 +19,7 @@ pipeline {
 
         
         GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
-        GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
+        GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"7
         NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
         NAVER_CLIENT_SECRET = "${env.NAVER_CLIENT_SECRET}"
         KAKAO_CLIENT_ID = "${env.KAKAO_CLIENT_ID}"
@@ -55,9 +55,7 @@ pipeline {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
 
                             withCredentials([file(credentialsId: 'GCP_SERVICE_ACCOUNT_JSON', variable: 'GCP_SERVICE_ACCOUNT_JSON')]) {
-                                sh 'chmod 644 /home/ubuntu/jenkins-data/workspace/S10P12D107/back'
-                                sh 'sudo cp $GCP_SERVICE_ACCOUNT_JSON ./google_service_key.json'
-                                
+                               
                                 backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
                                     "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
                                     "--build-arg HTTPS=${env.HTTPS} " +
