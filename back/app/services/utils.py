@@ -7,6 +7,7 @@ from fastapi.responses import StreamingResponse
 from google.cloud import storage
 import os
 from google.oauth2 import service_account
+import httpx
 
 # .env 파일에서 환경 변수 로드
 load_dotenv()
@@ -71,5 +72,17 @@ def get_image_stream(file_path: str):
     return StreamingResponse(stream, media_type="image/jpeg")
 
 
-def request_embedding(internal_id: str):
+async def request_embedding(profile_img, internal_id: str):
     AI_SERVER_URL = os.getenv("AI_SERVER_URL")
+
+    # 파일을 multipart/form-data 형태로 준비
+    files = {
+        "internal_id": (None, internal_id),
+    }
+
+    # 'profile_img'가 파일 객체인 경우
+    files["image"] = (profile_img.filename, profile_img.file)
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(f"{AI_SERVER_URL}/profile_embedding", files=files)
+        return response.json()

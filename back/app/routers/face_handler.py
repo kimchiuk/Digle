@@ -1,6 +1,8 @@
 import os
+import shutil
+from typing import List
 from dotenv import load_dotenv
-from fastapi import APIRouter, Form, HTTPException, Request, Depends, Response
+from fastapi import APIRouter, File, Form, HTTPException, Request, Depends, Response, UploadFile
 from fastapi.responses import JSONResponse
 import httpx
 from sqlalchemy.orm import Session
@@ -17,11 +19,16 @@ router = APIRouter(tags=["face_handler"])
 
 
 @router.post("/faces")
-async def face_caputre(requeset: Request, response: Response, faces: list = Form(None)):
+async def face_capture(request: Request, response: Response, faces: List[UploadFile] = File(...)):
     print(faces)
+    """
     for face in faces:
         if face and face.filename:
             # 파일 저장 또는 처리
-            file_location = f"C:/files/{face.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(face.file.read())
+            os.makedirs(f"C:/files/capture", exist_ok=True)
+            temp_file = f"C:/files/capture/{face.filename}"
+            with open(temp_file, "wb") as f:
+                contents = await face.read()  # 비동기적으로 파일 내용 읽기
+                f.write(contents)  # 파일 저장
+                await face.close()  # 파일 처리 후 리소스 해제
+    """

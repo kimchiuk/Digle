@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 from sqlalchemy.orm import Session
-from services.utils import upload_to_gcs
+from services.utils import request_embedding, upload_to_gcs
 from database import get_db
 from models.user import User, BusinessUser, UserType
 from services.auth_service import get_user_by_token, hash_password, verify_password
@@ -101,6 +101,8 @@ async def update_user_profile(
             file_path = f"profiles/{user.internal_id}"
             # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
             upload_to_gcs(profile_img, file_path, user.internal_id)
+
+            await request_embedding(profile_img, user.internal_id)
 
         user.name = name
         user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
