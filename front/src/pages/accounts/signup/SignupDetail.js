@@ -59,7 +59,6 @@ const SignupDetail = () => {
         setEmailCodeOk(false);
 
         startTimer();
-
       } else {
         setEmailMessage("이미 가입된 이메일입니다.");
         setEmailCodeOk(true);
@@ -76,8 +75,7 @@ const SignupDetail = () => {
     const currentCode = e.target.value;
     setEmailCode(currentCode);
   };
-  
-  
+
   const startTimer = () => {
     setTimeLeft(180);
     setTimer(
@@ -111,15 +109,14 @@ const SignupDetail = () => {
         alert("인증되었습니다.");
       } else {
         setEmailCodeOk(false);
-        alert("인증에 실패하였습니다.")
-        console.log("에러 발생: ",response)
+        alert("인증에 실패하였습니다.");
+        console.log("에러 발생: ", response);
       }
     } catch (error) {
       console.log("에러 내용", error);
       setIsVerified(false);
     }
   };
-
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -250,8 +247,16 @@ const SignupDetail = () => {
     formData.append("name", name);
     formData.append("password", password);
     if (isCompany) {
-      if (!companyName || !companyEmail || !zipCode || !roadAddress || !detailAddress) {
-        alert("회사 이름, 회사 이메일, 우편번호, 도로명 주소, 상세주소는 필수 입력 항목입니다.");
+      if (
+        !companyName ||
+        !companyEmail ||
+        !zipCode ||
+        !roadAddress ||
+        !detailAddress
+      ) {
+        alert(
+          "회사 이름, 회사 이메일, 우편번호, 도로명 주소, 상세주소는 필수 입력 항목입니다."
+        );
         return;
       }
       const companyAddress = `${roadAddress} (${zipCode}) ${detailAddress}`;
