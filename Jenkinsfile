@@ -9,7 +9,7 @@ pipeline {
         // 환경 변수 설정
         GIT_REGISTRY_CREDENTIALS = credentials('gitlab')
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker')
-        GCP_SERVICE_ACCOUNT_JSON = credentials('GCP_SERVICE_ACCOUNT_JSON')
+        // GCP_SERVICE_ACCOUNT_JSON = credentials('GCP_SERVICE_ACCOUNT_JSON')
         BACK_IMAGE_NAME = "${env.BACK_IMAGE_NAME}"
         FRONT_IMAGE_NAME = "${env.FRONT_IMAGE_NAME}"
         MODEL_IMAGE_NAME = "${env.MODEL_IMAGE_NAME}"
