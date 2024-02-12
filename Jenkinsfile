@@ -33,7 +33,10 @@ pipeline {
         SMTP_USERNAME = "${env.SMTP_USERNAME}"
         SSL_CRT_FILE = "${env.SSL_CRT_FILE}"
         SSL_KEY_FILE = "${env.SSL_KEY_FILE}"
+        
+        REACT_APP_API_BASE_URL = "${env.REACT_APP_API_BASE_URL}"
         DOCKER_COMPOSE_FILE = "docker-compose.yml"
+        
         
     }
     
@@ -99,7 +102,8 @@ pipeline {
                     dir('front') {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
-                             frontendImage = docker.build("${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                             frontendImage = docker.build("${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}",
+                              "--build-arg REACT_APP_API_BASE_URL=${env.REACT_APP_API_BASE_URL} .")
                             // Docker 빌드 결과 출력
                             if (frontendImage != 0) {
                                 echo "Docker build succeeded: ${FRONT_IMAGE_NAME}:${env.BUILD_NUMBER}"
