@@ -898,17 +898,23 @@ const TestChattingPage = () => {
                 </div>
               )}
             </div>
+            {/* 초대코드 */}
             <div className="border-2 w-20 flex justify-center items-center">
               <GetInviteCode />
             </div>
+            {/* 캡쳐버튼 */}
             <div className="border-2 w-20 h-full flex justify-center items-center">
               <CaptureButton
                 feeds={feeds}
                 captureFrames={captureFrames}
                 setCaptureFrames={setCaptureFrames}
+                className="flex w-5 h-5"
               />
+              캡쳐
             </div>
           </div>
+          <div></div>
+          {/* 유저 리스트 모달 */}
           <div className="border-2 w-20 h-full relative items-center flex">
             <div
               className="w-full flex  justify-center"
@@ -924,6 +930,7 @@ const TestChattingPage = () => {
                   <div>참가 유저 리스트</div>
                   <button onClick={closeUserListModal}>X</button>
                 </div>
+                <hr />
                 <div className="mt-4">
                   <UserList
                     feeds={feeds}
