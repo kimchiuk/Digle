@@ -55,6 +55,7 @@ pipeline {
                         withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
 
                             withCredentials([file(credentialsId: 'GCP_SERVICE_ACCOUNT_JSON', variable: 'GCP_SERVICE_ACCOUNT_JSON')]) {
+                                sh 'cp $GCP_SERVICE_ACCOUNT_JSON ./google_service_key.json'
                                
                                 backendImage = docker.build("${BACK_IMAGE_NAME}:${env.BUILD_NUMBER}", 
                                     "--build-arg DATABASE_URL=${env.DATABASE_URL} " +
@@ -66,8 +67,9 @@ pipeline {
                                     "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
                                     "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
                                     "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
-                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} " +
-                                    "--build-arg GCP_SERVICE_ACCOUNT_JSON=$(cat $GCP_SERVICE_ACCOUNT_JSON) .")
+                                    "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
+
+                                sh 'rm -f ./google_service_key.json' // 빌드 후 파일 삭제
                                 
 
                                 // Docker 빌드 결과 출력
