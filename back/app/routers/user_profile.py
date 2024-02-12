@@ -1,5 +1,6 @@
 import shutil
 from fastapi import BackgroundTasks, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -44,12 +45,12 @@ async def read_users_me(
     if user.user_type == UserType.Standard:
 
         file_location = user.profile_picture_url
-        # with open(file_location, "rb") as image_file:
-        #     encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        with open(file_location, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
         user_data = {
             "email": user.email,
             "name": user.name,
-            # "profile_picture_url": encoded_image,
+            "profile_picture_url": encoded_image,
             "user_type": user.user_type,
             "auth_provider": user.auth_provider,
         }
@@ -99,17 +100,17 @@ async def update_user_profile(
             """
             file_path = f"profiles/{user.internal_id}"
             # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-            upload_to_gcs(profile_img, file_path)
+            upload_to_gcs(profile_img, file_path, user.internal_id)
 
         user.name = name
-        user.profile_picture_url = file_location
+        user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
 
         db.commit()
-
+        file_base64 = base64.b64encode(profile_img.file.read()).decode("utf-8")
         user_data = {
             "email": email,
             "name": name,
-            "profile_picture_url": file_location,
+            "profile_picture_url": file_base64,
             "user_type": user.user_type,
             "auth_provider": user.auth_provider,
         }

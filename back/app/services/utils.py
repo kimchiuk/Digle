@@ -1,4 +1,6 @@
+import asyncio
 import json
+import shutil
 from dotenv import load_dotenv
 from fastapi import UploadFile
 from fastapi.responses import StreamingResponse
@@ -26,22 +28,37 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "../google_service_key.json"
 storage_client = storage.Client()
 
 
-def upload_to_gcs(file: UploadFile, file_path: str):
+async def delete_file_after_delay(filepath, delay=6):
+    await asyncio.sleep(delay)  # 지정된 시간(초) 동안 대기
+    if os.path.exists(filepath):
+        os.remove(filepath)
+
+
+def upload_to_gcs(file: UploadFile, file_path: str, id: str):
     bucket_name = "ssafy-bucket"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
 
     # 임시 파일 생성
-    temp_file = f"C:/files/{file.filename}"
+    os.makedirs(f"C:/files", exist_ok=True)
+    temp_file = f"C:/files/{id}.{file.filename.split('.')[-1]}"
     with open(temp_file, "wb") as f:
-        f.write(file.file.read())
+        shutil.copyfileobj(file.file, f)
 
     # GCS에 업로드
     blob = bucket.blob(file_path)
     blob.upload_from_filename(temp_file)
 
     # 임시 파일 삭제
-    os.remove(temp_file)
+    # os.remove(temp_file)
+
+
+def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    os.makedirs(os.path.dirname(destination_file_name), exist_ok=True)
+    blob.download_to_filename(destination_file_name)
 
 
 def get_image_stream(file_path: str):
@@ -52,3 +69,7 @@ def get_image_stream(file_path: str):
     stream = blob.download_as_stream()
 
     return StreamingResponse(stream, media_type="image/jpeg")
+
+
+def request_embedding(internal_id: str):
+    AI_SERVER_URL = os.getenv("AI_SERVER_URL")

@@ -1,6 +1,6 @@
 # app/models/user.py
 from enum import Enum as pyEnum
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Enum as SQLEnum
+from sqlalchemy import Column, Integer, LargeBinary, String, DateTime, Boolean, ForeignKey, Text, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from database import Base  # database.py에서 Base 클래스를 임포
@@ -29,6 +29,7 @@ class User(Base):
     auth_provider_id = Column(String, nullable=True)  # OAuth 공급자의 고유 식별자
 
     profile_picture_url = Column(String, nullable=True)  # 프로필 사진 URL
+    embedded_profile = Column(LargeBinary, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

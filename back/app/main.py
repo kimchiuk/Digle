@@ -13,6 +13,8 @@ from routers import find_password
 import models, schemas
 from database import SessionLocal, engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
+from models.user import *
+from models.room import *
 
 
 Base.metadata.create_all(bind=engine)
