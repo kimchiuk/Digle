@@ -160,6 +160,7 @@ async def login_for_access_token(
 
         # 유저정보 추출
         user_info = naver_response["response"]
+        print(user_info)
         message, action, response = user_db_login("Naver", user_info["id"], user_info, db, response)
 
     return JSONResponse(
@@ -184,7 +185,7 @@ async def login_for_access_token(
         TOKEN_URL = "https://kauth.kakao.com/oauth/token"
         data = {
             "grant_type": "authorization_code",
-            "client_id": os.getenv("KAKAKO_CLIENT_ID"),
+            "client_id": os.getenv("KAKAO_CLIENT_ID"),
             "redirect_uri": f"{REDIRECT_BASE_URI}/login/callback",
             "code": code,
         }
@@ -192,6 +193,7 @@ async def login_for_access_token(
             TOKEN_URL, headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"}, data=data
         )
         token_response_data = token_response.json()
+
         print(token_response_data)
         if "access_token" not in token_response_data:
             raise HTTPException(status_code=400, detail="카카오 로그인 실패")
@@ -205,10 +207,11 @@ async def login_for_access_token(
         # 유저정보 추출
         user_info = user_info_data["kakao_account"]
         print(user_info)
+
         # db에 해당 유저가 있는지 확인
         user = db.query(User).filter(User.email == user_info["email"]).first()
         # 그걸로 access token을 생성
-        access_token = create_access_token(user_info["email"], "naver")
+        access_token = create_access_token(user_info["email"], "kakao")
         # access token을 보안때문에 header에다 cookie를 담아서 줄것.
         response.set_cookie(
             key="access_token",
@@ -226,7 +229,10 @@ async def login_for_access_token(
             user = User(
                 email=user_info["email"],
                 name=user_info["profile"]["nickname"],
-                additional_info_submitted=False,
+                internal_id=generate_internal_id(),
+                is_additional_info_provided=False,
+                auth_provider="Kakao",
+                user_type="Standard",
             )
             db.add(user)
             db.commit()
@@ -238,7 +244,7 @@ async def login_for_access_token(
                 content={"message": "New User", "action": "request_additional_info"},
                 headers=dict(response.headers),
             )
-        elif not user.additional_info_submitted:
+        elif not user.is_additional_info_provided:
             # 추가 정보가 아직 제출되지 않은 경우
             return_value = JSONResponse(
                 status_code=200,
