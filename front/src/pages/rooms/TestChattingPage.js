@@ -18,7 +18,7 @@ import logo2 from "../../assets/Logo2.png";
 import deleteButton from "../../assets/webRTC/chat/delete-button.png";
 
 let sfutest = null;
-let username = "username-" + Janus.randomString(5); // 임시 유저네임
+// let username = "username-" + Janus.randomString(5); // 임시 유저네임
 let receivedFileChunk = {};
 
 const TestChattingPage = () => {
@@ -36,6 +36,7 @@ const TestChattingPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const myroom = parseInt(queryParams.get("roomId"), 10);
+  const username = queryParams.get("userId");
   const navigate = useNavigate();
 
   const connectFeed = (newFeed) => {
@@ -822,30 +823,38 @@ const TestChattingPage = () => {
   }, []);
 
   const handleDeleteRoom = (room_id) => {
-    axios
-      .post(`${API_URL}/rooms/${room_id}/destroy`)
-      .then(() => {
-        const updatedRooms = rooms.filter((room) => room.room !== room_id);
-        setRooms(updatedRooms);
-      })
-      .catch((error) => {
-        console.error("Error deleting room: ", error);
-      });
+    if (
+      window.confirm(
+        "관리자가 방에서 나가면 방이 없어져 모든 유저가 방에서 나가게 됩니다. 정말 나가시겠습니까?"
+      )
+    ) {
+      axios
+        .post(`${API_URL}/rooms/${room_id}/destroy`)
+        .then(() => {
+          const updatedRooms = rooms.filter((room) => room.room !== room_id);
+          setRooms(updatedRooms);
+        })
+        .catch((error) => {
+          console.error("Error deleting room: ", error);
+        });
+    } else {
+      alert("취소합니다.");
+    }
   };
 
   return (
     <>
-      <div className="h-full w-full relative">
+      <div className="h-screen w-full flex flex-col relative">
         <div className="border-2 h-20 flex justify-between">
           <div className="border-2 w-32 h-20 flex justify-center items-center">
             <img src={logo2} alt="Digle" className="" />
           </div>
-          <div className="border-2 w-40 h-20 flex justify-center items-center">
+          <div className="border-2 w-20 h-20 flex justify-center items-center">
             <img
               src={deleteButton}
               alt="deleteButton"
               className="w-[40px] "
-              onClick={() => handleDeleteRoom()}
+              onClick={() => handleDeleteRoom(myroom)}
             />
           </div>
         </div>
@@ -853,13 +862,14 @@ const TestChattingPage = () => {
           {renderRemoteVideos}
         </div>
         <div className="border-2 h-20 flex justify-between">
-          <div className="border-2 w-60 h-full flex relative">
-            <div className="border-2 w-20 h-full relative">
+          <div className="flex">
+            <div className="flex w-20 relative justify-center items-center">
               <div
-                className="w-20 h-full flex justify-center items-center"
+                className="w-[70px] h-8 flex justify-center items-center border-2 rounded-3xl bg-gray-200"
                 onClick={openChatModal}
               >
-                <img src={messageImg} alt="" className="w-10 h-10" />
+                <img src={messageImg} alt="" className="w-5 h-5" />
+                <span>채팅</span>
               </div>
               {/* 채팅창 모달 */}
               {isChatModalOpen && (
@@ -898,29 +908,29 @@ const TestChattingPage = () => {
                 </div>
               )}
             </div>
+
             {/* 초대코드 */}
-            <div className="border-2 w-20 flex justify-center items-center">
+            <div className="w-20 flex justify-center items-center">
               <GetInviteCode />
             </div>
             {/* 캡쳐버튼 */}
-            <div className="border-2 w-20 h-full flex justify-center items-center">
+            <div className="w-20 flex justify-center items-center">
               <CaptureButton
                 feeds={feeds}
                 captureFrames={captureFrames}
                 setCaptureFrames={setCaptureFrames}
                 className="flex w-5 h-5"
               />
-              캡쳐
             </div>
           </div>
-          <div></div>
           {/* 유저 리스트 모달 */}
-          <div className="border-2 w-20 h-full relative items-center flex">
+          <div className="w-20 h-full relative justify-center items-center flex">
             <div
-              className="w-full flex  justify-center"
+              className="w-[70px] h-8 flex justify-center items-center gap-2 hover:bg-gray-300 focus:ring-gray-400"
               onClick={openUserListModal}
             >
-              <img src={members} alt="" className="w-10 h-10" />{" "}
+              <img src={members} alt="" className="w-6 h-6" />
+              <span>{feeds.length}</span>
             </div>
 
             {/* 유저 리스트 모달 */}
