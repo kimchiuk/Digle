@@ -65,28 +65,27 @@ async def login_for_access_token(
         raise HTTPException(status_code=409, detail="Invalid or expired token")
 
     internal_id = generate_internal_id()
-    file_path = None
     profile_picture_url = None
+    
     if profile_img and profile_img.filename:
-        """파일 저장 또는 처리
-        file_location = f"C:/files/{profile_img.filename}"
-        with open(file_location, "wb+") as file_object:
-            file_object.write(profile_img.file.read())
-        """
-        file_path = f"profiles/{internal_id}"
-        background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-        profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
-    while db.query(User).filter(User.internal_id == internal_id).first():
-        internal_id = generate_internal_id()
+        file_path = f"profiles/{internal_id}/{profile_img.filename}"
+    # background_tasks.add_task 호출 시 필요한 모든 인자를 포함합니다.
+    # 여기서는 internal_id를 id 매개변수로 사용합니다.
+        background_tasks.add_task(upload_to_gcs, profile_img, file_path, internal_id)
+    # 업로드 후의 파일 URL 설정 로직이 필요합니다.
+    # 예시에서는 임시로 설정한 URL입니다. 실제로는 업로드된 파일의 접근 가능한 URL을 사용해야 합니다.
+        profile_picture_url = f"https://example.com/{file_path}"
 
+
+    # user 객체 생성
     user = User(
-        email=base_data.email,
-        hashed_password=hash_password(base_data.password),
-        name=base_data.name,
-        profile_picture_url=profile_picture_url,
+        email=email,
+        hashed_password=hash_password(password),
+        name=name,
         user_type=user_type,
         internal_id=internal_id,
         auth_provider="None",
+        profile_picture_url=profile_picture_url,  # 여기에서 사용
         is_additional_info_provided=True,
     )
     db.add(user)
