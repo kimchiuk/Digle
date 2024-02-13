@@ -206,10 +206,11 @@ async def login_for_access_token(
         # 유저정보 추출
         user_info = user_info_data["kakao_account"]
         print(user_info)
+
         # db에 해당 유저가 있는지 확인
         user = db.query(User).filter(User.email == user_info["email"]).first()
         # 그걸로 access token을 생성
-        access_token = create_access_token(user_info["email"], "naver")
+        access_token = create_access_token(user_info["email"], "kakao")
         # access token을 보안때문에 header에다 cookie를 담아서 줄것.
         response.set_cookie(
             key="access_token",
@@ -227,7 +228,11 @@ async def login_for_access_token(
             user = User(
                 email=user_info["email"],
                 name=user_info["profile"]["nickname"],
+                internal_id=generate_internal_id(),
+                auth_provider="Kakao",
                 is_additional_info_provided=False,
+                auth_provider_id=None,
+                user_type="Standard",
             )
             db.add(user)
             db.commit()
