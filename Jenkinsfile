@@ -67,6 +67,8 @@ pipeline {
                                     "--build-arg NAVER_CLIENT_SECRET=${env.NAVER_CLIENT_SECRET} " +
                                     "--build-arg KAKAO_CLIENT_ID=${env.KAKAO_CLIENT_ID} " +
                                     "--build-arg KAKAO_CLIENT_SECRET=${env.KAKAO_CLIENT_SECRET} " +
+                                    "--build-arg GOOGLE_CLIENT_ID=${env.GOOGLE_CLIENT_ID} " +
+                                    "--build-arg GOOGLE_CLIENT_SECRET=${env.GOOGLE_CLIENT_SECRET} " +
                                     "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
                                     "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
                                     "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
