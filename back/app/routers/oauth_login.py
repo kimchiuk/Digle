@@ -217,7 +217,7 @@ async def login_for_access_token(
             # key="access_token",
             key="__Host-access_token",
             value=access_token,
-            httponly=False,
+            httponly=True,
             secure=True,
             samesite="None",
             # domain = '어쩌고 저쩌고',
