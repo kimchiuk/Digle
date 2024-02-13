@@ -765,6 +765,13 @@ const TestUser = () => {
     }
   }, [captureFrames, feeds]);
 
+  const [isChatVisible, setIsChatVisible] = useState(false);
+
+  // 채팅창 토글 함수
+  const toggleChat = () => {
+    setIsChatVisible(!isChatVisible);
+  };
+
   const renderRemoteVideos = feeds.map((feed) => {
     return (
       <div
@@ -784,36 +791,55 @@ const TestUser = () => {
 
   return (
     <>
-      <div> {/* 상대적 위치 지정 */}
-        {/* 자신의 캠을 오른쪽 상단에 고정 */}
-        <div className="absolute top-0 right-0 z-10">
-          {myFeed && myFeed.stream && (
-            <div className="my-video-container w-[200px] h-[200px]">
-              <Video stream={myFeed.stream} username={username} muted={true} />
-            </div>
-          )}
-        </div>
-
+      {/* 자신의 캠을 오른쪽 상단에 고정 */}
+      <div className="absolute top-0 right-0 z-20">
+        {myFeed && myFeed.stream && (
+          <div className="my-video-container w-[200px] h-[200px]">
+            <Video stream={myFeed.stream} username={username} muted={true} />
+          </div>
+        )}
       </div>
 
-
+      {/* iframe */}
       <div>
         <iframe
           src="https://www.ssafy.com"
           title="ssafy-website"
-          className="w-4/5 h-screen ml-4 mb-[50px]"
+          className="w-full h-[1096px]"
         ></iframe>
       </div>
-      <div className=" flex justify-center">
-        <button
-        onClick={handleEndExamClick}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold mb-[20px] py-2 px-4 rounded mt-4"
-        >
-          End Exam
-        </button>
+
+      {/* 버튼과 채팅창 컨테이너 */}
+      <div className="relative w-full p-4 bg-white">
+        {/* 채팅창 */}
+        {isChatVisible && (
+          <div className="absolute left-4 bottom-full mb-2 bg-white p-4 rounded shadow-lg w-[400px] z-10">
+            <Chatting
+              sendChatData={sendChatData}
+              receiveChat={receiveChat}
+              transferFile={transferFile}
+              receiveFile={receiveFile}
+              feeds={feeds}
+              username={username}
+              sendPrivateMessage={sendPrivateMessage}
+            />
+          </div>
+        )}
+
+        {/* 버튼들 */}
+        <div className="flex justify-between">
+          {/* Show Chat 버튼 */}
+          <button onClick={toggleChat} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {isChatVisible ? 'Hide Chat' : 'Show Chat'}
+          </button>
+
+          {/* End Exam 버튼 */}
+          <button onClick={handleEndExamClick} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            End Exam
+          </button>
+        </div>
       </div>
     </>
-
   );
 
 };
