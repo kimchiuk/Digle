@@ -193,12 +193,13 @@ async def login_for_access_token(
             TOKEN_URL, headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"}, data=data
         )
         token_response_data = token_response.json()
-
+        access_token = token_response_data.get("access_token")
         print(token_response_data)
+
         if "access_token" not in token_response_data:
             raise HTTPException(status_code=400, detail="카카오 로그인 실패")
 
-        access_token = token_response_data["access_token"]
+        # access_token = token_response_data["access_token"]
         USER_INFO_URL = "https://kapi.kakao.com/v2/user/me"
         headers = {"Authorization": f"Bearer {access_token}"}
 

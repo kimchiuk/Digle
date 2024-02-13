@@ -1,19 +1,39 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
+import deleteImg from "../../assets/webRTC/createroom/delete.png";
+import userListOn from "../../assets/webRTC/createroom/userliston.png";
+import userListOff from "../../assets/webRTC/createroom/userlistoff.png";
 
 function RoomList({ refresh }) {
   const [rooms, setRooms] = useState([]);
   const [participants, setParticipants] = useState({});
   const [showParticipants, setShowParticipants] = useState({}); // 각 방의 참여자 목록 표시 상태를 관리하는 상태
-
+  const [userName, setUserName] = useState("");
   const API_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/get_user_name_and_type`, {
+          withCredentials: true,
+        });
+
+        const newUserName = response.data.user_name;
+        setUserName(newUserName);
+      } catch (error) {
+        console.error("유저 이름이 안가져와져요 에러:", error);
+      }
+    };
+
+    fetchUserName();
+  }, []); // 빈 배열을 전달하여 한 번만 실행되도록 설정
+
   const handleEnterRoom = (room_id) => {
     // navigate 함수를 사용하여 특정 경로로 이동
-    navigate(`/anhs?roomId=${room_id}&userId=user123&role=publisher`);
+    navigate(`/anhs?roomId=${room_id}&userId=${userName}&role=publisher`);
   };
 
   const fetchRooms = useCallback(() => {
@@ -40,17 +60,20 @@ function RoomList({ refresh }) {
   }, [refresh, fetchRooms]); // refresh, fetchRooms가 변경될 때 effect가 실행되도록 의존성 배열에 추가
 
   const handleDeleteRoom = (room_id) => {
-    axios
-      .post(`${API_URL}/rooms/${room_id}/destroy`)
-      .then(() => {
-        const updatedRooms = rooms.filter((room) => room.room !== room_id);
-        setRooms(updatedRooms);
-      })
-      .catch((error) => {
-        console.error("Error deleting room: ", error);
-      });
-  };
+    const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
 
+    if (confirmDelete) {
+      axios
+        .post(`${API_URL}/rooms/${room_id}/destroy`)
+        .then(() => {
+          const updatedRooms = rooms.filter((room) => room.room !== room_id);
+          setRooms(updatedRooms);
+        })
+        .catch((error) => {
+          console.error("Error deleting room: ", error);
+        });
+    }
+  };
   const handleShowParticipants = async (room_id) => {
     // 참여자 목록 표시 상태를 토글
     setShowParticipants((prevState) => ({
@@ -84,23 +107,39 @@ function RoomList({ refresh }) {
     <div className="">
       <ul>
         {rooms.map((room) => (
-          <li 
-          className="bg-sky-300 text-white rounded-2xl p-3 mb-3"
-          key={room.room}>
-            <div onClick={() => handleEnterRoom(room.room)} style={{cursor: 'pointer', flex: 1}}>
-            {room.description}
-          </div>
-            <button onClick={() => handleDeleteRoom(room.room)}>Delete</button>
-            <button onClick={() => handleShowParticipants(room.room)}>
-              {showParticipants[room.room] ? "참여자 숨기기" : "참여자 목록"}
-            </button>
+          <li
+            className="bg-sky-300 text-white rounded-2xl p-3 mb-3"
+            key={room.room}
+          >
+            <div className="flex justify-between">
+              <div
+                className="font-bold cursor-pointer"
+                onClick={() => handleEnterRoom(room.room)}
+              >
+                {room.description}
+              </div>
+              <div>
+                <button onClick={() => handleDeleteRoom(room.room)}>
+                  <img
+                    className="w-3 h-3 mr-1"
+                    src={deleteImg}
+                    alt="삭제모양"
+                  />
+                </button>
+                <button onClick={() => handleShowParticipants(room.room)}>
+                  {showParticipants[room.room] ? (
+                    <img className="w-3 h-3" src={userListOff} alt="" />
+                  ) : (
+                    <img className="w-3 h-3" src={userListOn} alt="" />
+                  )}
+                </button>
+              </div>
+            </div>
             {showParticipants[room.room] &&
               (Array.isArray(participants[room.room]) ? (
                 <ul>
                   {participants[room.room].map((participant) => (
-                    <li key={participant.id}>{participant.display}
-                    </li>
-                    
+                    <li key={participant.id}>{participant.display}</li>
                   ))}
                 </ul>
               ) : (

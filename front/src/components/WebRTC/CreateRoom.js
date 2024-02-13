@@ -2,18 +2,35 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RoomList from "./admin";
-import reload from "../../assets/webRTC/refresh.png";
+import reload from "../../assets/webRTC/createroom/refresh.png";
 
 import MainImg from "../../assets/main.png";
 
-function CreateRoom() {
+const CreateRoom = () => {
   const [room_id, setRoomId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [userName, setUserName] = useState(""); // State for storing user name
-  const [userType, setUserType] = useState(""); // State for storing user type
+  const [userName, setUserName] = useState(""); 
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_BASE_URL;
+  
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/get_user_name_and_type`, {
+          withCredentials: true,
+        });
+
+        const newUserName = response.data.user_name;
+        setUserName(newUserName);
+      } catch (error) {
+        console.error("유저 이름이 안가져와져요 에러:", error);
+      }
+    };
+
+    fetchUserName();
+  }, []); // 빈 배열을 전달하여 한 번만 실행되도록 설정
+  
   const handleJoinRoom = async () => {
     setIsLoading(true);
     try {
@@ -22,6 +39,8 @@ function CreateRoom() {
         .post(`${API_URL}/rooms/create`, null, {
           withCredentials: true,
         })
+
+
         .then((response) => {
           console.log("room_id : ", response.data.plugindata.data.room);
           const newRoomId = response.data.plugindata.data.room;
@@ -31,7 +50,7 @@ function CreateRoom() {
             "방이 생성되었습니다. 바로 입장하시겠습니까?"
           );
           if (confirm) {
-            navigate(`/anhs?roomId=${newRoomId}&userId=user123&role=publisher`);
+            navigate(`/anhs?roomId=${newRoomId}&userId=${userName}&role=publisher`);
           } else {
             setRefresh(!refresh);
           }
