@@ -62,6 +62,7 @@ function App() {
               <Route element={<PrivateRoute />}>
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route path="/create_test_room" element={<CreateRoomTmp />} />
               </Route>
 
               <Route path="/login/callback" element={<LoginCallback />} />
@@ -84,7 +85,6 @@ function App() {
                 element={<TestChattingPage />}
               />
               <Route path="/room_list" element={<RoomList />} />
-              <Route path="/create_test_room" element={<CreateRoomTmp />} />
             </Routes>
           </PageLayout>
         </BrowserRouter>

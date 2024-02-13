@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -6,12 +6,12 @@ import NaverLoginButton from "components/auth_login/NaverLoginButton";
 import KakaoLoginButton from "components/auth_login/KakaoLoginButton";
 import GoogleLoginButton from "components/auth_login/GoogleLoginButton";
 import MainImg from "assets/main.png";
+import { AuthContext } from "context/AuthContext";
 
 const Login = () => {
+  const { setIsLoggedIn } = useContext(AuthContext);
   // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
-  const [cookies, setCookie, removeCookie] = useCookies([
-    "rememberUserId, isLogin",
-  ]); // Coockies 이름임
+  const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId"]); // Coockies 이름임
   const [userId, setUserId] = useState(false);
   const [isRemember, setIsRemember] = useState(false); // 아이디 저장 체크박스 체크 유무
 
@@ -53,6 +53,7 @@ const Login = () => {
       });
       console.log("로그인 성공: ", response);
       // setCookie("isLogin", true); 2/13
+      setIsLoggedIn(true);
 
       if (isRemember) {
         setCookie("rememberUserId", email);

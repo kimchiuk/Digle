@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -7,15 +7,18 @@ import Main3 from "./MainPage3";
 import MainImg from "../../assets/main.png";
 import video from "../../assets/webRTC/video.png";
 import test from "../../assets/webRTC/test.png";
+import { AuthContext } from "context/AuthContext";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL; // 서버 API 주소
 
 const Main = () => {
-  const [cookies] = useCookies(["isLogin"]);
+  const { isLoggedIn } = useContext(AuthContext);
+
+  // const [cookies] = useCookies(["isLogin"]);
   const [userType, setUserType] = useState("");
 
   useEffect(() => {
-    if (cookies.isLogin) {
+    if (isLoggedIn) {
       axios
         .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
         .then((res) => {
@@ -25,7 +28,7 @@ const Main = () => {
           console.error("Error fetching user data:", err);
         });
     }
-  }, [cookies.isLogin]);
+  }, [isLoggedIn]);
 
   return (
     <div className="bg-slate-50">

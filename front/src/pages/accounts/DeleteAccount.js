@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { AuthContext } from "context/AuthContext";
 
 const DeleteAccount = () => {
+  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -11,7 +13,7 @@ const DeleteAccount = () => {
 
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_BASE_URL;
-  const [cookies, , removeCookie] = useCookies(["isLogin"]);
+  // const [cookies, , removeCookie] = useCookies(["isLogin"]);
 
   useEffect(() => {
     axios
@@ -52,7 +54,7 @@ const DeleteAccount = () => {
       return;
     }
 
-    if (!cookies.isLogin) {
+    if (!isLoggedIn) {
       console.log("로그인 상태가 아닙니다.");
       navigate("/login");
       return;
@@ -67,7 +69,8 @@ const DeleteAccount = () => {
         withCredentials: true,
       });
       console.log("회원 탈퇴 성공: ", response);
-      removeCookie("isLogin", { path: "/", domain: "i10d107.p.ssafy.io" });
+      setIsLoggedIn(false);
+      // removeCookie("isLogin", { path: "/", domain: "i10d107.p.ssafy.io" });
       alert("정상적으로 회원 탈퇴 되었습니다.");
       navigate("/");
     } catch (error) {
