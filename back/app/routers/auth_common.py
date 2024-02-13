@@ -17,15 +17,11 @@ ALGORITHM = "HS256"
 @router.post("/logout")
 async def logout(response: Response):
     # 쿠키를 만료시키거나 빈 값으로 설정
-    response.delete_cookie(
-        key="__Host-access_token",
-        httponly=True,
-        secure=True,
-        samesite="None",
-        # domain = 'aimipp.vercel.app',
-        path="/",  # 전체 경로에서 사용
+    response.headers.append(
+        "Set-Cookie",
+        "__Host-access_token=deleted; Path=/; Secure; Expires=Thu, 01 Jan 1970 00:00:00 GMT;"
     )
-    return {"message": "User logged out"}
+    return {"message": "Logged out"}
 
 
 @router.post("/verifyToken")
