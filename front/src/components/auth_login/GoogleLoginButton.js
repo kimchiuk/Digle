@@ -1,7 +1,10 @@
+import { AuthContext } from "context/AuthContext";
 import { getSessionState } from "api/authService";
-import React from "react";
+import React, { useContext } from "react";
 
 const GoogleLoginButton = () => {
+  const { setIsLoggedIn } = useContext(AuthContext);
+
   const GOOGLE_CLIENT_ID =
     "157866739251-rq4urc1dmtvhhho8rammdevidspi0g2t.apps.googleusercontent.com";
 
@@ -24,6 +27,7 @@ const GoogleLoginButton = () => {
       )}`;
 
       window.location.href = googleURL;
+      setIsLoggedIn(true);
     } catch (error) {
       console.error("워닝! 워닝! 에러발생!");
     }

@@ -46,7 +46,7 @@ const TestTemp = () => {
       }
     };
 
-    if (isLoggedIn) {
+    if (!isLoggedIn) {
       alert("로그인 해주세요.");
       navigate("/login");
     } else {
