@@ -21,7 +21,7 @@ const SignupDetail = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isPwd, setIsPwd] = useState(false);
   const [isConfirmPwd, setIsConfirmPwd] = useState(false);
-  const API_URL = "https://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   // API 만들어지면 axios 요청 보내서 로직 구현
   const [isCheckEmail, setIsCheckEmail] = useState(false);

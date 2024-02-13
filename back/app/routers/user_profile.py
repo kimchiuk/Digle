@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 from sqlalchemy.orm import Session
-from services.utils import upload_to_gcs
+from services.utils import get_image_stream, upload_to_gcs
 from database import get_db
 from models.user import User, BusinessUser, UserType
 from services.auth_service import get_user_by_token, hash_password, verify_password
@@ -49,7 +49,7 @@ async def read_users_me(
         user_data = {
             "email": user.email,
             "name": user.name,
-            # "profile_picture_url": encoded_image,
+            "profile_picture_url": file_location,
             "user_type": user.user_type,
             "auth_provider": user.auth_provider,
         }
@@ -57,7 +57,6 @@ async def read_users_me(
 
     elif user.user_type == UserType.Business:
         business_user = db.query(BusinessUser).filter(BusinessUser.id == user.id).first()
-        print(business_user)
         user_data = {
             "email": user.email,
             "name": user.name,
@@ -98,7 +97,7 @@ async def update_user_profile(
                 file_object.write(profile_img.file.read())
             """
             file_path = f"profiles/{user.internal_id}"
-            # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
+            background_tasks.add_task(upload_to_gcs, profile_img, file_path)
             upload_to_gcs(profile_img, file_path)
 
         user.name = name

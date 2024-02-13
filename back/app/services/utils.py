@@ -38,7 +38,7 @@ def upload_to_gcs(file: UploadFile, file_path: str):
 
     # GCS에 업로드
     blob = bucket.blob(file_path)
-    blob.upload_from_filename(temp_file)
+    blob.upload_from_filename(temp_file) 
 
     # 임시 파일 삭제
     os.remove(temp_file)
