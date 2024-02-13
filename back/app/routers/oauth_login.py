@@ -227,7 +227,7 @@ async def login_for_access_token(
             user = User(
                 email=user_info["email"],
                 name=user_info["profile"]["nickname"],
-                additional_info_submitted=False,
+                is_additional_info_provided=False,
             )
             db.add(user)
             db.commit()
@@ -239,7 +239,7 @@ async def login_for_access_token(
                 content={"message": "New User", "action": "request_additional_info"},
                 headers=dict(response.headers),
             )
-        elif not user.additional_info_submitted:
+        elif not user.is_additional_info_provided:
             # 추가 정보가 아직 제출되지 않은 경우
             return_value = JSONResponse(
                 status_code=200,
