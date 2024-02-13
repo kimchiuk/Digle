@@ -11,7 +11,7 @@ function InviteUrl() {
       try {
         const response = await axios.get(`${API_URL}/join/${inviteCode}`);
         const room_id = extractRoomId(response); // 백엔드로부터 받은 방 ID
-        navigate(`/vchat?roomId=${room_id}`);
+        navigate(`/vchat?roomId=${room_id}&userId=user123&role=publisher`);
       } catch (error) {
         console.error("Failed to get room info:", error);
         alert("Invalid invite URL or room does not exist.");
