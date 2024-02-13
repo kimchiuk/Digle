@@ -160,6 +160,7 @@ async def login_for_access_token(
 
         # 유저정보 추출
         user_info = naver_response["response"]
+        print(user_info)
         message, action, response = user_db_login("Naver", user_info["id"], user_info, db, response)
 
     return JSONResponse(
@@ -228,11 +229,7 @@ async def login_for_access_token(
             user = User(
                 email=user_info["email"],
                 name=user_info["profile"]["nickname"],
-                internal_id=generate_internal_id(),
-                auth_provider="Kakao",
                 is_additional_info_provided=False,
-                auth_provider_id=None,
-                user_type="Standard",
             )
             db.add(user)
             db.commit()
