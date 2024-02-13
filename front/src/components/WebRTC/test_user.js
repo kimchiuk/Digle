@@ -21,7 +21,7 @@ let sfutest = null;
 // let username = "username-" + Janus.randomString(5); // 임시 유저네임
 let receivedFileChunk = {};
 
-const VideoChat = () => {
+const TestUser = () => {
   const [mainStream, setMainStream] = useState({}); //지금 메인으로 보여주는 화면
   const [feeds, setFeeds] = useState([]); //다른사람의 화면배열 (rfid,rfdisplay)
   const [myFeed, setMyFeed] = useState({}); //내 컴퓨터화면 공유
@@ -68,6 +68,19 @@ const VideoChat = () => {
     });
   };
 
+  const getMediaStream = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setMyFeed({ stream: stream });
+    } catch (error) {
+      console.error("Error accessing media devices.", error);
+    }
+  };
+
+  const handleEndExamClick = () => {
+    navigate('/test/finish');
+  };
+
   useEffect(() => {
     let servers = ["https://custom-janus.duckdns.org/janus"];
     let opaqueId = "videoroomtest-" + Janus.randomString(12); // 개인 식별
@@ -76,6 +89,8 @@ const VideoChat = () => {
     let mystream = null;
     let doSimulcast = false; // 동시 캐스트
     let doSimulcast2 = false;
+
+    getMediaStream();
 
     Janus.init({
       debug: "all",
@@ -280,15 +295,18 @@ const VideoChat = () => {
 
               onlocaltrack: function (track, on) {
                 Janus.debug(" ::: Got a local track :::", track);
-                setMyFeed((prev) => ({
-                  ...prev,
-                  stream: track,
-                }));
+                if (track.kind === "video") {
+                  setMyFeed((prev) => ({
+                    ...prev,
+                    stream: track,
+                  }));
 
-                setMainStream((prev) => ({
-                  ...prev,
-                  stream: track,
-                }));
+                  setMainStream((prev) => ({
+                    ...prev,
+                    stream: track,
+                  }));
+                }
+
 
                 if (
                   sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
@@ -351,6 +369,8 @@ const VideoChat = () => {
         },
       });
     }
+
+
 
     ///////////////////////////////////새로운참여자가 등록햇을경우////////////////////////
     function newRemoteFeed(id, display, audio, video) {
@@ -745,6 +765,13 @@ const VideoChat = () => {
     }
   }, [captureFrames, feeds]);
 
+  const [isChatVisible, setIsChatVisible] = useState(false);
+
+  // 채팅창 토글 함수
+  const toggleChat = () => {
+    setIsChatVisible(!isChatVisible);
+  };
+
   const renderRemoteVideos = feeds.map((feed) => {
     return (
       <div
@@ -763,22 +790,58 @@ const VideoChat = () => {
 
 
   return (
-    <div className="relative"> {/* 상대적 위치 지정 */}
+    <>
       {/* 자신의 캠을 오른쪽 상단에 고정 */}
-      <div className="absolute top-0 right-0 z-10"> {/* 절대적 위치 지정 */}
+      <div className="absolute top-0 right-0 z-20">
         {myFeed && myFeed.stream && (
-          <Video stream={myFeed.stream} username={username} muted={true} />
+          <div className="my-video-container w-[200px] h-[200px]">
+            <Video stream={myFeed.stream} username={username} muted={true} />
+          </div>
         )}
       </div>
 
-      {/* 나머지 UI 구성 요소 */}
-      <div className="main-content">
-        {/* 메인 비디오 및 기타 요소 */}
-        {/* 여기에 기존 코드를 배치하세요 */}
+      {/* iframe */}
+      <div>
+        <iframe
+          src="https://www.ssafy.com"
+          title="ssafy-website"
+          className="w-full h-[1096px]"
+        ></iframe>
       </div>
-    </div>
+
+      {/* 버튼과 채팅창 컨테이너 */}
+      <div className="relative w-full p-4 bg-white">
+        {/* 채팅창 */}
+        {isChatVisible && (
+          <div className="absolute left-4 bottom-full mb-2 bg-white p-4 rounded shadow-lg w-[400px] z-10">
+            <Chatting
+              sendChatData={sendChatData}
+              receiveChat={receiveChat}
+              transferFile={transferFile}
+              receiveFile={receiveFile}
+              feeds={feeds}
+              username={username}
+              sendPrivateMessage={sendPrivateMessage}
+            />
+          </div>
+        )}
+
+        {/* 버튼들 */}
+        <div className="flex justify-between">
+          {/* Show Chat 버튼 */}
+          <button onClick={toggleChat} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {isChatVisible ? 'Hide Chat' : 'Show Chat'}
+          </button>
+
+          {/* End Exam 버튼 */}
+          <button onClick={handleEndExamClick} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            End Exam
+          </button>
+        </div>
+      </div>
+    </>
   );
 
 };
 
-export default VideoChat;
+export default TestUser;

@@ -7,7 +7,7 @@ import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
 
 import axios from "axios";
-import GetInviteCode from "./Chatting/GetInviteCode";
+import GetInviteCode from "./Chatting/GetInviteUrl";
 import hark from "hark";
 
 // V-Chat에 추가해야댐
@@ -824,9 +824,9 @@ const VideoChat = () => {
             </button>
             <button onClick={handleAudioActiveClick} className="mr-2">
               {activeAudio ? (
-                <img className="min-w-5 h-5" src={micOn} alt="마이크 켜기"/>
+                <img className="min-w-5 h-5" src={micOn} alt="마이크 켜기" />
               ) : (
-                <img className="min-w-5 h-5" src={micOff} alt="마이크 끄기"/>
+                <img className="min-w-5 h-5" src={micOff} alt="마이크 끄기" />
               )}
             </button>
             <GetInviteCode />

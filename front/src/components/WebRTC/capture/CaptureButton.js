@@ -50,8 +50,12 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
 
   return (
     <>
-      <button onClick={handleCaptureClick}>
-        <img src={camera} alt="" className="w-10 h-10" />
+      <button
+        className="border-2 rounded-3xl w-[70px] h-8 flex justify-center items-center bg-gray-200 hover:bg-gray-300"
+        onClick={handleCaptureClick}
+      >
+        <img src={camera} alt="" className="w-5 h-5" />
+        <span>캡처</span>
       </button>
     </>
   );

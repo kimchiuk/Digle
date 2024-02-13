@@ -119,8 +119,11 @@ def create_janus_room(room_id: int):
         "janus": "message",
         "transaction": str(uuid.uuid4()),
         "admin_secret": admin_secret,
-        "body": {"request": "create", "room": room_id,"publishers": 100,},
-        
+        "body": {
+            "request": "create",
+            "room": room_id,
+            "publishers": 100,
+        },
     }
 
     response = requests.post(room_url, json=create_data, headers=headers)
@@ -152,19 +155,14 @@ def check_invite_code_exists(db: Session, invite_code: str) -> bool:
     # 데이터베이스에서 invite_code가 존재하는지 확인
     return db.query(RoomInfo).filter(RoomInfo.invite_code == invite_code).first() is not None
 
+
 @router.get("/get_user_name_and_type")
-async def get_user_name_and_type(
-    request: Request, 
-    db: Session = Depends(get_db)
-):
+async def get_user_name_and_type(request: Request, db: Session = Depends(get_db)):
     user = get_user_by_token(request, db, "service_access")
 
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
-    data = { 
-        "user_name": user.name,
-        "user_type": user.user_type
-        }
+    data = {"user_name": user.name, "user_type": user.user_type}
     return data
 
 
@@ -367,9 +365,9 @@ async def destroy_room(room_num: int, db: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="Room not found in the database.")
     else:
         raise HTTPException(status_code=500, detail=f"Failed to destroy Janus room: {response.status_code}")
-    
-    
-#방없애기 db버젼    
+
+
+# 방없애기 db버젼
 def delete_room_by_room_num(db: Session, room_num: int):
     room_info = db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first()
     if room_info:
@@ -404,13 +402,13 @@ async def join_room_with_invite(invite_code: str, db: Session = Depends(get_db))
 
 # db에 있는 초대코드 프론트엔드로 보내기
 @router.get("/get_invite_code/{room_num}")
-def get_invite_code( room_num: int, db: Session = Depends(get_db)):
+def get_invite_code(room_num: int, db: Session = Depends(get_db)):
     room_info = db.query(RoomInfo).filter(RoomInfo.room_num == room_num).first()
     print(room_info)
     if room_info is None:
         raise HTTPException(status_code=404, detail="Room not found")
-    
-    return {'invite_code': room_info.invite_code}
+
+    return {"invite_code": room_info.invite_code}
 
 
 @router.get("/create-room-url/{room_id}")

@@ -11,11 +11,12 @@ import test from "../../assets/webRTC/test.png";
 const API_URL = process.env.REACT_APP_API_BASE_URL; // 서버 API 주소
 
 const Main = () => {
-  const [cookies] = useCookies(["isLogin"]);
+  const [cookies] = useCookies(["__Host-access_token"]);
   const [userType, setUserType] = useState("");
 
   useEffect(() => {
-    if (cookies.isLogin) {
+    // __Host-access_token 쿠키의 존재 여부로 로그인 상태 확인
+    if (cookies['__Host-access_token']) {
       axios
         .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
         .then((res) => {
@@ -25,7 +26,7 @@ const Main = () => {
           console.error("Error fetching user data:", err);
         });
     }
-  }, [cookies.isLogin]);
+  }, [cookies['__Host-access_token']]);
 
   return (
     <div className="bg-slate-50">

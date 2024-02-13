@@ -67,7 +67,7 @@ const DeleteAccount = () => {
         withCredentials: true,
       });
       console.log("회원 탈퇴 성공: ", response);
-      removeCookie("isLogin", { path: "/", domain: "localhost" });
+      removeCookie("isLogin", { path: "/", domain: "i10d107.p.ssafy.io" });
       alert("정상적으로 회원 탈퇴 되었습니다.");
       navigate("/");
     } catch (error) {
