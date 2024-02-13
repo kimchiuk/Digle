@@ -62,6 +62,17 @@ function App() {
               <Route element={<PrivateRoute />}>
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route
+                  path="/test_chatting_page"
+                  element={<TestChattingPage />}
+                />
+                <Route path="/:inviteCode" element={<InviteUrl />} />
+                <Route path="/TestTemp" element={<TestTemp />} />
+                <Route path="/room_list" element={<RoomList />} />
+                <Route path="/test/finish" element={<TestFinish />} />
+                <Route path="/vchat" element={<VideoChat />} />
+                <Route path="/test_user" element={<TestUser />} />
+                <Route path="/create_room" element={<CreateRoom />} />
                 <Route path="/create_test_room" element={<CreateRoomTmp />} />
               </Route>
 
@@ -72,19 +83,6 @@ function App() {
 
               <Route path="/find_password" element={<FindPassword />} />
               <Route path="/reset_password" element={<ResetPassword />} />
-              <Route path="/create_room" element={<CreateRoom />} />
-              <Route path="/vchat" element={<VideoChat />} />
-
-              <Route path="/TestTemp" element={<TestTemp />} />
-              <Route path="/test/finish" element={<TestFinish />} />
-              <Route path="/test_user" element={<TestUser />} />
-
-              <Route path="/:inviteCode" element={<InviteUrl />} />
-              <Route
-                path="/test_chatting_page"
-                element={<TestChattingPage />}
-              />
-              <Route path="/room_list" element={<RoomList />} />
             </Routes>
           </PageLayout>
         </BrowserRouter>

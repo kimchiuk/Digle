@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import { AuthContext } from "context/AuthContext";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Navbar = () => {
-  const [cookies] = useCookies(["__Host-access_token"]);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!cookies['__Host-access_token']);
+  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
+
+  // const [cookies] = useCookies(["__Host-access_token"]);
+  // const [isLoggedIn, setIsLoggedIn] = useState(!!cookies['__Host-access_token']);
   const [userName, setUserName] = useState("");
   const [userType, setUserType] = useState(""); // 'Standard' 또는 'Business'
 
@@ -43,24 +46,21 @@ const Navbar = () => {
     setProductDropdownOpen(false);
     setSolutionDropdownOpen(false);
   };
-//
+  //
 
-
-useEffect(() => {
-  setIsLoggedIn(!!cookies['__Host-access_token']);
-
-  if (cookies['__Host-access_token']) {
-    axios
-      .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
-      .then((res) => {
-        setUserName(res.data.user_name);
-        setUserType(res.data.user_type);
-      })
-      .catch((err) => {
-        console.error("Error fetching user data:", err);
-      });
-  }
-}, [cookies['__Host-access_token']]); 
+  useEffect(() => {
+    if (isLoggedIn) {
+      axios
+        .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
+        .then((res) => {
+          setUserName(res.data.user_name);
+          setUserType(res.data.user_type);
+        })
+        .catch((err) => {
+          console.error("Error fetching user data:", err);
+        });
+    }
+  }, [isLoggedIn]);
 
   return (
     <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">

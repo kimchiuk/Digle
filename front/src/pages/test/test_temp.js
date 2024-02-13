@@ -1,41 +1,44 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import axios from 'axios';
-import { Janus } from '../../janus';
-import TestImg from '../../assets/backgrounds/OnlineTest.png';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { Janus } from "../../janus";
+import TestImg from "../../assets/backgrounds/OnlineTest.png";
+import { AuthContext } from "context/AuthContext";
 
 const TestTemp = () => {
-  const [cookies] = useCookies(['isLogin']);
+  // const [cookies] = useCookies(['isLogin']);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const [showExam, setShowExam] = useState(false);
-  const [examCode, setExamCode] = useState('');
+  const [examCode, setExamCode] = useState("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
 
-  const [userName, setUserName] = useState('');
-  const [userType, setUserType] = useState('');
+  const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState("");
 
-  const API_URL = process.env.REACT_APP_API_BASE_URL
+  const API_URL = process.env.REACT_APP_API_BASE_URL;
 
   const spinnerStyle = {
-    borderTopColor: 'transparent',
-    borderStyle: 'solid',
-    borderWidth: '4px',
-    borderRadius: '50%',
-    width: '30px',
-    height: '30px',
-    animation: 'spin 1s linear infinite'
+    borderTopColor: "transparent",
+    borderStyle: "solid",
+    borderWidth: "4px",
+    borderRadius: "50%",
+    width: "30px",
+    height: "30px",
+    animation: "spin 1s linear infinite",
   };
 
   // 스피너 애니메이션 정의
   const spinAnimation = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
 
   useEffect(() => {
-
     // 사용자 이름과 유형을 가져오는 함수
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/get_user_name_and_type`, {withCredentials: true});
+        const response = await axios.get(`${API_URL}/get_user_name_and_type`, {
+          withCredentials: true,
+        });
         setUserName(response.data.user_name);
         setUserType(response.data.user_type);
       } catch (error) {
@@ -43,13 +46,13 @@ const TestTemp = () => {
       }
     };
 
-    if (!cookies.isLogin) {
-      alert('로그인 해주세요.');
-      navigate('/login');
+    if (isLoggedIn) {
+      alert("로그인 해주세요.");
+      navigate("/login");
     } else {
       fetchUserData();
     }
-  }, [cookies, navigate]);
+  }, [isLoggedIn, navigate]);
 
   const handleJoinExam = async () => {
     setIsLoading(true);
@@ -58,11 +61,16 @@ const TestTemp = () => {
       const response = await axios.get(`${API_URL}/join/${examCode}`);
       if (response.data.message === "Successfully joined the room") {
         setIsLoading(false);
-        console.log(response.data.janus_response.message.substring(12, 18))
+        console.log(response.data.janus_response.message.substring(12, 18));
 
-        const roomNumber = response.data.janus_response.message.substring(12, 18)
+        const roomNumber = response.data.janus_response.message.substring(
+          12,
+          18
+        );
 
-        navigate(`/test_user?roomId=${roomNumber}&userId=${userName}&role=publisher`);
+        navigate(
+          `/test_user?roomId=${roomNumber}&userId=${userName}&role=publisher`
+        );
       } else {
         alert("Invalid exam code or failed to join the room.");
       }
@@ -75,13 +83,14 @@ const TestTemp = () => {
   return (
     <>
       <div className="container flex flex-col items-center justify-center px-20 h-auto pt-16 pb-4 max-w-2xl mx-auto">
-        <style>
-          {spinAnimation}
-        </style>
+        <style>{spinAnimation}</style>
         {isLoading && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex justify-center items-center">
             <div className="bg-white p-5 rounded-lg shadow-lg flex flex-col items-center">
-              <div className="loader mx-[30px] my-[20px]" style={spinnerStyle}></div>
+              <div
+                className="loader mx-[30px] my-[20px]"
+                style={spinnerStyle}
+              ></div>
               <p className="mt-3 font-bold">로딩 중...</p>
             </div>
           </div>
@@ -106,10 +115,8 @@ const TestTemp = () => {
             </button>
           </>
         )}
-
       </div>
     </>
-
   );
 };
 
