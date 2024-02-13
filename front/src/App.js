@@ -41,7 +41,7 @@ import TestChattingPage from "pages/rooms/TestChattingPage";
 function App() {
   return (
     <div className="select-none">
-      {/* <AuthProvider> */}
+       <AuthProvider> 
       <BrowserRouter>
         <PageLayout>
           <Routes>
@@ -85,7 +85,7 @@ function App() {
           </Routes>
         </PageLayout>
       </BrowserRouter>
-      {/* </AuthProvider> */}
+       </AuthProvider> 
     </div>
   );
 }
