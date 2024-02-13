@@ -184,7 +184,7 @@ async def login_for_access_token(
         TOKEN_URL = "https://kauth.kakao.com/oauth/token"
         data = {
             "grant_type": "authorization_code",
-            "client_id": os.getenv("KAKAKO_CLIENT_ID"),
+            "client_id": os.getenv("KAKAO_CLIENT_ID"),
             "redirect_uri": f"{REDIRECT_BASE_URI}/login/callback",
             "code": code,
         }
