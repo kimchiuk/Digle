@@ -4,7 +4,7 @@ import "./Video.css";
 const Video = ({ id, stream, username, muted, onClickFunction, className }) => {
   const videoRef = useRef();
   const [mediaStream, setMediaStream] = useState(null);
-  console.log(id);
+  // console.log(id);
 
   useEffect(() => {
     if (stream instanceof MediaStream) {

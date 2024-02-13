@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"
 import ServiceTerms from "./ServiceTerms";
 import "../App.css";
 import Modal from "./Modal";
@@ -26,14 +27,14 @@ const Footer = () => {
       <div className="bg-gray-800 text-gray-400 font-medium pl-[20%] text-sm py-2">
         <p className="text-white text-sm text-center sm:text-left mb-2">
           © {new Date().getFullYear()} Digle —
-          <a
-            href="/"
+          <Link
+            to="/"
             rel="noopener noreferrer"
             className="text-white ml-1"
             target="_blank"
           >
             @digle
-          </a>
+          </Link>
         </p>
 
         <div>
