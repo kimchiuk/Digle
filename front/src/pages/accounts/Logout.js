@@ -5,15 +5,15 @@ import { useCookies } from "react-cookie";
 import { AuthContext } from "context/AuthContext";
 
 const Logout = () => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_BASE_URL;
-  const [cookies, , removeCookie] = useCookies(["__Host-access_token"]);
+  // const [cookies, , removeCookie] = useCookies(["__Host-access_token"]);
 
   useEffect(() => {
     const logout = async () => {
       // __Host-access_token 쿠키의 존재 여부로 로그인 상태 확인
-      if (!cookies["__Host-access_token"]) {
+      if (!isLoggedIn) {
         console.log("로그인 상태가 아닙니다.");
 
         // 사용자를 로그인 페이지로 리다이렉트합니다.
@@ -40,7 +40,7 @@ const Logout = () => {
     };
 
     logout();
-  }, [navigate, removeCookie, cookies["__Host-access_token"]]);
+  }, [navigate, isLoggedIn]);
 
   return null; // 로그아웃 컴포넌트는 UI를 렌더링하지 않습니다.
 };
