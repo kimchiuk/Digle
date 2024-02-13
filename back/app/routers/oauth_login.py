@@ -210,20 +210,7 @@ async def login_for_access_token(
 
         # db에 해당 유저가 있는지 확인
         user = db.query(User).filter(User.email == user_info["email"]).first()
-        # 그걸로 access token을 생성
-        access_token = create_access_token(user_info["email"], "service_access")
-        # access token을 보안때문에 header에다 cookie를 담아서 줄것.
-        response.set_cookie(
-            # key="access_token",
-            key="__Host-access_token",
-            value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="None",
-            # domain = '어쩌고 저쩌고',
-            path="/",  # 전체 경로에서 사용
-            max_age=3600,  # 예: 1시간 유효기간
-        )
+
         # 만약 해당 유저가 없음. -> 회원가입
         if user is None:
             # 객체로 생성
@@ -261,4 +248,19 @@ async def login_for_access_token(
                 content={"message": "login complete", "user": user.email},
                 headers=dict(response.headers),
             )
+
+            # 그걸로 access token을 생성
+        access_token = create_access_token(user.internal_id, "service_access")
+        # access token을 보안때문에 header에다 cookie를 담아서 줄것.
+        response.set_cookie(
+            # key="access_token",
+            key="__Host-access_token",
+            value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="None",
+            # domain = '어쩌고 저쩌고',
+            path="/",  # 전체 경로에서 사용
+            max_age=3600,  # 예: 1시간 유효기간
+        )
     return return_value

@@ -6,13 +6,12 @@ import { useCookies } from "react-cookie";
 const Logout = () => {
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_BASE_URL;
-  // 두 번째 콤마는 setCookie 함수를 건너뛰기 위한 것(구조 분해 할당)
-  const [cookies, setCookie, removeCookie] = useCookies(["isLogin"]);
+  const [cookies, , removeCookie] = useCookies(["__Host-access_token"]);
 
   useEffect(() => {
     const logout = async () => {
-      // 로그인 상태 확인
-      if (!cookies.isLogin) {
+      // __Host-access_token 쿠키의 존재 여부로 로그인 상태 확인
+      if (!cookies['__Host-access_token']) {
         console.log("로그인 상태가 아닙니다.");
 
         // 사용자를 로그인 페이지로 리다이렉트합니다.
@@ -22,13 +21,13 @@ const Logout = () => {
 
       try {
         // 서버에 로그아웃 요청을 보냅니다.
-        const response = await axios.post(`${API_URL}/logout`, {
+        const response = await axios.post(`${API_URL}/logout`, {}, {
           withCredentials: true,
         });
         console.log("로그아웃 성공: ", response);
 
-        // 로그아웃이 성공하면 쿠키에서 사용자 정보를 지웁니다.
-        removeCookie("isLogin", { path: "/", domain: "i10d107.p.ssafy.io" });
+        // 로그아웃이 성공하면 쿠키에서 토큰을 지웁니다.
+        removeCookie("__Host-access_token", { path: "/" }); // 필요한 경우 domain 설정 추가
         navigate("/");
       } catch (error) {
         console.error("에러 발생: ", error);
@@ -36,7 +35,9 @@ const Logout = () => {
     };
 
     logout();
-  }, [navigate, removeCookie, cookies.isLogin]);
+  }, [navigate, removeCookie, cookies['__Host-access_token']]);
+
+  return null; // 로그아웃 컴포넌트는 UI를 렌더링하지 않습니다.
 };
 
 export default Logout;
