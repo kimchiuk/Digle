@@ -52,7 +52,7 @@ const Login = () => {
         withCredentials: true,
       });
       console.log("로그인 성공: ", response);
-      setCookie("isLogin", true);
+      // setCookie("isLogin", true); 2/13
 
       if (isRemember) {
         setCookie("rememberUserId", email);

@@ -41,51 +41,54 @@ import TestChattingPage from "pages/rooms/TestChattingPage";
 function App() {
   return (
     <div className="select-none">
-       <AuthProvider> 
-      <BrowserRouter>
-        <PageLayout>
-          <Routes>
-            {/* 이부분 반드시 삭제하셈 */}
-            <Route path="/anhs" element={<Anhs />} />
+      <AuthProvider>
+        <BrowserRouter>
+          <PageLayout>
+            <Routes>
+              {/* 이부분 반드시 삭제하셈 */}
+              <Route path="/anhs" element={<Anhs />} />
 
-            <Route path="/" element={<Main />} />
+              <Route path="/" element={<Main />} />
 
-            {/* <Route element={<PublicRoute />}> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/signup/detail" element={<SignupDetail />} />
-            {/* </Route> */}
-            <Route path="/solution/1/" element={<Solution1 />} />
-            <Route path="/solution/2/" element={<Solution2 />} />
-            <Route path="/solution/2/submit" element={<Solution2Submit />} />
+              <Route element={<PublicRoute />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/signup/detail" element={<SignupDetail />} />
+              </Route>
+              <Route path="/solution/1/" element={<Solution1 />} />
+              <Route path="/solution/2/" element={<Solution2 />} />
+              <Route path="/solution/2/submit" element={<Solution2Submit />} />
 
-            {/* <Route element={<PrivateRoute />}> */}
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/logout" element={<Logout />} />
-            {/* </Route> */}
+              <Route element={<PrivateRoute />}>
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/logout" element={<Logout />} />
+              </Route>
 
-            <Route path="/login/callback" element={<LoginCallback />} />
-            <Route path="/google_login" element={<GoogleLoginButton />} />
-            <Route path="/naver_login" element={<NaverLoginButton />} />
-            <Route path="/kakao_login" element={<KakaoLoginButton />} />
+              <Route path="/login/callback" element={<LoginCallback />} />
+              <Route path="/google_login" element={<GoogleLoginButton />} />
+              <Route path="/naver_login" element={<NaverLoginButton />} />
+              <Route path="/kakao_login" element={<KakaoLoginButton />} />
 
-            <Route path="/find_password" element={<FindPassword />} />
-            <Route path="/reset_password" element={<ResetPassword />} />
-            <Route path="/create_room" element={<CreateRoom />} />
-            <Route path="/vchat" element={<VideoChat />} />
+              <Route path="/find_password" element={<FindPassword />} />
+              <Route path="/reset_password" element={<ResetPassword />} />
+              <Route path="/create_room" element={<CreateRoom />} />
+              <Route path="/vchat" element={<VideoChat />} />
 
-            <Route path="/TestTemp" element={<TestTemp />} />
-            <Route path="/test/finish" element={<TestFinish />} />
-            <Route path="/test_user" element={<TestUser />} />
+              <Route path="/TestTemp" element={<TestTemp />} />
+              <Route path="/test/finish" element={<TestFinish />} />
+              <Route path="/test_user" element={<TestUser />} />
 
-            <Route path="/:inviteCode" element={<InviteUrl />} />
-            <Route path="/test_chatting_page" element={<TestChattingPage />} />
-            <Route path="/room_list" element={<RoomList />} />
-            <Route path="/create_test_room" element={<CreateRoomTmp />} />
-          </Routes>
-        </PageLayout>
-      </BrowserRouter>
-       </AuthProvider> 
+              <Route path="/:inviteCode" element={<InviteUrl />} />
+              <Route
+                path="/test_chatting_page"
+                element={<TestChattingPage />}
+              />
+              <Route path="/room_list" element={<RoomList />} />
+              <Route path="/create_test_room" element={<CreateRoomTmp />} />
+            </Routes>
+          </PageLayout>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
