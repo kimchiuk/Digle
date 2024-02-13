@@ -192,6 +192,9 @@ async def login_for_access_token(
             TOKEN_URL, headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"}, data=data
         )
         token_response_data = token_response.json()
+
+        console.log(token_response_data)
+
         print(token_response_data)
         if "access_token" not in token_response_data:
             raise HTTPException(status_code=400, detail="카카오 로그인 실패")
