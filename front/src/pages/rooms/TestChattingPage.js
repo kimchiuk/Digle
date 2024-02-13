@@ -849,12 +849,15 @@ const TestChattingPage = () => {
           <div className="border-2 w-32 h-20 flex justify-center items-center">
             <img src={logo2} alt="Digle" className="" />
           </div>
-          <div className="border-2 w-20 h-20 flex justify-center items-center">
+          <div className="w-10 h-10 p-2 flex justify-center items-center hover:bg-gray-100">
             <img
               src={deleteButton}
               alt="deleteButton"
               className="w-[40px] "
-              onClick={() => handleDeleteRoom(myroom)}
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeleteRoom(myroom);
+              }}
             />
           </div>
         </div>
