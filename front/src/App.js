@@ -35,7 +35,7 @@ import CreateRoomTmp from "pages/rooms/CreateRoomTmp";
 
 import TestTemp from "./pages/test/test_temp";
 import TestFinish from "./pages/test/test_finish";
-import TestUser from "./components/WebRTC/test_user"
+import TestUser from "./components/WebRTC/test_user";
 import TestChattingPage from "pages/rooms/TestChattingPage";
 
 function App() {
@@ -78,7 +78,7 @@ function App() {
             <Route path="/test/finish" element={<TestFinish />} />
             <Route path="/test_user" element={<TestUser />} />
 
-            <Route path="/:inviteCode" element={<InviteUrl />} />
+            {/* <Route path="/:inviteCode" element={<InviteUrl />} /> */}
             <Route path="/test_chatting_page" element={<TestChattingPage />} />
             <Route path="/room_list" element={<RoomList />} />
             <Route path="/create_test_room" element={<CreateRoomTmp />} />

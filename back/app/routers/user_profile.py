@@ -1,5 +1,6 @@
 import shutil
 from fastapi import BackgroundTasks, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -7,7 +8,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 from sqlalchemy.orm import Session
-from services.utils import get_image_stream, upload_to_gcs
+from services.utils import request_embedding, upload_to_gcs
 from database import get_db
 from models.user import User, BusinessUser, UserType
 from services.auth_service import get_user_by_token, hash_password, verify_password
@@ -44,12 +45,12 @@ async def read_users_me(
     if user.user_type == UserType.Standard:
 
         file_location = user.profile_picture_url
-        # with open(file_location, "rb") as image_file:
-        #     encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        with open(file_location, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
         user_data = {
             "email": user.email,
             "name": user.name,
-            "profile_picture_url": file_location,
+            "profile_picture_url": encoded_image,
             "user_type": user.user_type,
             "auth_provider": user.auth_provider,
         }
@@ -97,18 +98,20 @@ async def update_user_profile(
                 file_object.write(profile_img.file.read())
             """
             file_path = f"profiles/{user.internal_id}"
-            background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-            upload_to_gcs(profile_img, file_path)
+            # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
+            upload_to_gcs(profile_img, file_path, user.internal_id)
+
+            await request_embedding(profile_img, user.internal_id)
 
         user.name = name
-        user.profile_picture_url = file_location
+        user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
 
         db.commit()
-
+        file_base64 = base64.b64encode(profile_img.file.read()).decode("utf-8")
         user_data = {
             "email": email,
             "name": name,
-            "profile_picture_url": file_location,
+            "profile_picture_url": file_base64,
             "user_type": user.user_type,
             "auth_provider": user.auth_provider,
         }

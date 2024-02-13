@@ -65,7 +65,8 @@ async def login_for_access_token(
         raise HTTPException(status_code=409, detail="Invalid or expired token")
 
     internal_id = generate_internal_id()
-
+    file_path = None
+    profile_picture_url = None
     if profile_img and profile_img.filename:
         """파일 저장 또는 처리
         file_location = f"C:/files/{profile_img.filename}"
@@ -74,6 +75,7 @@ async def login_for_access_token(
         """
         file_path = f"profiles/{internal_id}"
         background_tasks.add_task(upload_to_gcs, profile_img, file_path)
+        profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
     while db.query(User).filter(User.internal_id == internal_id).first():
         internal_id = generate_internal_id()
 
@@ -81,7 +83,7 @@ async def login_for_access_token(
         email=base_data.email,
         hashed_password=hash_password(base_data.password),
         name=base_data.name,
-        profile_picture_url=file_location,
+        profile_picture_url=profile_picture_url,
         user_type=user_type,
         internal_id=internal_id,
         auth_provider="None",
