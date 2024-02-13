@@ -6,8 +6,8 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Navbar = () => {
-  const [cookies] = useCookies(["isLogin"]);
-  const [isLoggedIn, setIsLoggedIn] = useState(cookies.isLogin);
+  const [cookies] = useCookies(["__Host-access_token"]);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!cookies['__Host-access_token']);
   const [userName, setUserName] = useState("");
   const [userType, setUserType] = useState(""); // 'Standard' 또는 'Business'
 
@@ -43,22 +43,24 @@ const Navbar = () => {
     setProductDropdownOpen(false);
     setSolutionDropdownOpen(false);
   };
+//
 
-  useEffect(() => {
-    setIsLoggedIn(cookies.isLogin);
 
-    if (cookies.isLogin) {
-      axios
-        .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
-        .then((res) => {
-          setUserName(res.data.user_name);
-          setUserType(res.data.user_type);
-        })
-        .catch((err) => {
-          console.error("Error fetching user data:", err);
-        });
-    }
-  }, [cookies.isLogin]);
+useEffect(() => {
+  setIsLoggedIn(!!cookies['__Host-access_token']);
+
+  if (cookies['__Host-access_token']) {
+    axios
+      .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
+      .then((res) => {
+        setUserName(res.data.user_name);
+        setUserType(res.data.user_type);
+      })
+      .catch((err) => {
+        console.error("Error fetching user data:", err);
+      });
+  }
+}, [cookies['__Host-access_token']]); 
 
   return (
     <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
