@@ -845,7 +845,7 @@ const TestChattingPage = () => {
               src={deleteButton}
               alt="deleteButton"
               className="w-[40px] "
-              onClick={handleDeleteRoom}
+              onClick={() => handleDeleteRoom()}
             />
           </div>
         </div>
