@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
 
 function RoomList({ refresh }) {
   const [rooms, setRooms] = useState([]);
@@ -7,6 +9,12 @@ function RoomList({ refresh }) {
   const [showParticipants, setShowParticipants] = useState({}); // 각 방의 참여자 목록 표시 상태를 관리하는 상태
 
   const API_URL = process.env.REACT_APP_API_BASE_URL;
+  const navigate = useNavigate();
+
+  const handleEnterRoom = (room_id) => {
+    // navigate 함수를 사용하여 특정 경로로 이동
+    navigate(`/anhs?roomId=${room_id}&userId=user123&role=publisher`);
+  };
 
   const fetchRooms = useCallback(() => {
     axios
@@ -79,7 +87,9 @@ function RoomList({ refresh }) {
           <li 
           className="bg-sky-300 text-white rounded-2xl p-3 mb-3"
           key={room.room}>
+            <div onClick={() => handleEnterRoom(room.room)} style={{cursor: 'pointer', flex: 1}}>
             {room.description}
+          </div>
             <button onClick={() => handleDeleteRoom(room.room)}>Delete</button>
             <button onClick={() => handleShowParticipants(room.room)}>
               {showParticipants[room.room] ? "참여자 숨기기" : "참여자 목록"}
@@ -88,7 +98,9 @@ function RoomList({ refresh }) {
               (Array.isArray(participants[room.room]) ? (
                 <ul>
                   {participants[room.room].map((participant) => (
-                    <li key={participant.id}>{participant.display}</li>
+                    <li key={participant.id}>{participant.display}
+                    </li>
+                    
                   ))}
                 </ul>
               ) : (
