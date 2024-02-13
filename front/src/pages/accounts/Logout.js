@@ -28,7 +28,7 @@ const Logout = () => {
         console.log("로그아웃 성공: ", response);
 
         // 로그아웃이 성공하면 쿠키에서 사용자 정보를 지웁니다.
-        removeCookie("isLogin", { path: "/", domain: "localhost" });
+        removeCookie("isLogin", { path: "/", domain: "i10d107.p.ssafy.io" });
         navigate("/");
       } catch (error) {
         console.error("에러 발생: ", error);

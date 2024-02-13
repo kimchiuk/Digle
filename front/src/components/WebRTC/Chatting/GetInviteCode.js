@@ -39,7 +39,7 @@ const GetInviteCode = () => {
   return (
     <>
       <button
-        className="bg-gray-200 flex border-2 rounded-3xl w-[70px] h-8 justify-center items-center"
+        className="bg-gray-200 hover:bg-gray-300 flex border-2 rounded-3xl w-[70px] h-8 justify-center items-center"
         onClick={getCode}
       >
         <img className="w-5 h-5" src={share} alt="공유 버튼" />

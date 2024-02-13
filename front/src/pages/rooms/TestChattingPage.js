@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Janus } from "janus";
 import axios from "axios";
 import hark from "hark";
@@ -845,11 +845,13 @@ const TestChattingPage = () => {
   return (
     <>
       <div className="h-screen w-full flex flex-col relative">
-        <div className="border-2 h-20 flex justify-between">
-          <div className="border-2 w-32 h-20 flex justify-center items-center">
-            <img src={logo2} alt="Digle" className="" />
+        <div className="h-20 flex items-center justify-between">
+          <div className="p-4 w-32 h-20 flex justify-center items-center">
+            <Link to="/" target="_blank">
+              <img src={logo2} alt="Digle" className="" />
+            </Link>
           </div>
-          <div className="w-10 h-10 p-2 flex justify-center items-center hover:bg-gray-100">
+          <div className="w-10 h-10 p-2 mr-4 flex justify-center items-center hover:bg-gray-100">
             <img
               src={deleteButton}
               alt="deleteButton"
@@ -861,19 +863,19 @@ const TestChattingPage = () => {
             />
           </div>
         </div>
-        <div className="border-2 h-[700px] px-20 overflow-auto flex flex-wrap justify-center">
+        <div className="h-[700px] px-20 overflow-auto flex flex-wrap justify-center">
           {renderRemoteVideos}
         </div>
-        <div className="border-2 h-20 flex justify-between">
+        <div className="h-20 flex justify-between">
           <div className="flex">
             <div className="flex w-20 relative justify-center items-center">
-              <div
-                className="w-[70px] h-8 flex justify-center items-center border-2 rounded-3xl bg-gray-200"
+              <button
+                className="w-[70px] h-8 flex justify-center items-center border-2 rounded-3xl bg-gray-200 hover:bg-gray-300"
                 onClick={openChatModal}
               >
                 <img src={messageImg} alt="" className="w-5 h-5" />
                 <span>채팅</span>
-              </div>
+              </button>
               {/* 채팅창 모달 */}
               {isChatModalOpen && (
                 <div className="absolute bottom-full mb-2 left-0 w-80 h-96 bg-white p-2 rounded border-2">
@@ -917,7 +919,7 @@ const TestChattingPage = () => {
               <GetInviteCode />
             </div>
             {/* 캡쳐버튼 */}
-            <div className="w-20 flex justify-center items-center">
+            <div className="w-20 flex justify-center items-center ">
               <CaptureButton
                 feeds={feeds}
                 captureFrames={captureFrames}
@@ -927,7 +929,7 @@ const TestChattingPage = () => {
             </div>
           </div>
           {/* 유저 리스트 모달 */}
-          <div className="w-20 h-full relative justify-center items-center flex">
+          <div className="w-20 h-full relative justify-center items-center flex mx-4">
             <div
               className="w-[70px] h-8 flex justify-center items-center gap-2 hover:bg-gray-300 focus:ring-gray-400"
               onClick={openUserListModal}
