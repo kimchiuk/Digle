@@ -21,7 +21,7 @@ let sfutest = null;
 // let username = "username-" + Janus.randomString(5); // 임시 유저네임
 let receivedFileChunk = {};
 
-const VideoChat = () => {
+const TestUser = () => {
   const [mainStream, setMainStream] = useState({}); //지금 메인으로 보여주는 화면
   const [feeds, setFeeds] = useState([]); //다른사람의 화면배열 (rfid,rfdisplay)
   const [myFeed, setMyFeed] = useState({}); //내 컴퓨터화면 공유
@@ -68,6 +68,19 @@ const VideoChat = () => {
     });
   };
 
+  const getMediaStream = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setMyFeed({ stream: stream });
+    } catch (error) {
+      console.error("Error accessing media devices.", error);
+    }
+  };
+
+  const handleEndExamClick = () => {
+    navigate('/test/finish');
+  };
+
   useEffect(() => {
     let servers = ["https://custom-janus.duckdns.org/janus"];
     let opaqueId = "videoroomtest-" + Janus.randomString(12); // 개인 식별
@@ -76,6 +89,8 @@ const VideoChat = () => {
     let mystream = null;
     let doSimulcast = false; // 동시 캐스트
     let doSimulcast2 = false;
+
+    getMediaStream();
 
     Janus.init({
       debug: "all",
@@ -280,15 +295,18 @@ const VideoChat = () => {
 
               onlocaltrack: function (track, on) {
                 Janus.debug(" ::: Got a local track :::", track);
-                setMyFeed((prev) => ({
-                  ...prev,
-                  stream: track,
-                }));
+                if (track.kind === "video") {
+                  setMyFeed((prev) => ({
+                    ...prev,
+                    stream: track,
+                  }));
 
-                setMainStream((prev) => ({
-                  ...prev,
-                  stream: track,
-                }));
+                  setMainStream((prev) => ({
+                    ...prev,
+                    stream: track,
+                  }));
+                }
+
 
                 if (
                   sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
@@ -351,6 +369,8 @@ const VideoChat = () => {
         },
       });
     }
+
+
 
     ///////////////////////////////////새로운참여자가 등록햇을경우////////////////////////
     function newRemoteFeed(id, display, audio, video) {
@@ -763,22 +783,39 @@ const VideoChat = () => {
 
 
   return (
-    <div className="relative"> {/* 상대적 위치 지정 */}
-      {/* 자신의 캠을 오른쪽 상단에 고정 */}
-      <div className="absolute top-0 right-0 z-10"> {/* 절대적 위치 지정 */}
-        {myFeed && myFeed.stream && (
-          <Video stream={myFeed.stream} username={username} muted={true} />
-        )}
+    <>
+      <div> {/* 상대적 위치 지정 */}
+        {/* 자신의 캠을 오른쪽 상단에 고정 */}
+        <div className="absolute top-0 right-0 z-10">
+          {myFeed && myFeed.stream && (
+            <div className="my-video-container w-[200px] h-[200px]">
+              <Video stream={myFeed.stream} username={username} muted={true} />
+            </div>
+          )}
+        </div>
+
       </div>
 
-      {/* 나머지 UI 구성 요소 */}
-      <div className="main-content">
-        {/* 메인 비디오 및 기타 요소 */}
-        {/* 여기에 기존 코드를 배치하세요 */}
+
+      <div>
+        <iframe
+          src="https://www.ssafy.com"
+          title="ssafy-website"
+          className="w-4/5 h-screen ml-4 mb-[50px]"
+        ></iframe>
       </div>
-    </div>
+      <div className=" flex justify-center">
+        <button
+        onClick={handleEndExamClick}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold mb-[20px] py-2 px-4 rounded mt-4"
+        >
+          End Exam
+        </button>
+      </div>
+    </>
+
   );
 
 };
 
-export default VideoChat;
+export default TestUser;
