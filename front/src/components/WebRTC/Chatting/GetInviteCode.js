@@ -17,12 +17,11 @@ const GetInviteCode = () => {
       .get(`${API_URL}/get_invite_code/${roomId}`)
       .then((response) => {
         const inviteCode = response.data.invite_code;
-        const inviteUrl = `https://i10d107.p.ssafy.io/${inviteCode}`;
         console.log(inviteCode);
 
         if (navigator.clipboard) {
           navigator.clipboard
-            .writeText(inviteUrl)
+            .writeText(inviteCode)
             .then(() => {
               alert("초대 코드가 클립보드에 복사되었습니다.");
             })
