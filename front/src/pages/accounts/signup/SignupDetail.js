@@ -48,6 +48,7 @@ const SignupDetail = () => {
     try {
       const formData = new FormData();
       formData.append("email", email);
+      console.log(API_URL);
       const response = await axios.post(
         `${API_URL}/request_verify_email`,
         formData
@@ -98,6 +99,7 @@ const SignupDetail = () => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("code", emailCode);
+    console.log(API_URL);
     try {
       const response = await axios.post(`${API_URL}/verify_email`, formData);
 

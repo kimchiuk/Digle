@@ -58,6 +58,7 @@ async def read_users_me(
 
     elif user.user_type == UserType.Business:
         business_user = db.query(BusinessUser).filter(BusinessUser.id == user.id).first()
+        print(business_user)
         user_data = {
             "email": user.email,
             "name": user.name,

@@ -78,7 +78,7 @@ function App() {
             <Route path="/test/finish" element={<TestFinish />} />
             <Route path="/test_user" element={<TestUser />} />
 
-            {/* <Route path="/:inviteCode" element={<InviteUrl />} /> */}
+            <Route path="/:inviteCode" element={<InviteUrl />} />
             <Route path="/test_chatting_page" element={<TestChattingPage />} />
             <Route path="/room_list" element={<RoomList />} />
             <Route path="/create_test_room" element={<CreateRoomTmp />} />
