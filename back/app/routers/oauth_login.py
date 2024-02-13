@@ -229,7 +229,10 @@ async def login_for_access_token(
             user = User(
                 email=user_info["email"],
                 name=user_info["profile"]["nickname"],
+                internal_id=generate_internal_id(),
                 is_additional_info_provided=False,
+                auth_provider="Kakao",
+                user_type="Standard",
             )
             db.add(user)
             db.commit()
