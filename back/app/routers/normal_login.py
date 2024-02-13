@@ -10,7 +10,7 @@ from fastapi import APIRouter, BackgroundTasks, Form, HTTPException, Request, De
 from fastapi.responses import JSONResponse
 import httpx
 from sqlalchemy.orm import Session
-from services.utils import upload_to_gcs
+from services.utils import request_embedding, upload_to_gcs
 
 from schemas.user_schema import UserCreate, UserLogin
 from database import get_db
@@ -67,6 +67,10 @@ async def login_for_access_token(
     internal_id = generate_internal_id()
     file_path = None
     profile_picture_url = None
+
+    while db.query(User).filter(User.internal_id == internal_id).first():
+        internal_id = generate_internal_id()
+
     if profile_img and profile_img.filename:
         """파일 저장 또는 처리
         file_location = f"C:/files/{profile_img.filename}"
@@ -74,10 +78,10 @@ async def login_for_access_token(
             file_object.write(profile_img.file.read())
         """
         file_path = f"profiles/{internal_id}"
-        background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-        profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
-    while db.query(User).filter(User.internal_id == internal_id).first():
-        internal_id = generate_internal_id()
+        # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
+        upload_to_gcs(profile_img, file_path, internal_id)
+
+        profile_picture_url = f"C:/files/{internal_id}.{profile_img.filename.split('.')[-1]}"
 
     user = User(
         email=base_data.email,
@@ -92,6 +96,9 @@ async def login_for_access_token(
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    if profile_img and profile_img.filename:
+        await request_embedding(profile_img, internal_id)
 
     if user_type == "Business":
         business_data = BusinessUser(

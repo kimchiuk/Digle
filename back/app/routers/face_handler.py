@@ -1,6 +1,8 @@
+from io import BytesIO
 import os
 import shutil
 from typing import List
+import aiofiles
 from dotenv import load_dotenv
 from fastapi import APIRouter, File, Form, HTTPException, Request, Depends, Response, UploadFile
 from fastapi.responses import JSONResponse
@@ -17,9 +19,16 @@ from services.auth_service import (
 
 router = APIRouter(tags=["face_handler"])
 
+AI_SERVER_URL = os.getenv("AI_SERVER_URL")
+
 
 @router.post("/faces")
-async def face_capture(request: Request, response: Response, faces: List[UploadFile] = File(...)):
+async def face_capture(
+    request: Request,
+    response: Response,
+    faces: List[UploadFile] = File(...),
+    db: Session = Depends(get_db),
+):
     print(faces)
     """
     for face in faces:
@@ -32,3 +41,23 @@ async def face_capture(request: Request, response: Response, faces: List[UploadF
                 f.write(contents)  # 파일 저장
                 await face.close()  # 파일 처리 후 리소스 해제
     """
+    new_files = []
+
+    for file in faces:
+        # 유저의 이름에서 내부 이름으로 파일 이름 변경
+        user_name = file.filename.split(".")[0]  # 파일 이름에서 확장자를 제외한 부분 추출
+        internal_id = db.query(User).filter(User.name == user_name).first().internal_id
+        file_name = f"{internal_id}.jpeg"  # 내부적으로 사용할 파일 이름 생성
+
+        contents = await file.read()  # 파일 내용 읽기
+        new_files.append(("files", (file_name, contents, file.content_type)))  # MIME 타입 추가
+
+    # httpx를 사용하여 파일 전송
+    async with httpx.AsyncClient() as client:
+        response = await client.post(f"{AI_SERVER_URL}/get_users_with_image", files=new_files)
+
+    # 응답 처리
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Error sending files to AI server")
+    print(response)
+    return {"detail": "Files uploaded and sent successfully", "response": response.json()}
