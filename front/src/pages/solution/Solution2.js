@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie"; // react-cookie 라이브러리에서
 import { AuthContext } from "context/AuthContext";
 
 const Solution2 = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
 
   // const [cookies] = useCookies(["isLogin"]); // isLogin 쿠키 사용
   const [email, setEmail] = useState("");
@@ -31,11 +31,11 @@ const Solution2 = () => {
 
   useEffect(() => {
     // 로그인 상태 확인
-    if (!isLoggedIn) {
+    if (authState.status === "loggedOut") {
       alert("로그인 해주세요.");
       navigate("/login"); // 로그인 페이지로 이동
     }
-  }, [isLoggedIn, navigate]); // 의존성 배열에 cookies 추가
+  }, [authState.status, navigate]); // 의존성 배열에 cookies 추가
 
   const handleSubmit = async (e) => {
     e.preventDefault();

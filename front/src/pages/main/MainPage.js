@@ -12,13 +12,13 @@ import { AuthContext } from "context/AuthContext";
 const API_URL = process.env.REACT_APP_API_BASE_URL; // 서버 API 주소
 
 const Main = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
 
   // const [cookies] = useCookies(["isLogin"]);
   const [userType, setUserType] = useState("");
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (authState.status === "loggedIn") {
       axios
         .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
         .then((res) => {
@@ -28,7 +28,7 @@ const Main = () => {
           console.error("Error fetching user data:", err);
         });
     }
-  }, [isLoggedIn]);
+  }, [authState.status]);
 
   return (
     <div className="bg-slate-50">

@@ -7,7 +7,7 @@ import { AuthContext } from "context/AuthContext";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Navbar = () => {
-  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
+  const { authState, setAuthState } = useContext(AuthContext);
 
   // const [cookies] = useCookies(["__Host-access_token"]);
   // const [isLoggedIn, setIsLoggedIn] = useState(!!cookies['__Host-access_token']);
@@ -49,7 +49,7 @@ const Navbar = () => {
   //
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (authState.status === "loggedIn") {
       axios
         .get(`${API_URL}/get_user_name_and_type`, { withCredentials: true })
         .then((res) => {
@@ -60,7 +60,7 @@ const Navbar = () => {
           console.error("Error fetching user data:", err);
         });
     }
-  }, [isLoggedIn]);
+  }, [authState]);
 
   return (
     <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
@@ -184,7 +184,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="mr-4 whitespace-nowrap">
-        {isLoggedIn && userType === "Business" && (
+        {authState.status === "loggedIn" && userType === "Business" && (
           <Link
             to="/create_test_room"
             className="px-4 py-2 mr-4 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
@@ -192,7 +192,7 @@ const Navbar = () => {
             [TEST]
           </Link>
         )}
-        {isLoggedIn ? (
+        {authState.status === "loggedIn" ? (
           <>
             <Link
               to="/logout"

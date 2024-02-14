@@ -4,7 +4,7 @@ import { handleOauthLogin } from "../../api/authService";
 import { AuthContext } from "context/AuthContext";
 
 const LoginCallback = () => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setAuthState } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const LoginCallback = () => {
           // 백엔드로 인증 코드 전송 및 처리
           await handleOauthLogin(provider, code, stateValue);
           navigate("/");
-          setIsLoggedIn(true);
+          setAuthState({ status: "loggedIn" });
         } catch (error) {
           console.error("Authentication error:", error);
           // 오류 처리 로직

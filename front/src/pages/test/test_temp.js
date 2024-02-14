@@ -8,7 +8,7 @@ import { AuthContext } from "context/AuthContext";
 
 const TestTemp = () => {
   // const [cookies] = useCookies(['isLogin']);
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { setAuthState, authState } = useContext(AuthContext);
   const [showExam, setShowExam] = useState(false);
   const [examCode, setExamCode] = useState("");
   const navigate = useNavigate();
@@ -46,13 +46,13 @@ const TestTemp = () => {
       }
     };
 
-    if (!isLoggedIn) {
+    if (authState.status === "loggedOut") {
       alert("로그인 해주세요.");
       navigate("/login");
     } else {
       fetchUserData();
     }
-  }, [isLoggedIn, navigate]);
+  }, [authState.status, navigate]);
 
   const handleJoinExam = async () => {
     setIsLoading(true);

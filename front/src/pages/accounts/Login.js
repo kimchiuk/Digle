@@ -9,7 +9,7 @@ import MainImg from "assets/main.png";
 import { AuthContext } from "context/AuthContext";
 
 const Login = () => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setAuthState } = useContext(AuthContext);
   // Cookie에 저장하여 사용할 값 및 관련 Coockie 선언
   const [cookies, setCookie, removeCookie] = useCookies(["rememberUserId"]); // Coockies 이름임
   const [userId, setUserId] = useState(false);
@@ -53,7 +53,7 @@ const Login = () => {
       });
       console.log("로그인 성공: ", response);
       // setCookie("isLogin", true); 2/13
-      setIsLoggedIn(true);
+      setAuthState({ status: "loggedIn" });
 
       if (isRemember) {
         setCookie("rememberUserId", email);
