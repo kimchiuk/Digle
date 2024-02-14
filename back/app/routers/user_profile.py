@@ -37,13 +37,11 @@ async def read_users_me(
     response: Response,
     db: Session = Depends(get_db),
 ):
-
     user = get_user_by_token(request, db, "service_access")
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     # 사용자 정보를 직접 반환하거나  객체를 사용해서 반환
     if user.user_type == UserType.Standard:
-
         file_location = user.profile_picture_url
         with open(file_location, "rb") as image_file:
             encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
@@ -89,7 +87,6 @@ async def update_user_profile(
     if not user:
         raise HTTPException(status_code=404, detail="Not found User")
     if user.user_type == UserType.Standard:
-
         file_location = None
 
         if profile_img and profile_img.filename:
@@ -105,8 +102,10 @@ async def update_user_profile(
             await request_embedding(profile_img, user.internal_id)
 
         user.name = name
-        user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
-
+        # user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
+        user.profile_picture_url = (
+            f"/home/ubuntu/digle_storage/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
+        )
         db.commit()
         file_base64 = base64.b64encode(profile_img.file.read()).decode("utf-8")
         user_data = {

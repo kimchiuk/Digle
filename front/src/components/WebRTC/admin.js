@@ -152,7 +152,7 @@ function RoomList({ refresh }) {
                   ))}
                 </ul>
               ) : (
-                <p>방에 아무도 존재하지 않습니다.</p>
+                <p className="text-xs">방에 아무도 존재하지 않습니다.</p>
               ))}
           </li>
         ))}
