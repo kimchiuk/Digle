@@ -101,10 +101,12 @@ const Profile = () => {
           formData.append("profile_img", image);
         }
       } else if (userType === "Business") {
-        setCompanyAddress(`${roadAddress} (${zipCode}) ${detailAddress}`);
+        const newCompanyAddress = `${roadAddress} (${zipCode}) ${detailAddress}`;
+        // setCompanyAddress(newCompanyAddress);
         formData.append("company_info", companyName);
         formData.append("company_email", companyEmail);
-        formData.append("company_address", companyAddress);
+        formData.append("company_address", newCompanyAddress);
+        console.log(roadAddress, zipCode, detailAddress);
       }
       const response = await axios.put(`${API_URL}/profile`, formData, {
         withCredentials: true,
