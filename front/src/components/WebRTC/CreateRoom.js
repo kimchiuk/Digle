@@ -10,7 +10,7 @@ const CreateRoom = () => {
   const [room_id, setRoomId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [userName, setUserName] = useState(""); 
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_BASE_URL;
   
@@ -23,6 +23,7 @@ const CreateRoom = () => {
 
         const newUserName = response.data.user_name;
         setUserName(newUserName);
+        
       } catch (error) {
         console.error("유저 정보가 안가져와져요 에러:", error);
       }
@@ -35,9 +36,8 @@ const CreateRoom = () => {
     setIsLoading(true);
     try {
       // 방 만들기 API 호출
-      const roomName = `${userName}님의 방`
       const createResponse = await axios
-        .post(`${API_URL}/rooms/create`, { roomName }, {
+        .post(`${API_URL}/rooms/create`, null, {
           withCredentials: true,
         })
         .then((response) => {

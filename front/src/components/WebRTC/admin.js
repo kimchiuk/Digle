@@ -15,24 +15,24 @@ function RoomList({ refresh }) {
   const API_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchUserName = async () => {
-  //     try {
-  //       const response = await axios.get(`${API_URL}/get_user_name_and_type`, {
-  //         withCredentials: true,
-  //       });
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/get_user_name_and_type`, {
+          withCredentials: true,
+        });
 
-  //       const newUserName = response.data.user_name;
-  //       const newUserType = response.date.user_type;
-  //       setUserName(newUserName);
-  //       setUserType(newUserType);
-  //     } catch (error) {
-  //       console.error("유저 이름이 안가져와져요 에러:", error);
-  //     }
-  //   };
+        const newUserName = response.data.user_name;
+        const newUserType = response.data.user_type;
+        setUserName(newUserName);
+        setUserType(newUserType);
+      } catch (error) {
+        console.error("유저 이름이 안가져와져요 에러:", error);
+      }
+    };
 
-  //   fetchUserName();
-  // }, []); // 빈 배열을 전달하여 한 번만 실행되도록 설정
+    fetchUserName();
+  }, []); // 빈 배열을 전달하여 한 번만 실행되도록 설정
 
   const handleEnterRoom = (room_id) => {
     // navigate 함수를 사용하여 특정 경로로 이동
@@ -126,7 +126,7 @@ function RoomList({ refresh }) {
                 {room.room_num}
               </div>
               <div>
-                {userType === "business" && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
+                {userType === "Business" && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
                   <button onClick={() => handleDeleteRoom(room.room_num)}>
                     <img
                       className="w-3 h-3 mr-1"
