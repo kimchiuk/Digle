@@ -419,3 +419,9 @@ def create_room_url(room_id: str):
     unique_code = generate_unique_code()
     room_url = f"http://localhost:3000/{unique_code}"
     return {"room_url": room_url}
+
+
+@router.get("/get_room")
+def get_rooms(db: Session = Depends(get_db)):
+    rooms = db.query(RoomInfo).filter(RoomInfo.room_type == "Room").all()
+    return rooms
