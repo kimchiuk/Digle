@@ -35,6 +35,7 @@ pipeline {
         SSL_KEY_FILE = "${env.SSL_KEY_FILE}"
         
         REACT_APP_API_BASE_URL = "${env.REACT_APP_API_BASE_URL}"
+        AI_SERVER_URL = "${env.AI_SERVER_URL}"
         DOCKER_COMPOSE_FILE = "docker-compose.yml"
         
         
@@ -72,6 +73,7 @@ pipeline {
                                     "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
                                     "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
                                     "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
+                                    "--build-arg SMTP_SERVER=${env.AI_SERVER_URL} " +
                                     "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
                                     "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
                                     "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")
@@ -123,29 +125,29 @@ pipeline {
             }
             
         }
-        stage('Build and Push the Ai-model Image') {
-            steps {
-                script {
-                    sh 'echo "Starting Build Ai-model Docker Image"'
-                    dir('back/app/ai_models/face') {
-                        withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
+        // stage('Build and Push the Ai-model Image') {
+        //     steps {
+        //         script {
+        //             sh 'echo "Starting Build Ai-model Docker Image"'
+        //             dir('back/app/ai_models/face') {
+        //                 withDockerRegistry(credentialsId: 'docker', url: 'https://registry.hub.docker.com') {
                             
-                             modelImage = docker.build("${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}")
-                            // Docker 빌드 결과 출력
-                            if (modelImage != 0) {
-                                echo "Docker build succeeded: ${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                                docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-                                    modelImage.push()
-                            }
-                            } else {
-                                error "Docker build failed"
-                            }
-                        }
-                    }
-                }
-            }
+        //                      modelImage = docker.build("${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}")
+        //                     // Docker 빌드 결과 출력
+        //                     if (modelImage != 0) {
+        //                         echo "Docker build succeeded: ${MODEL_IMAGE_NAME}:${env.BUILD_NUMBER}"
+        //                         docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+        //                             modelImage.push()
+        //                     }
+        //                     } else {
+        //                         error "Docker build failed"
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
             
-        }     
+        // }     
     
         stage('Deploy') {
             steps {
