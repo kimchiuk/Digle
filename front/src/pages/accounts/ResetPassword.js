@@ -57,6 +57,11 @@ const ChangePassword = () => {
     }
   };
 
+  const clickConfirmPassword = () => {
+    setPasswordMsg("");
+    setError("");
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
       <img className="absolute w-full h-full object-cover" src={MainImg} />
@@ -76,12 +81,11 @@ const ChangePassword = () => {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            onClick={clickConfirmPassword}
             placeholder="새 비밀번호 확인"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white text-gray-700"
           />
-          {passwordMsg && (
-            <p className="text-sky-500 text-xs">{passwordMsg}</p>
-          )}
+          {passwordMsg && <p className="text-sky-500 text-xs">{passwordMsg}</p>}
           {error && <p className="text-sky-500 text-xs">{error}</p>}
           <button
             onClick={handleResetPassword}

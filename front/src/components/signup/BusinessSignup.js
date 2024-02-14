@@ -22,7 +22,7 @@ const BusinessSignup = ({
           <input
             value={companyName}
             onChange={companyNameHandler}
-            className="pt-2 border-b-2"
+            className="pt-2 border-b-2 pl-2"
             placeholder="회사 이름"
             type="text"
           />
@@ -31,7 +31,7 @@ const BusinessSignup = ({
           <input
             value={companyEmail}
             onChange={companyEmailHandler}
-            className="pt-2 border-b-2"
+            className="pt-2 border-b-2 pl-2"
             placeholder="회사 이메일"
             type="text"
           />
