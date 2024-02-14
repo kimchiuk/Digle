@@ -79,8 +79,9 @@ async def login_for_access_token(
         """
         file_path = f"profiles/{internal_id}"
         # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-        # upload_to_gcs(profile_img, file_path, internal_id)
-        save_to_local_directory(profile_img, file_path, internal_id)
+        upload_to_gcs(profile_img, file_path, internal_id)
+        print("너가 문제니?")
+        # save_to_local_directory(profile_img, file_path, internal_id)
 
         # profile_picture_url = f"C:/files/{internal_id}.{profile_img.filename.split('.')[-1]}"
         profile_picture_url = f"/home/ubuntu/digle_storage/{internal_id}.{profile_img.filename.split('.')[-1]}"
