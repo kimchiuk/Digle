@@ -264,4 +264,5 @@ async def login_for_access_token(
             path="/",  # 전체 경로에서 사용
             max_age=3600,  # 예: 1시간 유효기간
         )
+        print(response)
     return return_value
