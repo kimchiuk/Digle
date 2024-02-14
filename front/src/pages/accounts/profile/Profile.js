@@ -134,7 +134,7 @@ const Profile = () => {
       <hr className="mb-2 p-2 ml-8" />
       <div className="flex justify-center flex-wrap pb-8">
         {/* 회원정보 수정 form */}
-        <div className="relative flex h-screen border-4 rounded-lg">
+        <div className="relative flex p-4 border-4 rounded-lg">
           <div className="pt-8 w-[600px] text-left px-5">
             <form onSubmit={profileUpdate} className="flex flex-col p-2">
               {userType === "Standard" ? (
@@ -153,7 +153,7 @@ const Profile = () => {
               <div className="flex flex-col">
                 <label htmlFor="email">이메일</label>
                 <input
-                  className="border-b-2 rounded m-2 bg-gray-100"
+                  className="border-b-2 pl-2 rounded m-2 bg-gray-100"
                   disabled
                   type="text"
                   id="email"
@@ -166,7 +166,7 @@ const Profile = () => {
                   이름
                 </label>
                 <input
-                  className="border-b-2 rounded m-2 w-48"
+                  className="border-b-2 pl-2 rounded m-2 w-48"
                   type="text"
                   id="name"
                   value={name}
@@ -182,7 +182,7 @@ const Profile = () => {
                       회사이름
                     </label>
                     <input
-                      className="border-b-2 rounded m-2 w-48"
+                      className="border-b-2 pl-2 rounded m-2 w-48"
                       type="text"
                       id="name"
                       value={companyName}
@@ -194,7 +194,7 @@ const Profile = () => {
                       회사 이메일
                     </label>
                     <input
-                      className="border-b-2 rounded m-2 w-48"
+                      className="border-b-2 pl-2 rounded m-2 w-48"
                       type="text"
                       id="name"
                       value={companyEmail}
@@ -217,35 +217,33 @@ const Profile = () => {
                   </div>
                 </>
               ) : null}
-              <div className="flex justify-between mt-8">
+              <div className="pt-4 flex">
+                {!isModalOpen && (
+                  <input
+                    className="border-2 p-2 text-sm rounded-lg font-medium bg-slate-100"
+                    type="button"
+                    value="비밀번호 변경"
+                    onClick={openModal}
+                  />
+                )}
+                {isModalOpen && (
+                  <PasswordChangeModal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    email={email}
+                  />
+                )}
+              </div>
+              <div className="flex items-end justify-between mt-8">
                 <input
-                  className="bg-blue-500 text-white py-2 px-8 rounded cursor-pointer mt-2"
+                  className="focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-sky-900"
                   type="submit"
                   onClick={updateButton}
                   value="수정하기"
                 />
+                <DeleteAccount />
               </div>
             </form>
-            <div className="pt-4 flex flex-col">
-              {!isModalOpen && (
-                <input
-                  className="border-2 w-40 h-10"
-                  type="button"
-                  value="비밀번호 변경"
-                  onClick={openModal}
-                />
-              )}
-              {isModalOpen && (
-                <PasswordChangeModal
-                  isOpen={isModalOpen}
-                  onClose={closeModal}
-                  email={email}
-                />
-              )}
-            </div>
-            <div className="flex-1 flex justify-end items-start">
-              <DeleteAccount />
-            </div>
           </div>
         </div>
       </div>

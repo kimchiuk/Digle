@@ -109,7 +109,7 @@ const FindPassword = () => {
               value={username}
               onChange={handleUsernameChange}
               placeholder="이름을 입력하세요."
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white text-gray-700"
               required
             />
           </div>
@@ -120,14 +120,14 @@ const FindPassword = () => {
               onChange={handleEmailChange}
               onKeyPress={handleKeyPress}
               placeholder="E-mail을 입력하세요."
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white text-gray-700"
               required
             />
           </div>
           {!isVerified ? (
             <button
               onClick={verifyEmail}
-              className={`w-full focus:outline-none text-white bg-yellow-600 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-md px-5 py-2.5 mt-4 dark:focus:ring-yellow-900`}
+              className={`w-full focus:outline-none text-white bg-sky-600 hover:bg-sky-500 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-md px-5 py-2.5 mt-4 dark:focus:ring-sky-900`}
             >
               인증번호 전송
             </button>
@@ -140,26 +140,26 @@ const FindPassword = () => {
                   onClick={onClickErrorCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
                   placeholder="인증번호를 입력하세요."
-                  className="w-4/5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
+                  className="w-4/5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white text-gray-700"
                   required
                 />
                 <button
                   onClick={verifyCode}
                   className={`w-1/5 py-2 ml-2
-                   focus:outline-none text-white bg-yellow-600 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-md dark:focus:ring-yellow-900`}
+                   focus:outline-none text-white bg-sky-600 hover:bg-sky-500 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-md dark:focus:ring-sky-900`}
                 >
                   확인
                 </button>
               </div>
               <button
                 onClick={verifyEmail}
-                className={`w-full focus:outline-none text-white bg-yellow-600 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-md px-5 py-2.5 mt-4 dark:focus:ring-yellow-900`}
+                className={`w-full focus:outline-none text-white bg-sky-600 hover:bg-sky-500 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-md px-5 py-2.5 mt-4 dark:focus:ring-sky-900`}
               >
                 인증번호 재전송
               </button>
             </>
           )}
-          {error && <p className="text-yellow-500">{error}</p>}
+          {error && <p className="text-sky-500">{error}</p>}
           {timeLeft && (
             <div className="text-white mt-2">
               {Math.floor(timeLeft / 60)}:

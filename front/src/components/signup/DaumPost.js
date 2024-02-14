@@ -30,18 +30,18 @@ const DaumPost = ({
         <div className="flex justify-between mb-1">
           <div>
             <input
-              className="border-b-2 pt-2"
+              className="border-b-2 pl-2 pt-2"
               value={zipCode}
               readOnly
               placeholder="우편번호"
             />
           </div>
-          <button className="" type="button" onClick={() => setIsOpen(true)}>
+          <button className="p-2 focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm" type="button" onClick={() => setIsOpen(true)}>
             우편번호 검색
           </button>
         </div>
         <input
-          className="border-b-2 pt-2 w-full mb-1"
+          className="border-b-2 pt-2 pl-2 w-full mb-1"
           value={roadAddress}
           readOnly
           placeholder="도로명 주소"
@@ -59,7 +59,7 @@ const DaumPost = ({
         )}
         <br />
         <input
-          className="border-b-2 pt-2 w-full"
+          className="border-b-2 pl-2 pt-2 w-full"
           type="text"
           onChange={changeHandler}
           value={detailAddress}
