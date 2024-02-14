@@ -25,6 +25,7 @@ const VideoChat = () => {
   const [mainStream, setMainStream] = useState({}); //지금 메인으로 보여주는 화면
   const [feeds, setFeeds] = useState([]); //다른사람의 화면배열 (rfid,rfdisplay)
   const [myFeed, setMyFeed] = useState({}); //내 컴퓨터화면 공유
+
   const [receiveChat, setReceiveChat] = useState("");
   const [activeVideo, setActiveVideo] = useState(true);
   const [activeAudio, setActiveAudio] = useState(true);
@@ -50,6 +51,23 @@ const VideoChat = () => {
   const disconnectFeed = (rfid) => {
     setFeeds((prevFeeds) => prevFeeds.filter((feed) => feed.rfid !== rfid));
   };
+
+
+
+  const handleLeave = () => {
+    if (myFeed && myFeed.id) {
+      console.log(myFeed.id);
+      disconnectFeed(myFeed.id); 
+      sfutest.send({
+        "message": {
+          "request": "leave",
+          "room": myroom
+        }
+      });
+    }
+    navigate("/");
+  };
+
 
   const createSpeechEvents = (stream) => {
     let speechEvents = hark(stream, {});
@@ -154,17 +172,15 @@ const VideoChat = () => {
                 Janus.debug("Event : " + event);
                 if (event) {
                   if (event === "joined") {
-                    // setMyFeed(() => ({
-                    //   id: msg["id"],
-                    //   pvtid: msg["private_id"],
-                    // }));
-                    // myid = msg["id"];
-                    // mypvtid = msg["private_id"];
+                    setMyFeed(() => ({
+                      id: msg["id"],
+                    }));
                     Janus.log(
                       "Successfully joined room " +
                         msg["room"] +
                         " with ID " +
                         msg["id"]
+                        
                     );
                     if (subscriber_mode) {
                       // 비디오 숨김 무시하고
@@ -664,7 +680,6 @@ const VideoChat = () => {
   const kickParticipant = (participantId) => {
     const kick = { request: "kick", room: myroom, id: participantId };
     sfutest.send({ message: kick });
-    disconnectFeed(participantId);
   };
 
   const handleSharingActiveClick = () => {
@@ -776,7 +791,6 @@ const VideoChat = () => {
       <div
         key={feed.rfid}
         onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
-        className="flex w-[357px] h-[268px] m-2"
       >
         <Video
           key={feed.rfid}
@@ -796,13 +810,20 @@ const VideoChat = () => {
             stream={mainStream.stream}
             username={mainStream.username}
             muted={true}
-            className="w-[1100px] h-[540px] min-w-[700px]"
+            className="w-[1100px] h-[540px] min-w-[720px]"
           />
 
-          <div className="flex justify-end items-center mt-3 min-w-[700px]">
-            <button 
-              onClick={handleSharingActiveClick} 
-              className="mr-2 w-full">
+<button onClick={() => handleLeave()}  >
+        나가기
+      </button>
+
+          
+
+          <div className="flex justify-end items-center mt-3 ">
+            <button
+              onClick={handleSharingActiveClick}
+              className="mr-2 w-full min-w-[620px]"
+            >
               {activeSharing ? (
                 <p className="px-2 py-3 bg-red-500 text-white font-bold rounded-lg text-sm">
                   화면 공유 비활성화
@@ -833,7 +854,7 @@ const VideoChat = () => {
             <GetInviteCode />
           </div>
         </div>
-        <div className="w-full mt-4 lg:mt-0 lg:w-[320px] h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md flex-shrink-0">
+        <div className="w-full mt-4 lg:mt-0 lg:w-[320px] h-fit ml-0 lg:ml-10 px-3 py-4 rounded-2xl shadow-md  flex-shrink-0">
           <Chatting
             sendChatData={sendChatData}
             receiveChat={receiveChat}
@@ -842,21 +863,19 @@ const VideoChat = () => {
             feeds={feeds}
             username={username}
             sendPrivateMessage={sendPrivateMessage}
-            kickParticipant={kickParticipant}
           />
         </div>
       </div>
-      <div className="w-full min-w-[787px] bg-black rounded-md mt-2 mb-10">
-        <div className="flex justify-center flex-wrap">
+      <div className="flex justify-center w-full mt-2  whitespace-nowrap">
         <div
+          className="w-500 h-500 float-left m-3"
           onClick={() => handleMainStream(myFeed.stream, username)}
         >
           {myFeed && (
-            <Video className="w-[357px] h-[268px] m-2" stream={myFeed.stream} username={username} muted={false} />
+            <Video stream={myFeed.stream} username={username} muted={false} />
           )}
         </div>
         {renderRemoteVideos}
-        </div>
       </div>
     </div>
   );
