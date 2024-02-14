@@ -10,7 +10,7 @@ from fastapi import APIRouter, BackgroundTasks, Form, HTTPException, Request, De
 from fastapi.responses import JSONResponse
 import httpx
 from sqlalchemy.orm import Session
-from services.utils import request_embedding, upload_to_gcs
+from services.utils import request_embedding, upload_to_gcs, save_to_local_directory
 
 from schemas.user_schema import UserCreate, UserLogin
 from database import get_db
@@ -79,7 +79,8 @@ async def login_for_access_token(
         """
         file_path = f"profiles/{internal_id}"
         # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-        upload_to_gcs(profile_img, file_path, internal_id)
+        # upload_to_gcs(profile_img, file_path, internal_id)
+        save_to_local_directory(profile_img, file_path, internal_id)
 
         # profile_picture_url = f"C:/files/{internal_id}.{profile_img.filename.split('.')[-1]}"
         profile_picture_url = f"/home/ubuntu/digle_storage/{internal_id}.{profile_img.filename.split('.')[-1]}"
