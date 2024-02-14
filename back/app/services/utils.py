@@ -41,8 +41,8 @@ def upload_to_gcs(file: UploadFile, file_path: str, id: str):
     bucket = storage_client.bucket(bucket_name)
 
     # 임시 파일 생성
-    os.makedirs(f"C:/files", exist_ok=True)
-    temp_file = f"C:/files/{id}.{file.filename.split('.')[-1]}"
+    os.makedirs(f"/home/ubuntu/digle_storage", exist_ok=True)
+    temp_file = f"/home/ubuntu/digle_storage/{id}.{file.filename.split('.')[-1]}"
     with open(temp_file, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
