@@ -223,7 +223,7 @@ const Profile = () => {
               <div className="pt-4 flex">
                 {!isModalOpen && (
                   <input
-                    className="border-2 p-2 text-sm rounded-lg font-medium bg-slate-100"
+                    className="border-2 h-10 p-2 text-sm rounded-lg font-medium bg-slate-100 hover:bg-slate-200"
                     type="button"
                     value="비밀번호 변경"
                     onClick={openModal}
@@ -237,13 +237,14 @@ const Profile = () => {
                   />
                 )}
               </div>
-              <div className="flex items-end justify-between mt-8">
-                <input
-                  className="focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-sky-900"
-                  type="submit"
-                  onClick={updateButton}
-                  value="수정하기"
-                />
+              <div className="flex justify-between mt-8">
+                
+                <button
+                className="focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-sky-900"
+                onClick={updateButton}
+                >
+                  수정하기
+                </button>
                 <DeleteAccount />
               </div>
             </form>
