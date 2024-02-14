@@ -67,7 +67,7 @@ def save_to_local_directory(file: UploadFile, file_path: str, id: str):
     # 파일 저장
     with open(save_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
-    print("???????")
+    print(save_path)
 
 
 def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
