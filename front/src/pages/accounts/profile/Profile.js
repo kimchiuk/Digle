@@ -207,8 +207,11 @@ const Profile = () => {
                     </label>
                     <DaumPost
                       zipCode={zipCode}
+                      setZipcode={setZipcode}
                       roadAddress={roadAddress}
+                      setRoadAddress={setRoadAddress}
                       detailAddress={detailAddress}
+                      setDetailAddress={setDetailAddress}
                       isOpen={isOpen}
                       setIsOpen={setIsOpen}
                       completeHandler={completeHandler}

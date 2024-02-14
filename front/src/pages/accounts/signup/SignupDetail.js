@@ -55,14 +55,14 @@ const SignupDetail = () => {
       );
       console.log(response);
 
-      if (response.data) {
+      if (response.data.message === "Verification email sent") {
         setIsCheckEmail(true);
         setEmailCodeOk(false);
 
         startTimer();
       } else {
         setEmailMessage("이미 가입된 이메일입니다.");
-        setEmailCodeOk(true);
+        // setEmailCodeOk(true);
       }
     } catch (error) {
       console.error("이메일 중복 확인 오류:", error);
@@ -238,6 +238,15 @@ const SignupDetail = () => {
   // 폼 제출 시
   const onSubmitButton = async (e) => {
     e.preventDefault();
+    if (!emailCodeOk || !emailCodeOk) {
+      alert("이메일 인증이 올바르지 않습니다.");
+      return;
+    }
+
+    if (!isEmail || !isCheckEmail || !isConfirmPwd || !isPwd || !isVerified) {
+      alert("에라 에라 에라 ");
+      return;
+    }
 
     if (!name || !email || !password) {
       alert("이름, 이메일, 비밀번호는 필수 입력 항목입니다.");
