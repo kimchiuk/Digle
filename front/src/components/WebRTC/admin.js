@@ -23,11 +23,11 @@ function RoomList({ refresh }) {
         });
 
         const newUserName = response.data.user_name;
-        const newUserType = response.date.user_type;
+        const newUserType = response.data.user_type;
         setUserName(newUserName);
         setUserType(newUserType);
       } catch (error) {
-        console.error("유저 이름이 안가져와져요 에러:", error);
+        console.error("2유저 이름이 안가져와져요 에러:", error);
       }
     };
 
@@ -122,7 +122,7 @@ function RoomList({ refresh }) {
                 {room.description}
               </div>
               <div>
-                {userType === 'business' && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
+                {userType === 'Business' && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
                   <button onClick={() => handleDeleteRoom(room.room)}>
                   <img
                     className="w-3 h-3 mr-1"
