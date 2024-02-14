@@ -159,7 +159,7 @@ const FindPassword = () => {
               </button>
             </>
           )}
-          {error && <p className="text-sky-500">{error}</p>}
+          {error && <p className="text-sky-500 text-xs">{error}</p>}
           {timeLeft && (
             <div className="text-white mt-2">
               {Math.floor(timeLeft / 60)}:
