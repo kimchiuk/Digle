@@ -841,6 +841,7 @@ const VideoChat = () => {
             feeds={feeds}
             username={username}
             sendPrivateMessage={sendPrivateMessage}
+            kickParticipant={kickParticipant}
           />
         </div>
       </div>
