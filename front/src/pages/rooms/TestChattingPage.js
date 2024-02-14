@@ -805,22 +805,22 @@ const TestChattingPage = () => {
   const API_URL = process.env.REACT_APP_API_BASE_URL;
   const [rooms, setRooms] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get(`${API_URL}/rooms/list`)
-      .then((response) => {
-        const fetchedRooms = response.data.plugindata.data.list;
-        setRooms(fetchedRooms);
-        // 초기화 시 모든 방에 대해 참여자 목록을 숨김 상태로 설정
-        let initialShowState = {};
-        fetchedRooms.forEach((room) => {
-          initialShowState[room.room] = false;
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching rooms: ", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${API_URL}/rooms/list`)
+  //     .then((response) => {
+  //       const fetchedRooms = response.data.plugindata.data.list;
+  //       setRooms(fetchedRooms);
+  //       // 초기화 시 모든 방에 대해 참여자 목록을 숨김 상태로 설정
+  //       let initialShowState = {};
+  //       fetchedRooms.forEach((room) => {
+  //         initialShowState[room.room] = false;
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching rooms: ", error);
+  //     });
+  // }, []);
 
   const handleDeleteRoom = (room_id) => {
     if (

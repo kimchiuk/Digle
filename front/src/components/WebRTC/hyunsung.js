@@ -866,16 +866,17 @@ const VideoChat = () => {
           />
         </div>
       </div>
-      <div className="flex justify-center w-full mt-2  whitespace-nowrap">
+      <div className="w-full min-w-[787px] bg-black rounded-md mt-2 mb-10">
+        <div className="flex justify-center flex-wrap">
         <div
-          className="w-500 h-500 float-left m-3"
           onClick={() => handleMainStream(myFeed.stream, username)}
         >
           {myFeed && (
-            <Video stream={myFeed.stream} username={username} muted={false} />
+            <Video className="w-[357px] h-[268px] m-2" stream={myFeed.stream} username={username} muted={false} />
           )}
         </div>
         {renderRemoteVideos}
+        </div>
       </div>
     </div>
   );

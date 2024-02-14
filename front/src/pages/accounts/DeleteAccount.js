@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import { AuthContext } from "context/AuthContext";
 
 const DeleteAccount = () => {
-  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
+  const { authState, setAuthState } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -54,7 +54,7 @@ const DeleteAccount = () => {
       return;
     }
 
-    if (!isLoggedIn) {
+    if (authState.status === "loggedOut") {
       console.log("로그인 상태가 아닙니다.");
       navigate("/login");
       return;
@@ -69,7 +69,7 @@ const DeleteAccount = () => {
         withCredentials: true,
       });
       console.log("회원 탈퇴 성공: ", response);
-      setIsLoggedIn(false);
+      setAuthState({ status: "loggedOut" });
       // removeCookie("isLogin", { path: "/", domain: "i10d107.p.ssafy.io" });
       alert("정상적으로 회원 탈퇴 되었습니다.");
       navigate("/");
