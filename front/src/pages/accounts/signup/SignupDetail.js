@@ -238,13 +238,13 @@ const SignupDetail = () => {
   // 폼 제출 시
   const onSubmitButton = async (e) => {
     e.preventDefault();
-    if (!emailCodeOk || !emailCodeOk) {
+    if (!emailCodeOk || !isCheckEmail) {
       alert("이메일 인증이 올바르지 않습니다.");
       return;
     }
 
     if (!isEmail || !isCheckEmail || !isConfirmPwd || !isPwd || !isVerified) {
-      alert("에라 에라 에라 ");
+      alert("형식이 올바르지 않습니다. ");
       return;
     }
 

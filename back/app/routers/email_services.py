@@ -69,9 +69,11 @@ def send_email(receiver_email, subject, body):
     message["Subject"] = subject
     message["From"] = SMTP_USERNAME
     message["To"] = receiver_email
-
+    print("여기냐?")
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        print("여긴가?")
         server.starttls()
+        print("이거 안나오면 여기겠지")
         server.login(SMTP_USERNAME, SMTP_PASSWORD)
         server.sendmail(SMTP_USERNAME, receiver_email, message.as_string())
 
