@@ -664,6 +664,7 @@ const VideoChat = () => {
   const kickParticipant = (participantId) => {
     const kick = { request: "kick", room: myroom, id: participantId };
     sfutest.send({ message: kick });
+    disconnectFeed(participantId);
   };
 
   const handleSharingActiveClick = () => {
@@ -841,6 +842,7 @@ const VideoChat = () => {
             feeds={feeds}
             username={username}
             sendPrivateMessage={sendPrivateMessage}
+            kickParticipant={kickParticipant}
           />
         </div>
       </div>
