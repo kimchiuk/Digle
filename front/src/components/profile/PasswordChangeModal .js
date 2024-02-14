@@ -30,34 +30,27 @@ const PasswordChangeModal = ({ isOpen, onClose, email }) => {
   };
 
   return (
-    <>
-      <div className="">
-        <div className="border w-60 flex justify-between gap-2">
-          <input
-            className=""
-            type="password"
-            placeholder="현재 비밀번호"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-          <button
-            className="bg-blue-500 rounded-md w-20 h-10 text-white "
-            onClick={verifyCurrentPassword}
-          >
-            확인
-          </button>
-        </div>
-        <div className="justify-between flex w-60">
-          <div></div>
-          <button
-            className="bg-blue-500 rounded-md w-20 h-10 text-white"
-            onClick={onClose}
-          >
-            변경 취소
-          </button>
-        </div>
-      </div>
-    </>
+    <div className="flex">
+      <input
+        className="border pl-2 mr-2"
+        type="password"
+        placeholder="현재 비밀번호"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
+      <button
+        className="w-20 h-10  mr-2 focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm"
+        onClick={verifyCurrentPassword}
+      >
+        확인
+      </button>
+      <button
+        className="border-2 bg-slate-100 w-20 h-10 font-medium rounded-lg text-sm"
+        onClick={onClose}
+      >
+        변경 취소
+      </button>
+    </div>
   );
 };
 

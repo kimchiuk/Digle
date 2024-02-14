@@ -111,7 +111,7 @@ function RoomList({ refresh }) {
       <ul>
         {rooms.map((room) => (
           <li
-            className="bg-sky-300 text-white rounded-2xl p-3 mb-3"
+            className="text-white rounded-lg p-3 mb-3 bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300"
             key={room.room}
           >
             <div className="flex justify-between">

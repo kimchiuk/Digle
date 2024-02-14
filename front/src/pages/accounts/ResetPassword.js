@@ -70,22 +70,22 @@ const ChangePassword = () => {
             value={password}
             onChange={handlePasswordChange}
             placeholder="새 비밀번호"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white text-gray-700"
           />
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="새 비밀번호 확인"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500 bg-white text-gray-700"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white text-gray-700"
           />
           {passwordMsg && (
-            <p className="text-yellow-500 text-xs">{passwordMsg}</p>
+            <p className="text-sky-500 text-xs">{passwordMsg}</p>
           )}
-          {error && <p className="text-yellow-500 text-xs">{error}</p>}
+          {error && <p className="text-sky-500 text-xs">{error}</p>}
           <button
             onClick={handleResetPassword}
-            className="w-full focus:outline-none text-white bg-yellow-600 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-md px-5 py-2.5 mt-2"
+            className="w-full focus:outline-none text-white bg-sky-600 hover:bg-sky-500 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-md px-5 py-2.5 mt-2"
           >
             비밀번호 변경
           </button>
