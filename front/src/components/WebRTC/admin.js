@@ -27,7 +27,7 @@ function RoomList({ refresh }) {
         setUserName(newUserName);
         setUserType(newUserType);
       } catch (error) {
-        console.error("2유저 이름이 안가져와져요 에러:", error);
+        console.error("유저 이름이 안가져와져요 에러:", error);
       }
     };
 
@@ -41,15 +41,17 @@ function RoomList({ refresh }) {
 
   const fetchRooms = useCallback(() => {
     axios
-      .get(`${API_URL}/rooms/list`)
+      // .get(`${API_URL}/rooms/list`)
+      .get(`${API_URL}/get_room`)
       .then((response) => {
-        const fetchedRooms = response.data.plugindata.data.list;
+        // const fetchedRooms = response.data.plugindata.data.list;
+        const fetchedRooms = response.data;
         setRooms(fetchedRooms);
 
         // 초기화 시 모든 방에 대해 참여자 목록을 숨김 상태로 설정
         let initialShowState = {};
         fetchedRooms.forEach((room) => {
-          initialShowState[room.room] = false;
+          initialShowState[room.room_num] = false;
         });
         setShowParticipants(initialShowState);
       })
@@ -69,7 +71,9 @@ function RoomList({ refresh }) {
       axios
         .post(`${API_URL}/rooms/${room_id}/destroy`)
         .then(() => {
-          const updatedRooms = rooms.filter((room) => room.room !== room_id);
+          const updatedRooms = rooms.filter(
+            (room) => room.room_num !== room_id
+          );
           setRooms(updatedRooms);
         })
         .catch((error) => {
@@ -112,27 +116,27 @@ function RoomList({ refresh }) {
         {rooms.map((room) => (
           <li
             className="text-white rounded-lg p-3 mb-3 bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300"
-            key={room.room}
+            key={room.room_num}
           >
             <div className="flex justify-between">
               <div
                 className="font-bold cursor-pointer"
-                onClick={() => handleEnterRoom(room.room)}
+                onClick={() => handleEnterRoom(room.room_num)}
               >
-                {room.description}
+                {room.room_num}
               </div>
               <div>
-                {userType === 'Business' && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
-                  <button onClick={() => handleDeleteRoom(room.room)}>
-                  <img
-                    className="w-3 h-3 mr-1"
-                    src={deleteImg}
-                    alt="삭제모양"
-                  />
-                </button>
+                {userType === "Business" && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
+                  <button onClick={() => handleDeleteRoom(room.room_num)}>
+                    <img
+                      className="w-3 h-3 mr-1"
+                      src={deleteImg}
+                      alt="삭제모양"
+                    />
+                  </button>
                 )}
-                <button onClick={() => handleShowParticipants(room.room)}>
-                  {showParticipants[room.room] ? (
+                <button onClick={() => handleShowParticipants(room.room_num)}>
+                  {showParticipants[room.room_num] ? (
                     <img className="w-3 h-3" src={userListOff} alt="" />
                   ) : (
                     <img className="w-3 h-3" src={userListOn} alt="" />
@@ -140,10 +144,10 @@ function RoomList({ refresh }) {
                 </button>
               </div>
             </div>
-            {showParticipants[room.room] &&
-              (Array.isArray(participants[room.room]) ? (
-                <ul className="text-sm">
-                  {participants[room.room].map((participant) => (
+            {showParticipants[room.room_num] &&
+              (Array.isArray(participants[room.room_num]) ? (
+                <ul>
+                  {participants[room.room_num].map((participant) => (
                     <li key={participant.id}>{participant.display}</li>
                   ))}
                 </ul>

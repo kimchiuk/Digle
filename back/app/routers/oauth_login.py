@@ -228,6 +228,7 @@ async def login_for_access_token(
             db.refresh(user)
 
             # response 생성 status 200
+            message = "New User"
             return_value = JSONResponse(
                 status_code=200,
                 content={"message": "New User", "action": "request_additional_info"},
@@ -235,6 +236,7 @@ async def login_for_access_token(
             )
         elif not user.is_additional_info_provided:
             # 추가 정보가 아직 제출되지 않은 경우
+            message = "Additional Info Required"
             return_value = JSONResponse(
                 status_code=200,
                 content={
@@ -244,6 +246,7 @@ async def login_for_access_token(
                 headers=dict(response.headers),
             )
         else:
+            message = "login complete"
             return_value = JSONResponse(
                 status_code=200,
                 content={"message": "login complete", "user": user.email},
@@ -264,5 +267,11 @@ async def login_for_access_token(
             path="/",  # 전체 경로에서 사용
             max_age=3600,  # 예: 1시간 유효기간
         )
-        print(response)
+
+        return_value = JSONResponse(
+            status_code=200,
+            content={"message": message, "user": user.email},
+            headers=dict(response.headers),
+        )
+
     return return_value

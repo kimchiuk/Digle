@@ -81,7 +81,8 @@ async def login_for_access_token(
         # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
         upload_to_gcs(profile_img, file_path, internal_id)
 
-        profile_picture_url = f"C:/files/{internal_id}.{profile_img.filename.split('.')[-1]}"
+        # profile_picture_url = f"C:/files/{internal_id}.{profile_img.filename.split('.')[-1]}"
+        profile_picture_url = f"/home/ubuntu/digle_storage/{internal_id}.{profile_img.filename.split('.')[-1]}"
 
     user = User(
         email=base_data.email,
