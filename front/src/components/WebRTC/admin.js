@@ -11,6 +11,7 @@ function RoomList({ refresh }) {
   const [participants, setParticipants] = useState({});
   const [showParticipants, setShowParticipants] = useState({}); // 각 방의 참여자 목록 표시 상태를 관리하는 상태
   const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState("");
   const API_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
 
@@ -22,7 +23,9 @@ function RoomList({ refresh }) {
         });
 
         const newUserName = response.data.user_name;
+        const newUserType = response.date.user_type;
         setUserName(newUserName);
+        setUserType(newUserType);
       } catch (error) {
         console.error("유저 이름이 안가져와져요 에러:", error);
       }
@@ -104,7 +107,7 @@ function RoomList({ refresh }) {
   };
 
   return (
-    <div className="">
+    <div>
       <ul>
         {rooms.map((room) => (
           <li
@@ -119,13 +122,15 @@ function RoomList({ refresh }) {
                 {room.description}
               </div>
               <div>
-                <button onClick={() => handleDeleteRoom(room.room)}>
+                {userType === 'business' && ( // 비지니스 유저인 경우에만 삭제 버튼을 보여줌
+                  <button onClick={() => handleDeleteRoom(room.room)}>
                   <img
                     className="w-3 h-3 mr-1"
                     src={deleteImg}
                     alt="삭제모양"
                   />
                 </button>
+                )}
                 <button onClick={() => handleShowParticipants(room.room)}>
                   {showParticipants[room.room] ? (
                     <img className="w-3 h-3" src={userListOff} alt="" />

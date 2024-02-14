@@ -24,7 +24,7 @@ const CreateRoom = () => {
         const newUserName = response.data.user_name;
         setUserName(newUserName);
       } catch (error) {
-        console.error("유저 이름이 안가져와져요 에러:", error);
+        console.error("유저 정보가 안가져와져요 에러:", error);
       }
     };
 
@@ -35,12 +35,11 @@ const CreateRoom = () => {
     setIsLoading(true);
     try {
       // 방 만들기 API 호출
+      const roomName = `${userName}님의 방`
       const createResponse = await axios
-        .post(`${API_URL}/rooms/create`, null, {
+        .post(`${API_URL}/rooms/create`, { roomName }, {
           withCredentials: true,
         })
-
-
         .then((response) => {
           console.log("room_id : ", response.data.plugindata.data.room);
           const newRoomId = response.data.plugindata.data.room;
