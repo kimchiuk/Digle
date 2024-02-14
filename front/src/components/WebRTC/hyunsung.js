@@ -55,15 +55,21 @@ const VideoChat = () => {
   const handleLeave = () => {
     if (myFeed && myFeed.id) {
       console.log(myFeed.id);
-      disconnectFeed(myFeed.id);
+      disconnectFeed(myFeed.id); 
       sfutest.send({
-        message: {
-          request: "leave",
-          room: myroom,
-        },
+        "message": {
+          "request": "leave",
+          "room": myroom
+        }
       });
     }
-    navigate("/");
+    if (sfutest) {
+          sfutest.detach({
+            success: function() {
+              navigate("/");
+            }
+          });
+        }
   };
 
   const createSpeechEvents = (stream) => {
@@ -153,7 +159,7 @@ const VideoChat = () => {
                     " now"
                 );
                 if (!on) {
-                  alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
+                  alert("메인 페이지로 이동합니다.");
                   navigate("/");
                 }
               },
