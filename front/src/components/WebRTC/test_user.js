@@ -788,26 +788,32 @@ const TestUser = () => {
     );
   });
 
+  const handleLeave = () => {
+    if (myFeed && myFeed.id) {
+      console.log(myFeed.id);
+      disconnectFeed(myFeed.id); 
+      sfutest.send({
+        "message": {
+          "request": "leave",
+          "room": myroom
+        }
+      });
+    }
+    navigate("/test/finish");
+  };
+
 
   return (
     <>
       {/* 자신의 캠을 오른쪽 상단에 고정 */}
-      <div className="absolute top-0 right-0 z-20">
+      <div className>
         {myFeed && myFeed.stream && (
-          <div className="my-video-container w-[200px] h-[200px]">
+          <div className="my-video-container ml-[350px] w-[1000px] h-auto">
             <Video stream={myFeed.stream} username={username} muted={true} />
           </div>
         )}
-      </div>
+      </div> 
 
-      {/* iframe */}
-      <div>
-        <iframe
-          src="https://www.ssafy.com"
-          title="ssafy-website"
-          className="w-full h-[1096px]"
-        ></iframe>
-      </div>
 
       {/* 버튼과 채팅창 컨테이너 */}
       <div className="relative w-full p-4 bg-white">
@@ -834,7 +840,7 @@ const TestUser = () => {
           </button>
 
           {/* End Exam 버튼 */}
-          <button onClick={handleEndExamClick} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <button onClick={handleLeave} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
             End Exam
           </button>
         </div>
