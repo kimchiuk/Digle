@@ -142,13 +142,13 @@ function RoomList({ refresh }) {
             </div>
             {showParticipants[room.room] &&
               (Array.isArray(participants[room.room]) ? (
-                <ul>
+                <ul className="text-sm">
                   {participants[room.room].map((participant) => (
                     <li key={participant.id}>{participant.display}</li>
                   ))}
                 </ul>
               ) : (
-                <p>방에 아무도 존재하지 않습니다.</p>
+                <p className="text-xs">방에 아무도 존재하지 않습니다.</p>
               ))}
           </li>
         ))}
