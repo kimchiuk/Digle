@@ -60,12 +60,13 @@ def save_to_local_directory(file: UploadFile, file_path: str, id: str):
 
     # 파일 저장 경로 생성
     save_path = os.path.join(base_path, f"{id}.{file.filename.split('.')[-1]}")
+    temp_file = f"/home/ubuntu/digle_storage/{id}.{file.filename.split('.')[-1]}"
     print("!!!")
     # 디렉토리가 존재하지 않는 경우 생성
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     print("???")
     # 파일 저장
-    with open(save_path, "wb") as f:
+    with open(temp_file, "wb") as f:
         shutil.copyfileobj(file.file, f)
     print(save_path)
 
