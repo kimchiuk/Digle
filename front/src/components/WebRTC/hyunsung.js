@@ -799,9 +799,7 @@ const VideoChat = () => {
           />
 
           <div className="flex justify-end items-center mt-3 min-w-[700px]">
-            <button 
-              onClick={handleSharingActiveClick} 
-              className="mr-2 w-full">
+            <button onClick={handleSharingActiveClick} className="mr-2 w-full">
               {activeSharing ? (
                 <p className="px-2 py-3 bg-red-500 text-white font-bold rounded-lg text-sm">
                   화면 공유 비활성화
@@ -846,14 +844,17 @@ const VideoChat = () => {
       </div>
       <div className="w-full min-w-[787px] bg-black rounded-md mt-2 mb-10">
         <div className="flex justify-center flex-wrap">
-        <div
-          onClick={() => handleMainStream(myFeed.stream, username)}
-        >
-          {myFeed && (
-            <Video className="w-[357px] h-[268px] m-2" stream={myFeed.stream} username={username} muted={false} />
-          )}
-        </div>
-        {renderRemoteVideos}
+          <div onClick={() => handleMainStream(myFeed.stream, username)}>
+            {myFeed && (
+              <Video
+                className="w-[357px] h-[268px] m-2"
+                stream={myFeed.stream}
+                username={username}
+                muted={false}
+              />
+            )}
+          </div>
+          {renderRemoteVideos}
         </div>
       </div>
     </div>
