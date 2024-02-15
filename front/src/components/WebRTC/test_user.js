@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
-import Chatting from "./Chatting/Chatting";
+import ChattingTest from "./Chatting/Chatting_test";
 import UserList from "./UserList/UserList";
 
 import axios from "axios";
@@ -789,38 +789,69 @@ const TestUser = () => {
   });
 
   const handleLeave = () => {
-    if (myFeed && myFeed.id) {
-      console.log(myFeed.id);
-      disconnectFeed(myFeed.id); 
-      sfutest.send({
-        "message": {
-          "request": "leave",
-          "room": myroom
-        }
-      });
+    // 사용자에게 확인을 요청하는 팝업 표시
+    const confirmLeave = window.confirm("정말 시험을 종료하시겠습니까?");
+  
+    // 사용자가 '예'를 클릭한 경우
+    if (confirmLeave) {
+      if (myFeed && myFeed.id) {
+        console.log(myFeed.id);
+        disconnectFeed(myFeed.id);
+        sfutest.send({
+          "message": {
+            "request": "leave",
+            "room": myroom
+          }
+        });
+      }
+      navigate("/test/finish");
     }
-    navigate("/test/finish");
+    // 사용자가 '아니오'를 클릭한 경우 아무것도 하지 않음
+  };
+  
+
+  const fetchRoomInfo = async (roomId) => {
+    try {
+      const response = await axios.get(`${API_URL}/get_testroom/${roomId}`);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error('Error fetching room info', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching room info', error);
+    }
   };
 
+  const [roomInfo, setRoomInfo] = useState(null);
+
+  useEffect(() => {
+    const loadRoomInfo = async () => {
+      const info = await fetchRoomInfo(myroom); // `myroom`은 현재 방의 ID
+      setRoomInfo(info);
+    };
+
+    loadRoomInfo();
+  }, [myroom]);
 
   return (
     <>
-      {/* 자신의 캠을 오른쪽 상단에 고정 */}
-      <div className>
+
+      <div className="flex justify-center w-full h-screen">
         {myFeed && myFeed.stream && (
-          <div className="my-video-container ml-[350px] w-[1000px] h-auto">
-            <Video stream={myFeed.stream} username={username} muted={true} />
+          <div className="flex justify-center w-full h-full">
+            <Video stream={myFeed.stream} muted={true} />
           </div>
         )}
-      </div> 
+      </div>
 
 
       {/* 버튼과 채팅창 컨테이너 */}
       <div className="relative w-full p-4 bg-white">
         {/* 채팅창 */}
         {isChatVisible && (
-          <div className="absolute left-4 bottom-full mb-2 bg-white p-4 rounded shadow-lg w-[400px] z-10">
-            <Chatting
+          <div className="absolute left-4 bottom-full mb-2 bg-white p-4 rounded shadow-lg h-[620px] w-[400px] z-10">
+            <ChattingTest
               sendChatData={sendChatData}
               receiveChat={receiveChat}
               transferFile={transferFile}
@@ -828,6 +859,7 @@ const TestUser = () => {
               feeds={feeds}
               username={username}
               sendPrivateMessage={sendPrivateMessage}
+              hostname={myroom.host_name}
             />
           </div>
         )}
