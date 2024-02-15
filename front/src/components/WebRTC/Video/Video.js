@@ -1,51 +1,40 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import "./Video.css";
 
-const Video = ({ id, stream, username, muted, onClickFunction, className }) => {
+const Video = ({ audioTrack, videoTrack, username, muted, onClickFunction, className }) => {
   const videoRef = useRef();
-  const [mediaStream, setMediaStream] = useState(null);
-  // console.log(id);
 
   useEffect(() => {
-    if (stream instanceof MediaStream) {
-      videoRef.current.srcObject = stream;
-    } else if (stream instanceof MediaStreamTrack) {
-      const newMediaStream = new MediaStream([stream]);
-      videoRef.current.srcObject = newMediaStream;
-    } else {
-      console.error("지원되지 않는 스트림 유형입니다:", stream);
+    const stream = new MediaStream();
+    if (audioTrack) {
+      stream.addTrack(audioTrack);
     }
-  }, [stream]);
-
-  useEffect(() => {
-    videoRef.current.srcObject = mediaStream;
-  }, [mediaStream]);
+    if (videoTrack) {
+      stream.addTrack(videoTrack);
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [audioTrack, videoTrack]); // 의존성 배열에 audioTrack와 videoTrack 추가
 
   const handleClicked = (e) => {
     e.preventDefault();
-    if (!onClickFunction) return;
-    onClickFunction(videoRef.current.srcObject, username);
+    if (onClickFunction) {
+      onClickFunction(videoRef.current.srcObject, username);
+    }
   };
 
-  // useEffect(() => {
-  //   console.log('Video 컴포넌트 업데이트:', stream, username,mediaStream);
-  //   // 여기에 추가적인 업데이트 로직을 추가할 수 있습니다.
-  // }, [stream]);
-
   return (
-    <React.Fragment>
-        <video
-          id={id} // 수정: 고유한 ID 사용
-          autoPlay
-          playsInline
-          ref={videoRef}
-          onClick={handleClicked}
-          muted={muted}
-          controls={onClickFunction ? false : true}
-          className={className}
-        />
+    <div onClick={handleClicked} className={className}>
+      <video
+        autoPlay
+        playsInline
+        ref={videoRef}
+        muted={muted}
+        controls={!onClickFunction}
+      />
       <div>{username}</div>
-    </React.Fragment>
+    </div>
   );
 };
 
