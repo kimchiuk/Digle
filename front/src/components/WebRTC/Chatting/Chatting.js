@@ -4,6 +4,8 @@ import chatImg from "../../../assets/webRTC/chat/chat.png";
 import attachment from "../../../assets/webRTC/chat/attachment.png";
 import member from "../../../assets/webRTC/chat/member.png";
 import UserList from "../UserList/UserList";
+import { useLocation } from 'react-router-dom';
+
 
 // 유저리스트 모달창
 const Modal = ({ onClose, children }) => {
@@ -63,6 +65,9 @@ const Chatting = (props) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const location = useLocation();
+  const isAnhsUrl = location.pathname.startsWith('/anhs');
 
   const handleImageClick = () => {
     setIsModalOpen(true);
@@ -238,12 +243,14 @@ const Chatting = (props) => {
           파일 전송
         </button>
         <div className="ml-auto">
+        {isAnhsUrl && (
           <img
             className="w-5 h-5 cursor-pointer "
             src={member}
             alt="members"
             onClick={handleImageClick}
           />
+        )}
           {isModalOpen && (
             <Modal onClose={handleCloseModal}>
               <UserList

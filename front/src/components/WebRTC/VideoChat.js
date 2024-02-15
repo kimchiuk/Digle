@@ -502,7 +502,7 @@ const VideoChat = () => {
         },
 
         ondata: function (data) {
-          console.log("데이터왓다씨발아", data);
+          console.log("데이터 전송!", data);
           let json = JSON.parse(data);
           let what = json["textroom"];
           if (what === "message") {
