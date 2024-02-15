@@ -158,7 +158,7 @@ const TestUser = () => {
                     " now"
                 );
                 if (!on) {
-                  alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
+                  alert("방에서 퇴장하였습니다.");
                   navigate("/");
                 }
               },
@@ -224,7 +224,7 @@ const TestUser = () => {
                   } else if (event === "destroyed") {
                     // 룸 삭제 이벤트
                     Janus.warn("The room has been destroyed!");
-                    alert("룸파괴");
+                    alert("방이 삭제 되었습니다.");
                   } else if (event === "event") {
                     // 새로운 접속자가 있으면
                     if (msg["publishers"]) {
@@ -786,7 +786,13 @@ const TestUser = () => {
           },
         });
       }
-      navigate("/test/finish");
+      if (sfutest) {
+      sfutest.detach({
+        success: function () {
+          navigate("/test/finish");
+        },
+      });
+    }
     }
     // 사용자가 '아니오'를 클릭한 경우 아무것도 하지 않음
   };

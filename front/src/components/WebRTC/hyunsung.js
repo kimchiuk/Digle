@@ -222,7 +222,7 @@ const VideoChat = () => {
                   } else if (event === "destroyed") {
                     // 룸 삭제 이벤트
                     Janus.warn("The room has been destroyed!");
-                    alert("룸파괴");
+                    alert("방이 삭제되었습니다.");
                   } else if (event === "event") {
                     // 새로운 접속자가 있으면
                     if (msg["publishers"]) {
@@ -829,9 +829,9 @@ const VideoChat = () => {
                 </p>
               )}
             </button>
-            <button onClick={handleCaptureClick} className="mr-2">
+            {/* <button onClick={handleCaptureClick} className="mr-2">
               <img className="min-w-5 h-5" src={capture} alt="캡처" />
-            </button>
+            </button> */}
             <button onClick={handleVideoActiveClick} className="mr-2">
               {activeVideo ? (
                 <img className="min-w-5 h-5" src={camOn} alt="카메라 켜기" />
