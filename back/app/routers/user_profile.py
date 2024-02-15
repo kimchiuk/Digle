@@ -101,8 +101,8 @@ async def update_user_profile(
             file_name = profile_img.filename.split(".")[-1]
             save_to_local_directory(profile_img, file_name, user.internal_id)
             data = await request_embedding(profile_img, user.internal_id)
-            encoded_data = await data.json()
-            binary_data = base64.b64decode(encoded_data.get("encoded_data"))
+            encoded_data = data.get("encoded_data")
+            binary_data = base64.b64decode(encoded_data)
             user.embedded_profile = binary_data
 
         user.name = name
