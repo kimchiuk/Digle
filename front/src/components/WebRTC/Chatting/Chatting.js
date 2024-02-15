@@ -64,18 +64,6 @@ const Chatting = (props) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const storedChatData = localStorage.getItem('chatData');
-    if (storedChatData) {
-      setChatData(JSON.parse(storedChatData));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('chatData', JSON.stringify(chatData));
-  }, [chatData]);
-  
-
   const handleImageClick = () => {
     setIsModalOpen(true);
   };
