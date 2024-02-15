@@ -102,4 +102,13 @@ async def request_embedding(profile_img, internal_id: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.post(f"{AI_SERVER_URL}/profile_embedding", files=files)
-        return response.json()
+        # return response.json()
+
+        if response.status_code == 200:
+            try:
+                return response.json()
+            except json.JSONDecodeError:
+                raise Exception("AI 서버로부터 올바른 JSON 응답을 받지 못했습니다.")
+        else:
+            # AI 서버로부터의 응답이 성공적이지 않은 경우
+            raise Exception(f"AI 서버 요청 실패: 상태 코드 {response.status_code}")
