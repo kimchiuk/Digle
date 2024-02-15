@@ -104,14 +104,14 @@ const TestTemp = () => {
               type="text"
               value={examCode}
               onChange={(e) => setExamCode(e.target.value)}
-              placeholder="Enter Exam Code"
+              placeholder="초대 코드를 입력하세요."
               className="mb-4 p-2 border-2 "
             />
             <button
               onClick={handleJoinExam}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-[20px] py-2 px-4 rounded"
             >
-              Join Exam
+              참여하기
             </button>
           </>
         )}
