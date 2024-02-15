@@ -68,14 +68,14 @@ async def face_capture(
     # 응답 처리
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Error sending files to AI server")
-    print(response)
+    response = response.json()
     # 혼자가 아니거나 아무도 없어요
-    errors = response.errors
-    for result in response.results:
+    errors = response.get("errors")
+    for result in response.get("results"):
         now = result.get("uploaded_user_id")
         if now != result.get("matched_user_id"):
             errors.append(now)
-        if result.get("score") <= 0.2:
+        if result.get("score").item() <= 0.2:
             errors.append(now)
     error_users = []
     for error in errors:
