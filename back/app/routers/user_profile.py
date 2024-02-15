@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 from sqlalchemy.orm import Session
-from services.utils import request_embedding, upload_to_gcs
+from services.utils import request_embedding, upload_to_gcs, save_to_local_directory
 from database import get_db
 from models.user import User, BusinessUser, UserType
 from services.auth_service import get_user_by_token, hash_password, verify_password
@@ -97,16 +97,15 @@ async def update_user_profile(
             """
             file_path = f"profiles/{user.internal_id}"
             # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
-            upload_to_gcs(profile_img, file_path, user.internal_id)
-
+            # upload_to_gcs(profile_img, file_path, user.internal_id)
+            file_name = profile_img.filename.split(".")[-1]
+            save_to_local_directory(profile_img, file_name, user.internal_id)
             binary_data = await request_embedding(profile_img, user.internal_id)
             user.embedded_profile = binary_data
 
         user.name = name
         # user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
-        user.profile_picture_url = (
-            f"/home/ubuntu/digle_storage/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
-        )
+        user.profile_picture_url = f"/app/storage/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
         db.commit()
         file_base64 = base64.b64encode(profile_img.file.read()).decode("utf-8")
         user_data = {
