@@ -57,7 +57,7 @@ const Modal = ({ onClose, children }) => {
   );
 };
 
-const Chatting = (props) => {
+const ChattingTest = (props) => {
   const [chatData, setChatData] = useState([]);
   const [inputChat, setInputChat] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -82,9 +82,29 @@ const Chatting = (props) => {
     }
   };
 
+  // const handleClick = () => {
+  //   props.sendChatData(inputChat);
+  //   setChatData((prev) => [...prev, `[나] ${props.username}: ${inputChat}`]);
+  //   setInputChat("");
+  // };
   const handleClick = () => {
-    props.sendChatData(inputChat);
-    setChatData((prev) => [...prev, `[나] ${props.username}: ${inputChat}`]);
+    // 입력된 메시지가 없는 경우 알림
+    if (!inputChat.trim()) {
+      alert("메시지를 입력해주세요.");
+      return;
+    }
+
+    console.log(props)
+
+    // 메시지를 호스트에게 보내는 로직
+    props.sendPrivateMessage({
+      text: inputChat,
+      to: props.host_name // 호스트의 이름 또는 식별자
+    });
+
+    // 화면에 표시될 메시지 데이터를 업데이트
+    setChatData((prev) => [...prev, `[나 -> ${props.host_name}] ${inputChat}`]);
+    console.log(`${inputChat}`)
     setInputChat("");
   };
 
@@ -119,7 +139,7 @@ const Chatting = (props) => {
       return;
     }
     const file = selectedFile;
-    const chunkLength = 64384;
+    const chunkLength = 16384;
 
     const fileTransferMessage = `[${file.name}] 전송하였습니다.`;
     setChatData((prev) => [...prev, `${fileTransferMessage}`]);
@@ -141,7 +161,7 @@ const Chatting = (props) => {
       if (remainingDataURL.length)
         setTimeout(function () {
           onReadAsDataURL(null, remainingDataURL); // continue transmitting
-        }, 100);
+        }, 500);
     };
 
     let fileReader = new FileReader();
@@ -256,4 +276,4 @@ const Chatting = (props) => {
   );
 };
 
-export default Chatting;
+export default ChattingTest;
