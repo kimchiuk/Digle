@@ -1,11 +1,14 @@
 const SignupNormal = ({ image, onChangeImageUpload, readImage }) => {
+  const defaultImagePath =
+    "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../releases/preview/2018/png/iconmonstr-user-circle-thin.png&r=0&g=0&b=0";
+
   return (
     <>
       <div className="flex justify-between">
         <div>
           <div className="w-40 center">
             <img
-              src={readImage}
+              src={readImage || defaultImagePath}
               alt="Profile"
               className="object-cover w-full h-full"
             />
