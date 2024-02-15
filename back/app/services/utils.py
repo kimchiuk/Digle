@@ -54,21 +54,21 @@ def upload_to_gcs(file: UploadFile, file_path: str, id: str):
     # os.remove(temp_file)
 
 
-def save_to_local_directory(file: UploadFile, file_path: str, id: str):
-    # EC2 호스트 내 저장할 경로 지정
-    base_path = "/home/ubuntu/digle_storage"
+def save_to_local_directory(file: UploadFile, file_name: str, id: str):
+    # 도커 컨테이너 내 저장할 경로 지정 (볼륨 마운트 경로)
+    base_path = "/app/storage"
 
     # 파일 저장 경로 생성
-    save_path = os.path.join(base_path, f"{id}.{file.filename.split('.')[-1]}")
-    temp_file = f"/home/ubuntu/digle_storage/{id}.{file.filename.split('.')[-1]}"
-    print("!!!")
+    save_path = os.path.join(base_path, f"{id}_{file_name}")
+
     # 디렉토리가 존재하지 않는 경우 생성
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    print("???")
+    os.makedirs(base_path, exist_ok=True)
+
     # 파일 저장
-    with open(temp_file, "wb") as f:
+    with open(save_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
-    print(save_path)
+
+    print(f"File saved to {save_path}")
 
 
 def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
