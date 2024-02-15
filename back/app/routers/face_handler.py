@@ -75,7 +75,7 @@ async def face_capture(
         now = result.get("uploaded_user_id")
         if now != result.get("matched_user_id"):
             errors.append(now)
-        if result.get("score").item() <= 0.2:
+        if result.get("score") <= 0.2:
             errors.append(now)
     error_users = []
     for error in errors:
