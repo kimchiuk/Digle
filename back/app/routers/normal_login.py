@@ -102,7 +102,8 @@ async def login_for_access_token(
     db.refresh(user)
 
     if profile_img and profile_img.filename:
-        binary_data = await request_embedding(profile_img, internal_id)
+        encoded_data = await request_embedding(profile_img, internal_id)
+        binary_data = base64.b64decode(encoded_data)
         user.embedded_profile = binary_data
         db.commit()
 
