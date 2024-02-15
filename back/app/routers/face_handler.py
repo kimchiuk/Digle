@@ -77,4 +77,8 @@ async def face_capture(
             errors.append(now)
         if result.get("score") <= 0.2:
             errors.append(now)
-    return {"detail": "Files uploaded and sent successfully", "response": errors}
+    error_users = []
+    for error in errors:
+        error_user_name = db.query(User).filter(User.internal_id == error).first().name
+        error_users.append(error_user_name)
+    return {"detail": "Files uploaded and sent successfully", "response": error_users}
