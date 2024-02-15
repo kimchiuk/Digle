@@ -1,3 +1,4 @@
+import base64
 from io import BytesIO
 import json
 import os
@@ -55,12 +56,13 @@ async def face_capture(
         contents = await file.read()  # 파일 내용 읽기
         new_files.append(("files", (file_name, contents, file.content_type)))  # MIME 타입 추가
 
+    encoded_embeddeds = base64.b64encode(pickle.dumps(embeddeds)).decode("utf-8")
     # httpx를 사용하여 파일 전송
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{AI_SERVER_URL}/get_users_with_image",
             files=new_files,
-            emb={"serialized_data": (None, pickle.dumps(embeddeds), "application/octet-stream")},
+            data={"embeddeds": encoded_embeddeds},
         )
 
     # 응답 처리
