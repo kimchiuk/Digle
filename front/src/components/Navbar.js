@@ -65,11 +65,11 @@ const Navbar = () => {
   }, [authState]);
 
   return (
-    <nav className="flex items-center justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
+    <nav className="flex items-center max-h-[56px] justify-between px-24 py-2 bg-white fixed w-full text-black z-10 shadow-md">
       <div className="flex items-center">
         <div className="mr-4">
           <Link to="/" className="text-xl font-semibold hover:text-black">
-            <img className="w-20" src={logo} alt="로고" />
+            <img className="w-20 min-w-20" src={logo} alt="로고" />
           </Link>
         </div>
         <div
@@ -79,7 +79,7 @@ const Navbar = () => {
           <button
             onClick={toggleProductDropdown}
             type="button"
-            className={`inline-flex items-center px-4 py-2 font-bold ${
+            className={`inline-flex text-nowrap items-center px-4 py-2 font-bold ${
               isProductDropdownOpen
                 ? "text-black bg-gray-100"
                 : "text-gray-700 hover:text-black hover:bg-gray-100"
@@ -135,7 +135,7 @@ const Navbar = () => {
           <button
             onClick={toggleSolutionDropdown}
             type="button"
-            className={`inline-flex items-center px-4 py-2 font-bold ${
+            className={`inline-flex text-nowrap items-center px-4 py-2 font-bold ${
               isSolutionDropdownOpen
                 ? "text-black bg-gray-100"
                 : "text-gray-700 hover:text-black hover:bg-gray-100"
