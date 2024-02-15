@@ -1,3 +1,11 @@
+[![React](https://img.shields.io/badge/react-17.0.1-blue.svg)](https://reactjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-13.2-blue.svg)](https://www.postgresql.org/)
+[![FastAPI](https://img.shields.io/badge/fastapi-0.63.0-green.svg)](https://fastapi.tiangolo.com/)
+[![Janus](https://img.shields.io/badge/janus-gateway-blue.svg)](https://janus.conf.meetecho.com/)
+[![Node.js](https://img.shields.io/badge/node.js-14.15.1-green.svg)](https://nodejs.org/)
+
+
+
 # AI Ada face 기반의 얼굴 인식 시스템
 
 ###### SSAFY 10기 구미 1반 7팀 웹 기술 프로젝트
@@ -15,6 +23,7 @@
 - 6. 팀원 소개
 
 ### 1. 소개
+![image](/uploads/906cbaf1c78acc5856318a714a63b751/image.png)
 
 최근 인공지능의 얼굴인식 기술이 급격히 발전하면서, 디지털 교육 분야에 혁신을 가져오고 있습니다. 딥러닝과 컴퓨터 비전의 결합으로, 복잡한 얼굴 표정과 감정을 구별할 수 있는 얼굴인식이 가능해졌습니다. 이러한 기술 진보는 온라인 화상 시험 서비스 개발에도 큰 영향을 미치고 있습니다. 얼굴인식은 시험 감독 과정에서 자동화와 보안을 강화하며, 사용자 식별에 필요한 오프라인 환경에서도 활용될 수 있습니다.
 
