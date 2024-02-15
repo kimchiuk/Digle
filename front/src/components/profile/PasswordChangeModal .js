@@ -32,7 +32,7 @@ const PasswordChangeModal = ({ isOpen, onClose, email }) => {
   return (
     <div className="flex">
       <input
-        className="border pl-2 mr-2"
+        className="border h-10 pl-2 mr-2"
         type="password"
         placeholder="현재 비밀번호"
         value={currentPassword}
@@ -45,7 +45,7 @@ const PasswordChangeModal = ({ isOpen, onClose, email }) => {
         확인
       </button>
       <button
-        className="border-2 bg-slate-100 w-20 h-10 font-medium rounded-lg text-sm"
+        className="border-2 bg-slate-100 hover:bg-slate-200 w-20 h-10 font-medium rounded-lg text-sm"
         onClick={onClose}
       >
         변경 취소
