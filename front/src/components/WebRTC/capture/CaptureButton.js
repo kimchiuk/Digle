@@ -79,7 +79,7 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
           body: formData,
         })
           .then((response) => response.json())
-          .then((data) => console.log("Data from server:", data))
+          .then((data) => {console.log("Data from server:", data); alert("이상한 사람들", data)})
           .catch((error) => console.error("Error:", error));
 
         setCaptureFrames(false);
