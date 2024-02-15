@@ -81,7 +81,8 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
           .then((response) => response.json())
           .then((data) => {
             console.log("Data from server:", data);
-            alert("이상한 사람들", data.join(", "));
+            if (Object.keys(data) !== 0)
+              alert("이상한 사람들", JSON.stringify(data));
           })
           .catch((error) => console.error("Error:", error));
 

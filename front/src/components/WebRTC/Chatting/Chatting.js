@@ -99,7 +99,9 @@ const Chatting = (props) => {
           messageToShow = `${from}: ${text}`;
         } else {
           // 귓속말
-          messageToShow = `귓속말 (${from} -> ${to}): ${text}`;
+          messageToShow = (<div className="text-pink-300">
+          <span>(귓속말) {from}:</span> {text}
+        </div>);
         }
         setChatData((prev) => [...prev, messageToShow]);
       }
@@ -121,7 +123,7 @@ const Chatting = (props) => {
     const file = selectedFile;
     const chunkLength = 64384;
 
-    const fileTransferMessage = `[${file.name}] 전송하였습니다.`;
+    const fileTransferMessage = `[${file.name}] 전송 완료`;
     setChatData((prev) => [...prev, `${fileTransferMessage}`]);
 
     const onReadAsDataURL = (event, text) => {
@@ -150,13 +152,14 @@ const Chatting = (props) => {
   };
 
   const createFileChat = (data, filename, from) => {
-    return (
-      <>
+    return (<div className="text-blue-600">
+      <span>
         {from} :{" "}
         <a href={data} download={filename}>
           {filename}
         </a>
-      </>
+      </span>
+        </div>
     );
   };
 

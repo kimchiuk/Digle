@@ -4,6 +4,8 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { AuthContext } from "context/AuthContext";
 
+import logo from "../assets/Logo.png"
+
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Navbar = () => {
@@ -67,7 +69,7 @@ const Navbar = () => {
       <div className="flex items-center">
         <div className="mr-4">
           <Link to="/" className="text-xl font-semibold hover:text-black">
-            <span className="text-blue-500">D</span>igle
+            <img className="w-20" src={logo} alt="로고" />
           </Link>
         </div>
         <div
@@ -77,7 +79,7 @@ const Navbar = () => {
           <button
             onClick={toggleProductDropdown}
             type="button"
-            className={`inline-flex items-center px-4 py-2 font-medium ${
+            className={`inline-flex items-center px-4 py-2 font-bold ${
               isProductDropdownOpen
                 ? "text-black bg-gray-100"
                 : "text-gray-700 hover:text-black hover:bg-gray-100"
@@ -85,7 +87,7 @@ const Navbar = () => {
             id="product-dropdown"
             aria-expanded={isProductDropdownOpen}
           >
-            Product
+            서비스
             <svg
               className={`-mr-1 ml-2 h-5 w-5 ${
                 isProductDropdownOpen ? "transform rotate-180" : ""
@@ -111,17 +113,17 @@ const Navbar = () => {
             <div className="py-2">
               <Link
                 to="/TestTemp"
-                className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
+                className="block px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
-                Test
+                시험 응시
               </Link>
               <Link
                 to="/create_room"
-                className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
+                className="block px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
-                Conference
+                화상 채팅방
               </Link>
             </div>
           </div>
@@ -133,7 +135,7 @@ const Navbar = () => {
           <button
             onClick={toggleSolutionDropdown}
             type="button"
-            className={`inline-flex items-center px-4 py-2 font-medium ${
+            className={`inline-flex items-center px-4 py-2 font-bold ${
               isSolutionDropdownOpen
                 ? "text-black bg-gray-100"
                 : "text-gray-700 hover:text-black hover:bg-gray-100"
@@ -141,7 +143,7 @@ const Navbar = () => {
             id="solution-dropdown"
             aria-expanded={isSolutionDropdownOpen}
           >
-            Support
+            고객지원
             <svg
               className={`-mr-1 ml-2 h-5 w-5 ${
                 isSolutionDropdownOpen ? "transform rotate-180" : ""
@@ -167,14 +169,14 @@ const Navbar = () => {
             <div className="py-2">
               <Link
                 to="/solution/1/"
-                className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
+                className="block px-4 py-2 text-center text-gray-700 font-semibold hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
                 자주 묻는 질문
               </Link>
               <Link
                 to="/solution/2/"
-                className="block px-4 py-2 text-center text-gray-700 hover:bg-gray-100 hover:text-black"
+                className="block px-4 py-2 text-center text-gray-700 font-semibold hover:bg-gray-100 hover:text-black"
                 onClick={() => handleDropdownItem()}
               >
                 FAQ
@@ -186,40 +188,40 @@ const Navbar = () => {
       <div className="mr-4 whitespace-nowrap">
         {authState.status === "loggedIn" && userType === "Business" && (
           <Link
-            to="/create_test_room"
-            className="px-4 py-2 mr-4 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
-          >
-            [TEST]
-          </Link>
+          to="/create_test_room"
+          className="px-4 py-2 font-bold mr-4 rounded text-gray-700 hover:text-black hover:bg-gray-100"
+        >
+          시험 방 만들기
+        </Link>
         )}
         {authState.status === "loggedIn" ? (
           <>
             <Link
               to="/logout"
-              className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
+              className="px-4 py-2 rounded font-bold text-gray-700 hover:text-black hover:bg-gray-100"
             >
-              Logout
+              로그아웃
             </Link>
             <Link
               to="/profile"
-              className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
+              className="px-4 py-2 rounded font-bold text-gray-700 hover:text-black hover:bg-gray-100"
             >
-              Profile
+              프로필
             </Link>
           </>
         ) : (
           <>
             <Link
               to="/login"
-              className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
+              className="px-4 py-2 rounded font-bold text-gray-700 hover:text-black hover:bg-gray-100"
             >
-              Login
+              로그인
             </Link>
             <Link
               to="/signup"
-              className="px-4 py-2 rounded font-medium text-gray-700 hover:text-black hover:bg-gray-100"
+              className="px-4 py-2 rounded font-bold text-gray-700 hover:text-black hover:bg-gray-100"
             >
-              Signup
+              회원가입
             </Link>
           </>
         )}
