@@ -70,7 +70,7 @@ def send_email(receiver_email, subject, body):
     message["From"] = SMTP_USERNAME
     message["To"] = receiver_email
     print("여기냐?")
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10) as server:
         print("여긴가?")
         server.starttls()
         print("이거 안나오면 여기겠지")

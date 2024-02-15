@@ -64,6 +64,18 @@ const Chatting = (props) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    const storedChatData = localStorage.getItem('chatData');
+    if (storedChatData) {
+      setChatData(JSON.parse(storedChatData));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('chatData', JSON.stringify(chatData));
+  }, [chatData]);
+  
+
   const handleImageClick = () => {
     setIsModalOpen(true);
   };
@@ -119,7 +131,7 @@ const Chatting = (props) => {
       return;
     }
     const file = selectedFile;
-    const chunkLength = 16384;
+    const chunkLength = 64384;
 
     const fileTransferMessage = `[${file.name}] 전송하였습니다.`;
     setChatData((prev) => [...prev, `${fileTransferMessage}`]);
@@ -141,7 +153,7 @@ const Chatting = (props) => {
       if (remainingDataURL.length)
         setTimeout(function () {
           onReadAsDataURL(null, remainingDataURL); // continue transmitting
-        }, 500);
+        }, 100);
     };
 
     let fileReader = new FileReader();

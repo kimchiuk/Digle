@@ -73,7 +73,7 @@ pipeline {
                                     "--build-arg SMTP_PASSWORD=${env.SMTP_PASSWORD} " +
                                     "--build-arg SMTP_PORT=${env.SMTP_PORT} " +
                                     "--build-arg SMTP_SERVER=${env.SMTP_SERVER} " +
-                                    "--build-arg SMTP_SERVER=${env.AI_SERVER_URL} " +
+                                    "--build-arg AI_SERVER_URL=${env.AI_SERVER_URL} " +
                                     "--build-arg SMTP_USERNAME=${env.SMTP_USERNAME} " +
                                     "--build-arg SSL_CRT_FILE=${env.SSL_CRT_FILE} " +
                                     "--build-arg SSL_KEY_FILE=${env.SSL_KEY_FILE} .")

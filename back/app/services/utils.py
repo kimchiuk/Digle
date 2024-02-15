@@ -41,8 +41,8 @@ def upload_to_gcs(file: UploadFile, file_path: str, id: str):
     bucket = storage_client.bucket(bucket_name)
 
     # 임시 파일 생성
-    os.makedirs(f"C:/files", exist_ok=True)
-    temp_file = f"C:/files/{id}.{file.filename.split('.')[-1]}"
+    os.makedirs(f"/home/ubuntu/digle_storage", exist_ok=True)
+    temp_file = f"/home/ubuntu/digle_storage/{id}.{file.filename.split('.')[-1]}"
     with open(temp_file, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
@@ -52,6 +52,23 @@ def upload_to_gcs(file: UploadFile, file_path: str, id: str):
 
     # 임시 파일 삭제
     # os.remove(temp_file)
+
+
+def save_to_local_directory(file: UploadFile, file_name: str, id: str):
+    # 도커 컨테이너 내 저장할 경로 지정 (볼륨 마운트 경로)
+    base_path = "/app/storage"
+
+    # 파일 저장 경로 생성
+    save_path = os.path.join(base_path, f"{id}_{file_name}")
+
+    # 디렉토리가 존재하지 않는 경우 생성
+    os.makedirs(base_path, exist_ok=True)
+
+    # 파일 저장
+    with open(save_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    print(f"File saved to {save_path}")
 
 
 def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
@@ -85,4 +102,13 @@ async def request_embedding(profile_img, internal_id: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.post(f"{AI_SERVER_URL}/profile_embedding", files=files)
-        return response.json()
+        # return response.json()
+
+        if response.status_code == 200:
+            try:
+                return response.json()
+            except json.JSONDecodeError:
+                raise Exception("AI 서버로부터 올바른 JSON 응답을 받지 못했습니다.")
+        else:
+            # AI 서버로부터의 응답이 성공적이지 않은 경우
+            raise Exception(f"AI 서버 요청 실패: 상태 코드 {response.status_code}")

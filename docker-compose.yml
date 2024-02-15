@@ -5,6 +5,8 @@ services:
             - "8000:8000"
         depends_on:
             - frontend
+        volumes:
+            - /home/ubuntu/digle_storage:/app/storage
     frontend:
         image: ${FRONT_IMAGE_NAME}:${BUILD_NUMBER}
         ports:
