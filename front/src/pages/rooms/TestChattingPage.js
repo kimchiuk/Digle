@@ -138,7 +138,7 @@ const TestChattingPage = () => {
                     " now"
                 );
                 if (!on) {
-                  alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
+                  // alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
                   navigate("/");
                 }
               },
@@ -204,7 +204,7 @@ const TestChattingPage = () => {
                   } else if (event === "destroyed") {
                     // 룸 삭제 이벤트
                     Janus.warn("The room has been destroyed!");
-                    alert("룸파괴");
+                    alert("방이 삭제되었습니다.");
                   } else if (event === "event") {
                     // 새로운 접속자가 있으면
                     if (msg["publishers"]) {
@@ -511,7 +511,7 @@ const TestChattingPage = () => {
         },
 
         ondata: function (data) {
-          console.log("데이터왓다씨발아", data);
+          console.log("데이터가 도착했습니다.", data);
           let json = JSON.parse(data);
           let what = json["textroom"];
           if (what === "message") {

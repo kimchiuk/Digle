@@ -72,7 +72,10 @@ const TestUser = () => {
 
   const getMediaStream = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
       setMyFeed({ stream: stream });
     } catch (error) {
       console.error("Error accessing media devices.", error);
@@ -80,7 +83,7 @@ const TestUser = () => {
   };
 
   const handleEndExamClick = () => {
-    navigate('/test/finish');
+    navigate("/test/finish");
   };
 
   useEffect(() => {
@@ -108,10 +111,10 @@ const TestUser = () => {
                 sfutest = pluginHandle; //요청이성공햇으니 어태치가 성공햇으니깐
                 Janus.log(
                   "Plugin attached! (" +
-                  sfutest.getPlugin() +
-                  ", 비디오 플러그인 id=" +
-                  sfutest.getId() +
-                  ")"
+                    sfutest.getPlugin() +
+                    ", 비디오 플러그인 id=" +
+                    sfutest.getId() +
+                    ")"
                 );
                 Janus.log("미디어 플러그인 접속 완료 ");
                 // 자동 입장처리
@@ -143,16 +146,16 @@ const TestUser = () => {
               mediaState: function (medium, on) {
                 Janus.log(
                   "Janus " +
-                  (on ? "started" : "stopped") +
-                  " receiving our " +
-                  medium
+                    (on ? "started" : "stopped") +
+                    " receiving our " +
+                    medium
                 );
               },
               webrtcState: function (on) {
                 Janus.log(
                   "Janus says our WebRTC PeerConnection is " +
-                  (on ? "up" : "down") +
-                  " now"
+                    (on ? "up" : "down") +
+                    " now"
                 );
                 if (!on) {
                   alert("강퇴되었습니다. 메인 페이지로 이동합니다.");
@@ -179,9 +182,9 @@ const TestUser = () => {
                     // mypvtid = msg["private_id"];
                     Janus.log(
                       "Successfully joined room " +
-                      msg["room"] +
-                      " with ID " +
-                      msg["id"]
+                        msg["room"] +
+                        " with ID " +
+                        msg["id"]
                     );
                     if (subscriber_mode) {
                       // 비디오 숨김 무시하고
@@ -205,14 +208,14 @@ const TestUser = () => {
                         let video = list[f]["video_codec"];
                         Janus.debug(
                           "  >> [" +
-                          id +
-                          "] " +
-                          display +
-                          " (audio: " +
-                          audio +
-                          ", video: " +
-                          video +
-                          ")"
+                            id +
+                            "] " +
+                            display +
+                            " (audio: " +
+                            audio +
+                            ", video: " +
+                            video +
+                            ")"
                         );
                         console.log("새로운 원격피드 등록");
                         newRemoteFeed(id, display, audio, video); // 새로운 원격피드 등록
@@ -238,14 +241,14 @@ const TestUser = () => {
                         let video = list[f]["video_codec"];
                         Janus.debug(
                           "  >> [" +
-                          id +
-                          "] " +
-                          display +
-                          " (audio: " +
-                          audio +
-                          ", video: " +
-                          video +
-                          ")"
+                            id +
+                            "] " +
+                            display +
+                            " (audio: " +
+                            audio +
+                            ", video: " +
+                            video +
+                            ")"
                         );
                         newRemoteFeed(id, display, audio, video); //publisher true'''...
                       }
@@ -309,7 +312,6 @@ const TestUser = () => {
                   }));
                 }
 
-
                 if (
                   sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
                   sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
@@ -372,8 +374,6 @@ const TestUser = () => {
       });
     }
 
-
-
     ///////////////////////////////////새로운참여자가 등록햇을경우////////////////////////
     function newRemoteFeed(id, display, audio, video) {
       let remoteFeed = null;
@@ -385,10 +385,10 @@ const TestUser = () => {
           remoteFeed.simulcastStarted = false;
           Janus.log(
             "Plugin attached! (" +
-            remoteFeed.getPlugin() +
-            ", id=" +
-            remoteFeed.getId() +
-            ")"
+              remoteFeed.getPlugin() +
+              ", id=" +
+              remoteFeed.getId() +
+              ")"
           );
           Janus.log("  -- This is a subscriber");
           let subscribe = {
@@ -421,11 +421,11 @@ const TestUser = () => {
               connectFeed(remoteFeed);
               Janus.log(
                 "Successfully attached to rffeed " +
-                remoteFeed.rfid +
-                " (" +
-                remoteFeed.rfdisplay +
-                ") in room " +
-                msg["room"]
+                  remoteFeed.rfid +
+                  " (" +
+                  remoteFeed.rfdisplay +
+                  ") in room " +
+                  msg["room"]
               );
             } else if (event === "event") {
               var substream = msg["substream"];
@@ -464,18 +464,18 @@ const TestUser = () => {
         iceState: function (state) {
           Janus.log(
             "ICE state of this WebRTC PeerConnection (feed #" +
-            remoteFeed.rfid +
-            ") changed to " +
-            state
+              remoteFeed.rfid +
+              ") changed to " +
+              state
           );
         },
         webrtcState: function (on) {
           Janus.log(
             "Janus says this WebRTC PeerConnection (feed #" +
-            remoteFeed.rfid +
-            ") is " +
-            (on ? "up" : "down") +
-            " now"
+              remoteFeed.rfid +
+              ") is " +
+              (on ? "up" : "down") +
+              " now"
           );
         },
         onlocaltrack: function (stream) {
@@ -522,7 +522,7 @@ const TestUser = () => {
         },
 
         ondata: function (data) {
-          console.log("데이터왓다씨발아", data);
+          console.log("데이터가 도착했습니다.", data);
           let json = JSON.parse(data);
           let what = json["textroom"];
           if (what === "message") {
@@ -728,8 +728,6 @@ const TestUser = () => {
     alert("사용자 이미지를 수집하였습니다.");
   };
 
-  
-
   useEffect(() => {
     if (receiveChat) {
       const { from, text, to } = receiveChat;
@@ -775,24 +773,23 @@ const TestUser = () => {
   const handleLeave = () => {
     // 사용자에게 확인을 요청하는 팝업 표시
     const confirmLeave = window.confirm("정말 시험을 종료하시겠습니까?");
-  
+
     // 사용자가 '예'를 클릭한 경우
     if (confirmLeave) {
       if (myFeed && myFeed.id) {
         console.log(myFeed.id);
         disconnectFeed(myFeed.id);
         sfutest.send({
-          "message": {
-            "request": "leave",
-            "room": myroom
-          }
+          message: {
+            request: "leave",
+            room: myroom,
+          },
         });
       }
       navigate("/test/finish");
     }
     // 사용자가 '아니오'를 클릭한 경우 아무것도 하지 않음
   };
-  
 
   const fetchRoomInfo = async (roomId) => {
     try {
@@ -800,10 +797,10 @@ const TestUser = () => {
       if (response.status === 200) {
         return response.data;
       } else {
-        console.error('Error fetching room info', response.status);
+        console.error("Error fetching room info", response.status);
       }
     } catch (error) {
-      console.error('Error fetching room info', error);
+      console.error("Error fetching room info", error);
     }
   };
 
@@ -820,7 +817,6 @@ const TestUser = () => {
 
   return (
     <>
-
       <div className="flex justify-center w-full h-screen">
         {myFeed && myFeed.stream && (
           <div className="flex justify-center w-full h-full">
@@ -828,7 +824,6 @@ const TestUser = () => {
           </div>
         )}
       </div>
-
 
       {/* 버튼과 채팅창 컨테이너 */}
       <div className="relative w-full p-4 bg-white">
@@ -850,19 +845,24 @@ const TestUser = () => {
         {/* 버튼들 */}
         <div className="flex justify-between">
           {/* Show Chat 버튼 */}
-          <button onClick={toggleChat} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            {isChatVisible ? 'Hide Chat' : 'Show Chat'}
+          <button
+            onClick={toggleChat}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            {isChatVisible ? "Hide Chat" : "Show Chat"}
           </button>
 
           {/* End Exam 버튼 */}
-          <button onClick={handleLeave} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            onClick={handleLeave}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
             End Exam
           </button>
         </div>
       </div>
     </>
   );
-
 };
 
 export default TestUser;

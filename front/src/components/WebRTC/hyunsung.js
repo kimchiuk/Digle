@@ -55,21 +55,21 @@ const VideoChat = () => {
   const handleLeave = () => {
     if (myFeed && myFeed.id) {
       console.log(myFeed.id);
-      disconnectFeed(myFeed.id); 
+      disconnectFeed(myFeed.id);
       sfutest.send({
-        "message": {
-          "request": "leave",
-          "room": myroom
-        }
+        message: {
+          request: "leave",
+          room: myroom,
+        },
       });
     }
     if (sfutest) {
-          sfutest.detach({
-            success: function() {
-              navigate("/");
-            }
-          });
-        }
+      sfutest.detach({
+        success: function () {
+          navigate("/");
+        },
+      });
+    }
   };
 
   const createSpeechEvents = (stream) => {
@@ -529,7 +529,7 @@ const VideoChat = () => {
         },
 
         ondata: function (data) {
-          console.log("데이터왓다씨발아", data);
+          console.log("데이터가 도착했습니다.", data);
           let json = JSON.parse(data);
           let what = json["textroom"];
           if (what === "message") {
