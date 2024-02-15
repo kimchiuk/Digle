@@ -85,7 +85,7 @@ async def login_for_access_token(
         save_to_local_directory(profile_img, file_name, internal_id)
 
         # profile_picture_url = f"C:/files/{internal_id}.{profile_img.filename.split('.')[-1]}"
-        profile_picture_url = f"/app/profile/{internal_id}.{profile_img.filename.split('.')[-1]}"
+        profile_picture_url = f"/app/storage/{internal_id}.{profile_img.filename.split('.')[-1]}"
 
     user = User(
         email=base_data.email,
