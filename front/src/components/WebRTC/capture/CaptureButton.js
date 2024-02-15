@@ -81,8 +81,8 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
           .then((response) => response.json())
           .then((data) => {
             console.log("Data from server:", data);
-            if (Object.keys(data) !== 0)
-              alert(`이상한 사람들: ${JSON.stringify(data)}`);
+            if (Object.keys(data) === 0) alert("모두 정상이에용");
+            else alert(`이상한 사람들: ${JSON.stringify(data)}`);
           })
           .catch((error) => console.error("Error:", error));
 
