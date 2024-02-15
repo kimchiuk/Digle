@@ -15,8 +15,16 @@ const UserList = ({ feeds, sendPrivateMessage, kickParticipant }) => {
   // 강퇴 버튼 클릭 핸들러
   const handleKickClick = (user, e) => {
     e.stopPropagation(); // 클릭 이벤트 전파 중지
-    alert(`${user.rfdisplay} 강퇴됩니다.`);
-    kickParticipant(user.rfid); // 강퇴 함수 호출
+
+    const isConfirmed = window.confirm(
+      `${user.rfdisplay}님을 강퇴하시겠습니까?`
+    );
+
+    if (isConfirmed) {
+      // 확인 버튼이 눌렸을 때 강퇴 함수 호출
+      alert(`${user.rfdisplay}님이 강퇴되었습니다.`);
+      kickParticipant(user.rfid);
+    }
   };
 
   const handleModalClose = () => setIsModalOpen(false);
