@@ -57,7 +57,7 @@ const Profile = () => {
 
         // 일반 유저와 비즈니스 유저 데이터 정보 저장
         if (response.data.user_type === "Standard") {
-          if (response.data.profile_picture_url != null) {
+          if (response.data.profile_picture_url !== "") {
             const base64Image = `data:image/jpeg;base64,${response.data.profile_picture_url}`;
             setReadImage(base64Image);
           }
@@ -240,10 +240,9 @@ const Profile = () => {
                 )}
               </div>
               <div className="flex justify-between mt-8">
-                
                 <button
-                className="focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-sky-900"
-                onClick={updateButton}
+                  className="focus:outline-none text-white bg-sky-500 hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-sky-900"
+                  onClick={updateButton}
                 >
                   수정하기
                 </button>
