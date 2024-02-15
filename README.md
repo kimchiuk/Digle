@@ -91,6 +91,7 @@ uvicorn app.main:app --reload
 ```
 
 ## 4. 과제 수행 결과
+![캡처](/uploads/27149dfdccd8010f5cb68564595b71ad/캡처.PNG)
 
 ## 5. 기대 효과 및 활용 방안
 
