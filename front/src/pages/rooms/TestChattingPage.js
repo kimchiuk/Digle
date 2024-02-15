@@ -733,6 +733,7 @@ const TestChattingPage = () => {
   // 채팅창 모달 열기
   const openChatModal = () => {
     setIsChatModalOpen(true);
+    setNewMessageCount(0); // 채팅창 열면 메시지 카운트 초기화
   };
 
   // 채팅창 모달 닫기
@@ -773,6 +774,9 @@ const TestChattingPage = () => {
     setInputChat("");
   };
 
+  // 새 메시지 카운트 상태
+  const [newMessageCount, setNewMessageCount] = useState(0); // 새 메시지 카운트 상태
+
   useEffect(() => {
     if (receiveChat) {
       const { from, text, to } = receiveChat;
@@ -788,6 +792,7 @@ const TestChattingPage = () => {
         }
         setChatData((prev) => [...prev, messageToShow]);
       }
+      setNewMessageCount((prevCount) => prevCount + 1); // 새 메시지가 수신될 때마다 카운트 증가
     }
   }, [receiveChat, username]);
 
@@ -863,18 +868,31 @@ const TestChattingPage = () => {
             />
           </div>
         </div>
-        <div className="h-[700px] px-20 overflow-auto flex flex-wrap justify-center">
-          {renderRemoteVideos}
-        </div>
+        {feeds.length === 0 ? (
+          <div className="h-[800px] px-20 flex items-center justify-center">
+            <div className="text-xl font-semibold text-gray-600">
+              방에 입장한 인원이 없습니다.
+            </div>
+          </div>
+        ) : (
+          <div className="h-[700px] px-20 overflow-auto flex flex-wrap justify-center">
+            {renderRemoteVideos}
+          </div>
+        )}
         <div className="h-20 flex justify-between">
           <div className="flex">
             <div className="flex w-20 relative justify-center items-center">
               <button
-                className="w-[70px] h-8 flex justify-center items-center border-2 rounded-3xl bg-gray-200 hover:bg-gray-300"
+                className="relative w-[70px] h-8 flex justify-center items-center border-2 rounded-3xl bg-gray-200 hover:bg-gray-300"
                 onClick={openChatModal}
               >
                 <img src={messageImg} alt="" className="w-5 h-5" />
                 <span>채팅</span>
+                {newMessageCount > 0 && (
+                  <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full z-10">
+                    {newMessageCount} {/* 새 메시지 카운트 표시 */}
+                  </div>
+                )}
               </button>
               {/* 채팅창 모달 */}
               {isChatModalOpen && (
@@ -883,7 +901,7 @@ const TestChattingPage = () => {
                   <div className="border-2">
                     <div
                       ref={chatBoxRef}
-                      className="border overflow-x-hidden overflow-y-auto min-h-[300px] max-h-[500px]"
+                      className="border overflow-x-hidden overflow-y-auto min-h-[300px] max-h-[300px]"
                     >
                       <div className="sticky top-0 bg-white">
                         <div className="right-0 p-2 text-sm font-bold text-stone-400 flex items-center justify-between">
