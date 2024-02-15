@@ -59,7 +59,7 @@ def save_to_local_directory(file: UploadFile, file_name: str, id: str):
     base_path = "/app/storage"
 
     # 파일 저장 경로 생성
-    save_path = os.path.join(base_path, f"{id}_{file_name}")
+    save_path = os.path.join(base_path, f"{id}.{file_name}")
 
     # 디렉토리가 존재하지 않는 경우 생성
     os.makedirs(base_path, exist_ok=True)
