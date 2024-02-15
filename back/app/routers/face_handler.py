@@ -32,7 +32,6 @@ async def face_capture(
     faces: List[UploadFile] = File(...),
     db: Session = Depends(get_db),
 ):
-    print(faces)
     """
     for face in faces:
         if face and face.filename:
@@ -75,7 +74,7 @@ async def face_capture(
         now = result.get("uploaded_user_id")
         if now != result.get("matched_user_id"):
             errors.append(now)
-        if result.get("score") <= 0.2:
+        elif result.get("score") <= 0.2:
             errors.append(now)
     error_users = []
     for error in errors:
