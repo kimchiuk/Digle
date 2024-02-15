@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
 import Video from "./Video/Video";
-import ChattingTest from "./Chatting/Chatting_test";
+import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
 
 import axios from "axios";
@@ -37,6 +37,8 @@ const TestUser = () => {
   const navigate = useNavigate();
   const username = queryParams.get("userId");
   const API_URL = process.env.REACT_APP_API_BASE_URL;
+  const [chatData, setChatData] = useState([]);
+  const [newMessageCount, setNewMessageCount] = useState(0); // 새 메시지 카운트 상태
 
   const connectFeed = (newFeed) => {
     setFeeds((prevFeeds) => {
@@ -726,44 +728,26 @@ const TestUser = () => {
     alert("사용자 이미지를 수집하였습니다.");
   };
 
+  
+
   useEffect(() => {
-    if (captureFrames) {
-      feeds.forEach(async (feed) => {
-        console.log("시작합니다요 캡처", feed);
-        const videoElement = document.querySelector(`#video-${feed.rfid}`);
-        if (videoElement) {
-          const canvas = document.createElement("canvas");
-          canvas.width = videoElement.videoWidth;
-          canvas.height = videoElement.videoHeight;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-          // 캔버스에서 이미지 데이터를 Base64 문자열로 변환
-          const imageData = canvas.toDataURL("image/jpeg");
-
-          // Base64 인코딩된 문자열에서 실제 이미지 데이터만 추출합니다.
-          const base64Response = await fetch(imageData);
-          const blob = await base64Response.blob();
-
-          // FormData 객체를 생성하고, 파일 데이터를 추가합니다.
-          const formData = new FormData();
-          formData.append("faces", blob, `${feed.rfdisplay}.jpeg`);
-
-          // fetch API를 사용하여 백엔드로 전송합니다.
-          fetch(`${API_URL}/faces`, {
-            method: "POST",
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) =>
-              console.log(`Data from server for ${feed.rfid}:`, data)
-            )
-            .catch((error) => console.error("Error:", error));
+    if (receiveChat) {
+      const { from, text, to } = receiveChat;
+      // 현재 사용자가 메시지의 수신자이거나, 메시지가 모두에게 보내진 경우에만 표시
+      if (to === "all" || to === username) {
+        let messageToShow;
+        if (to === "all") {
+          // 모두에게 보낸 메시지
+          messageToShow = `${from}: ${text}`;
+        } else {
+          // 귓속말
+          messageToShow = `귓속말 (${from} -> ${to}): ${text}`;
         }
-      });
-      setCaptureFrames(false); // 캡처 완료 후 상태 초기화
+        setChatData((prev) => [...prev, messageToShow]);
+      }
+      setNewMessageCount((prevCount) => prevCount + 1); // 새 메시지가 수신될 때마다 카운트 증가
     }
-  }, [captureFrames, feeds]);
+  }, [receiveChat, username]);
 
   const [isChatVisible, setIsChatVisible] = useState(false);
 
@@ -851,7 +835,7 @@ const TestUser = () => {
         {/* 채팅창 */}
         {isChatVisible && (
           <div className="absolute left-4 bottom-full mb-2 bg-white p-4 rounded shadow-lg h-[620px] w-[400px] z-10">
-            <ChattingTest
+            <Chatting
               sendChatData={sendChatData}
               receiveChat={receiveChat}
               transferFile={transferFile}
@@ -859,7 +843,6 @@ const TestUser = () => {
               feeds={feeds}
               username={username}
               sendPrivateMessage={sendPrivateMessage}
-              hostname={myroom.host_name}
             />
           </div>
         )}
