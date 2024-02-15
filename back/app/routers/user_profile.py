@@ -99,7 +99,8 @@ async def update_user_profile(
             # background_tasks.add_task(upload_to_gcs, profile_img, file_path)
             upload_to_gcs(profile_img, file_path, user.internal_id)
 
-            await request_embedding(profile_img, user.internal_id)
+            binary_data = await request_embedding(profile_img, user.internal_id)
+            user.embedded_profile = binary_data
 
         user.name = name
         # user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
