@@ -44,14 +44,12 @@ async def face_capture(
                 await face.close()  # 파일 처리 후 리소스 해제
     """
     new_files = []
-    ids = []
     embeddeds = []
     for file in faces:
         # 유저의 이름에서 내부 이름으로 파일 이름 변경
         user_name = file.filename.split(".")[0]  # 파일 이름에서 확장자를 제외한 부분 추출
         internal_id = db.query(User).filter(User.name == user_name).first().internal_id
         file_name = f"{internal_id}.jpeg"  # 내부적으로 사용할 파일 이름 생성
-        ids.append(internal_id)
         embedded = db.query(User).filter(User.internal_id == internal_id).first().embedded_profile
         embeddeds.append(embedded)
         contents = await file.read()  # 파일 내용 읽기
@@ -62,7 +60,6 @@ async def face_capture(
         response = await client.post(
             f"{AI_SERVER_URL}/get_users_with_image",
             files=new_files,
-            ids_json={"ids_json": json.dumps(ids)},
             emb={"serialized_data": (None, pickle.dumps(embeddeds), "application/octet-stream")},
         )
 
