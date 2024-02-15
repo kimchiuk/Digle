@@ -88,7 +88,7 @@ async def update_user_profile(
         raise HTTPException(status_code=404, detail="Not found User")
     if user.user_type == UserType.Standard:
         file_location = None
-
+        print(profile_img)
         if profile_img and profile_img.filename:
             """파일 저장 또는 처리
             file_location = f"C:/files/{profile_img.filename}"
@@ -104,10 +104,10 @@ async def update_user_profile(
             encoded_data = data.get("encoded_data")
             binary_data = base64.b64decode(encoded_data)
             user.embedded_profile = binary_data
+            user.profile_picture_url = f"/app/storage/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
 
         user.name = name
         # user.profile_picture_url = f"C:/files/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
-        user.profile_picture_url = f"/app/storage/{user.internal_id}.{profile_img.filename.split('.')[-1]}"
         db.commit()
         file_base64 = base64.b64encode(profile_img.file.read()).decode("utf-8")
         user_data = {
