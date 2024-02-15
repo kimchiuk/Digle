@@ -1,4 +1,4 @@
-# AI Ada face 기반의 얼굴 인식 시스템
+# Digle - AI Ada face 기반의 얼굴 인식 시스템
 
 ###### SSAFY 10기 구미 1반 7팀 웹 기술 프로젝트
 

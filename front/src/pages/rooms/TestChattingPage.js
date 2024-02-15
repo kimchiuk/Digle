@@ -4,6 +4,8 @@ import { Janus } from "janus";
 import axios from "axios";
 import hark from "hark";
 
+import videoCam from "../../assets/webRTC/discord/camOn.png"
+
 import Video from "components/WebRTC/Video/Video";
 import Chatting from "components/WebRTC/Chatting/Chatting";
 import UserList from "components/WebRTC/UserList/UserList";
@@ -850,17 +852,17 @@ const TestChattingPage = () => {
   return (
     <>
       <div className="h-screen w-full flex flex-col relative">
-        <div className="h-20 flex items-center justify-between">
-          <div className="p-4 w-32 h-20 flex justify-center items-center">
+        <div className="px-10 pt-4 h-14 flex items-center justify-between">
+          <div className="w-24 h-20 flex justify-center items-center">
             <Link to="/" target="_blank">
               <img src={logo2} alt="Digle" className="" />
             </Link>
           </div>
-          <div className="w-10 h-10 p-2 mr-4 flex justify-center items-center hover:bg-gray-100">
+          <div className="w-5 h-5 flex justify-center items-center hover:bg-gray-100">
             <img
               src={deleteButton}
               alt="deleteButton"
-              className="w-[40px] "
+              className=""
               onClick={(e) => {
                 e.preventDefault();
                 handleDeleteRoom(myroom);
@@ -868,6 +870,11 @@ const TestChattingPage = () => {
             />
           </div>
         </div>
+        <div className="border-2 mt-4 mx-10">
+          <div className="flex items-center pl-4 h-14 bg-sky-100 ">
+            <img className="w-7 h-7" src={videoCam} alt="비디오 로고" />
+            <div className="ml-2 font-extrabold text text-sm">응시자 화면</div>
+          </div>
         {feeds.length === 0 ? (
           <div className="h-[800px] px-20 flex items-center justify-center">
             <div className="text-xl font-semibold text-gray-600">
@@ -879,15 +886,16 @@ const TestChattingPage = () => {
             {renderRemoteVideos}
           </div>
         )}
-        <div className="h-20 flex justify-between">
+        </div>
+        <div className="p-5 h-20 flex justify-between">
           <div className="flex">
             <div className="flex w-20 relative justify-center items-center">
               <button
-                className="relative w-[70px] h-8 flex justify-center items-center border-2 rounded-3xl bg-gray-200 hover:bg-gray-300"
+                className="relative w-[70px] h-8 flex justify-center items-center border-2 rounded-lg bg-gray-100 hover:bg-gray-300"
                 onClick={openChatModal}
               >
-                <img src={messageImg} alt="" className="w-5 h-5" />
-                <span>채팅</span>
+                <img src={messageImg} alt="" className="w-4 h-4" />
+                <span className="ml-1 font-bold text-xs">채팅</span>
                 {newMessageCount > 0 && (
                   <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full z-10">
                     {newMessageCount} {/* 새 메시지 카운트 표시 */}
@@ -949,22 +957,27 @@ const TestChattingPage = () => {
           {/* 유저 리스트 모달 */}
           <div className="w-20 h-full relative justify-center items-center flex mx-4">
             <div
-              className="w-[70px] h-8 flex justify-center items-center gap-2 hover:bg-gray-300 focus:ring-gray-400"
+              className="w-[70px] h-8 flex border-2 rounded-lg justify-center items-center gap-2 bg-gray-100 hover:bg-gray-300 focus:ring-gray-400"
               onClick={openUserListModal}
             >
-              <img src={members} alt="" className="w-6 h-6" />
-              <span>{feeds.length}</span>
+              <img src={members} alt="" className="w-4 h-4" />
+              <span className="font-bold text-sm">{feeds.length}</span>
             </div>
 
             {/* 유저 리스트 모달 */}
             {isUserListModalOpen && (
-              <div className="absolute bottom-full mb-2 right-0 translate-x-[-80%] left-0 w-60 h-96 bg-white p-2 rounded border-2">
-                <div className="flex justify-between">
-                  <div>참가 유저 리스트</div>
-                  <button onClick={closeUserListModal}>X</button>
+              <div className="absolute bottom-full mb-2 right-0 translate-x-[-80%] left-0 w-60 h-96 bg-white rounded border-2">
+                <div className="flex items-center bg-sky-100 justify-between p-3">
+                  <div className="flex items-center">
+                  <img src={members} alt="" className="w-4 h-4"/>
+                  <div className="ml-1 text-xs font-bold">참가 유저 리스트</div>
+                  </div>
+                  <button onClick={closeUserListModal}>
+                    <img src={deleteButton} className="w-2 h-2" alt="" />
+                  </button>
                 </div>
                 <hr />
-                <div className="mt-4">
+                <div className="p-3 font-medium text-sm">
                   <UserList
                     feeds={feeds}
                     username={username}

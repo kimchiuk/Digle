@@ -94,11 +94,11 @@ const CaptureButton = ({ feeds, setCaptureFrames, captureFrames }) => {
   return (
     <>
       <button
-        className="border-2 rounded-3xl w-[70px] h-8 flex justify-center items-center bg-gray-200 hover:bg-gray-300"
+        className="border-2 rounded-lg w-[70px] h-8 flex justify-center items-center bg-gray-100 hover:bg-gray-300"
         onClick={handleCaptureClick}
       >
-        <img src={camera} alt="" className="w-5 h-5" />
-        <span>캡처</span>
+        <img src={camera} alt="" className="w-4 h-4" />
+        <span className="ml-1 font-bold text-xs">캡처</span>
       </button>
     </>
   );
