@@ -876,13 +876,13 @@ const TestChattingPage = () => {
             <div className="ml-2 font-extrabold text text-sm">응시자 화면</div>
           </div>
         {feeds.length === 0 ? (
-          <div className="h-[800px] px-20 flex items-center justify-center">
+          <div className="h-[500px] px-20 flex items-center justify-center">
             <div className="text-xl font-semibold text-gray-600">
               방에 입장한 인원이 없습니다.
             </div>
           </div>
         ) : (
-          <div className="h-[700px] px-20 overflow-auto flex flex-wrap justify-center">
+          <div className="h-[500px] px-20 overflow-auto flex flex-wrap justify-center">
             {renderRemoteVideos}
           </div>
         )}
@@ -915,7 +915,9 @@ const TestChattingPage = () => {
                         <div className="right-0 p-2 text-sm font-bold text-stone-400 flex items-center justify-between">
                           <img className="w-10 h-10" src={chatImg} />
                           채팅창
-                          <button onClick={closeChatModal}>X</button>
+                          <button onClick={closeChatModal}>
+                            <img className="w-3 h-3" src={deleteButton} alt="" />
+                          </button>
                         </div>
                         <hr />
                       </div>
