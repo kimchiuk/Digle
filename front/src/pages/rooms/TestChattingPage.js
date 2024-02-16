@@ -6,7 +6,7 @@ import hark from "hark";
 
 import videoCam from "../../assets/webRTC/discord/camOn.png"
 
-import Video from "components/WebRTC/Video/Video";
+import Video2 from "components/WebRTC/Video/Video2";
 import Chatting from "components/WebRTC/Chatting/Chatting";
 import UserList from "components/WebRTC/UserList/UserList";
 import GetInviteCode from "components/WebRTC/Chatting/GetInviteCode";
@@ -720,7 +720,7 @@ const TestChattingPage = () => {
         className="w-[300px] h-[225px] float-left m-[3px]"
         onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
       >
-        <Video
+        <Video2
           id={`video-${feed.rfid}`} // 고유한 ID 전달
           stream={feed.stream}
           username={feed.rfdisplay}

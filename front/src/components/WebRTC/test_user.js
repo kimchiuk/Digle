@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Janus } from "../../janus";
 import { useNavigate, useLocation } from "react-router-dom";
-import Video from "./Video/Video";
+import Video2 from "./Video/Video2";
 import Chatting from "./Chatting/Chatting";
 import UserList from "./UserList/UserList";
 
@@ -760,7 +760,7 @@ const TestUser = () => {
         key={feed.rfid}
         onClick={() => handleMainStream(feed.stream, feed.rfdisplay)}
       >
-        <Video
+        <Video2
           key={feed.rfid}
           stream={feed.stream}
           username={feed.rfdisplay}
@@ -826,7 +826,7 @@ const TestUser = () => {
       <div className="flex justify-center w-full h-screen">
         {myFeed && myFeed.stream && (
           <div className="flex justify-center w-full h-full">
-            <Video stream={myFeed.stream} muted={true} />
+            <Video2 stream={myFeed.stream} muted={true} />
           </div>
         )}
       </div>
