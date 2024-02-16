@@ -81,8 +81,9 @@
 
     // handleMainStream 함수 내에서 setMainStream 호출 부분 수정
     const handleMainStream = (feed,username) => {
+      console.log(feed,username);
   // 선택된 피드의 오디오 및 비디오 트랙으로 메인 스트림 상태 업데이트
-  if (mainStream.username === username) return;
+  // if (mainStream.username === username) return;
   setMainStream((prevMainStream) => {
     return {
       ...prevMainStream,

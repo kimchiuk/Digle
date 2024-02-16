@@ -31,7 +31,7 @@ const Video = ({ audioTrack, videoTrack, username, muted, onClickFunction, class
         playsInline
         ref={videoRef}
         muted={muted}
-        controls={!onClickFunction}
+        controls={!onClickFunction}className="w-full h-full"
       />
       <div>{username}</div>
     </div>
